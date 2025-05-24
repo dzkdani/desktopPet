@@ -24,11 +24,13 @@ public static class SaveSystem
     }
 
     // Global game state
-    private const string MoneyKey      = "Money";
-    private const string SavedPetsKey  = "SavedPetIDs";
+    private const string CoinKey = "Coin";
+    private const string PoopKey = "Poop";
+    private const string SavedPetsKey = "SavedPetIDs";
 
-    public static int LoadMoney() => PlayerPrefs.GetInt(MoneyKey, 100);
-    public static void SaveMoney(int money) => PlayerPrefs.SetInt(MoneyKey, money);
+    public static int LoadCoin() => PlayerPrefs.GetInt(CoinKey, 100);
+    public static int LoadPoop() => PlayerPrefs.GetInt(PoopKey, 0);
+    public static void SaveCoin(int money) => PlayerPrefs.SetInt(CoinKey, money);
 
     public static List<string> LoadSavedPetIDs()
     {

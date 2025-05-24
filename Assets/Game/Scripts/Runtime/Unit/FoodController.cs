@@ -1,23 +1,17 @@
-using UnityEngine;
+using UnityEngine;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 using UnityEngine.EventSystems;
 
-public class FoodController : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+ public class FoodController : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     public float nutritionValue = 25f;
     public bool IsBeingDragged { get; private set; }
 
     private RectTransform rectTransform;
     private Vector2 dragOffset;
-
+ 
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-        GameManager.Instance.RegisterFood(this);
-    }
-
-    private void OnDestroy()
-    {
-        GameManager.Instance.UnregisterFood(this);
     }
 
     public void OnPointerDown(PointerEventData eventData)

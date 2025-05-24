@@ -10,20 +10,23 @@ public class GameManager : MonoBehaviour
     [Header("Prefabs & Pool Settings")]
     public GameObject foodPrefab;
     public GameObject poopPrefab;
-    public GameObject petPrefab;
+    public GameObject coinPrefab;
     [Tooltip("Initial pool size for each type")]
     public int initialPoolSize = 20;
     private Queue<GameObject> _foodPool = new Queue<GameObject>();
     private Queue<GameObject> _poopPool = new Queue<GameObject>();
+    private Queue<GameObject> _coinPool = new Queue<GameObject>();
 
     [Header("Game Area")]
+    public GameObject petPrefab;
     public RectTransform gameArea;
     [Header("Game Settings")]
     public int petCost = 10;
     public int MaxPets = 5;
     [Header("Pet Variety")]
     public string[] possiblePetNames;
-    [HideInInspector] public int poopCollected = 100;
+    [HideInInspector] public int poopCollected;
+    [HideInInspector] public int coinCollected;
 
     [HideInInspector] public List<PetController> activePets = new List<PetController>();
     public List<FoodController> activeFoods = new List<FoodController>();
@@ -53,6 +56,10 @@ public class GameManager : MonoBehaviour
             var p = Instantiate(poopPrefab, gameArea);
             p.SetActive(false);
             _poopPool.Enqueue(p);
+
+            var c = Instantiate(coinPrefab, gameArea);
+            c.SetActive(false);
+            _coinPool.Enqueue(c);
         }
     }
 
@@ -65,10 +72,19 @@ public class GameManager : MonoBehaviour
         f.SetActive(true);
         return f;
     }
+    public GameObject SpawnCoinAt(Vector2 anchoredPos)
+    {
+        GameObject c = _coinPool.Count > 0 ? _coinPool.Dequeue() 
+                                           : Instantiate(foodPrefab, gameArea);
+        var rt = c.GetComponent<RectTransform>();
+        rt.anchoredPosition = anchoredPos;
+        c.SetActive(true);
+        return c;
+    }
 
     public GameObject SpawnPoopAt(Vector2 anchoredPos)
     {
-        GameObject p = _poopPool.Count > 0 ? _poopPool.Dequeue() 
+        GameObject p = _poopPool.Count > 0 ? _poopPool.Dequeue()
                                            : Instantiate(poopPrefab, gameArea);
         var rt = p.GetComponent<RectTransform>();
         rt.anchoredPosition = anchoredPos;
@@ -88,6 +104,12 @@ public class GameManager : MonoBehaviour
         _poopPool.Enqueue(poop);
     }
 
+    public void DespawnCoin(GameObject coin)
+    {
+        coin.SetActive(false);
+        _coinPool.Enqueue(coin);
+    }
+
     public void RegisterPet(PetController pet)
     {
         if (!activePets.Contains(pet))
@@ -98,18 +120,18 @@ public class GameManager : MonoBehaviour
 
     private void LoadGame()
     {
-        poopCollected = SaveSystem.LoadMoney();
+        coinCollected = SaveSystem.LoadCoin();
         savedPetIDs   = SaveSystem.LoadSavedPetIDs();
         foreach (var id in savedPetIDs)
             if (SaveSystem.TryLoadPet(id, out var d))
                 SpawnSavedPets(id);
     }
 
-    public bool SpendMoney(int amount)
+    public bool SpentCoin(int amount)
     {
-        if (poopCollected < amount) return false;
-        poopCollected -= amount;
-        SaveSystem.SaveMoney(poopCollected);
+        if (coinCollected < amount) return false;
+        coinCollected -= amount;
+        SaveSystem.SaveCoin(coinCollected);
         UIManager.Instance.UpdatePoopCounter();
         return true;
     }
@@ -119,8 +141,8 @@ public class GameManager : MonoBehaviour
         foreach (var pet in activePets)
             SaveSystem.SavePet(new PetData {
                 petName  = pet.petID,
-                hunger   = pet.currentHunger,
-                position = pet.GetComponent<RectTransform>().anchoredPosition
+                lastHunger   = pet.currentHunger,
+                lastPosition = pet.GetComponent<RectTransform>().anchoredPosition
             });
         SaveSystem.SavePetIDs(savedPetIDs);
         SaveSystem.Flush();
@@ -142,7 +164,7 @@ public class GameManager : MonoBehaviour
         savedPetIDs.Add(petController.petID);
         PlayerPrefs.SetString("SavedPetIDs", string.Join(",", savedPetIDs));
     }
-    public string GenerateRandomID(int length)
+    private string GenerateRandomID(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         char[] id = new char[length];
@@ -165,7 +187,7 @@ public class GameManager : MonoBehaviour
 
     public void BuyPet()
     {
-        if (SpendMoney(petCost))
+        if (SpentCoin(petCost))
         {
             SpawnNewPet();
         }
@@ -197,21 +219,12 @@ public class GameManager : MonoBehaviour
     {
         return gameArea.rect.Contains(position);
     }
-    // Call this when food is spawned
-    public void RegisterFood(FoodController food)
-    {
-        activeFoods.Add(food);
-    }
 
-    // Call this when food is destroyed
-    public void UnregisterFood(FoodController food)
-    {
-        activeFoods.Remove(food);
-    }
     void OnApplicationQuit()
     {
         SaveAllPets();
-        PlayerPrefs.SetInt("Money", poopCollected);
+        PlayerPrefs.SetInt("Coin", coinCollected);
+        PlayerPrefs.SetInt("Poop", poopCollected);
         DebugPetData();
         PlayerPrefs.Save();
     }

@@ -8,8 +8,8 @@ using System;
 public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("Pet Data")]
-    public float hungerDepletionRate = 0.1f;      
-    public float poopInterval = 10f;              
+    public float hungerDepletionRate = 0.1f;
+    public float poopInterval = 1200f;           
     public float hungerThresholdToEat = 30f;
     public float moveSpeed = 100f;
     public float foodDetectionRange = 200f;
@@ -33,8 +33,7 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Vector2 targetPosition;
     private FoodController nearestFood;
     private float bottomYPosition; // Stores the bottom position
-
-    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
     private Coroutine _hungerRoutine;
     private Coroutine _poopRoutine;
     private Coroutine _foodRoutine;
@@ -138,22 +137,21 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         // wait initial interval, then loop
         yield return new WaitForSeconds(poopInterval);
-
+ 
         while (true)
         {
             if (currentHunger > hungerThresholdToEat)
-                Poop();   // your existing poop method
-
+                Poop();   
             yield return new WaitForSeconds(poopInterval);
-        }
-    }
+        }       
+    }  
     
     private IEnumerator FoodScanLoop()
     {
         var wait = new WaitForSeconds(0.2f); // every 200 ms
         while (true)
         {
-            FindNearestFood();
+            FindNearestFood();       
             yield return wait;
         }
     }
@@ -163,8 +161,8 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         var data = new PetData
         {
             petName = petID,
-            hunger = currentHunger,
-            position = rectTransform.anchoredPosition
+            lastHunger = currentHunger,
+            lastPosition = rectTransform.anchoredPosition
         };
         SaveSystem.SavePet(data);
     }
@@ -175,8 +173,8 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         {
             string jsonData = PlayerPrefs.GetString($"Pet{petID}");
             PetData petData = JsonUtility.FromJson<PetData>(jsonData);
-            currentHunger = petData.hunger;
-            rectTransform.anchoredPosition = petData.position;
+            currentHunger = petData.lastHunger;
+            rectTransform.anchoredPosition = petData.lastPosition;
             gameObject.name = petData.petName;
             petID = petData.petName;
         }
@@ -303,7 +301,7 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 [System.Serializable]
 public class PetData
 {
-    public float hunger;
-    public Vector2 position;
+    public float lastHunger;
+    public Vector2 lastPosition;
     public string petName;
 }

@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
 
     [Header("UI Elements")]
     public TextMeshProUGUI poopCounterText;
+    public TextMeshProUGUI coinCounterText;
     public Button spawnPetButton;
     public Button spawnFoodButton;
 
@@ -19,11 +20,17 @@ public class UIManager : MonoBehaviour
         spawnPetButton.onClick.AddListener(GameManager.Instance.BuyPet);
         spawnFoodButton.onClick.AddListener(GameManager.Instance.SpawnFood);
         UpdatePoopCounter();
+        UpdateCoinCounter();
     }
 
     public void UpdatePoopCounter()
     {
-        poopCounterText.text = $"Poop Collected: {GameManager.Instance.poopCollected}";
+        poopCounterText.text = $"Poop : {GameManager.Instance.poopCollected}";
+    }
+
+    public void UpdateCoinCounter()
+    {
+        coinCounterText.text = $"Coin : {GameManager.Instance.coinCollected}";
     }
 
 }

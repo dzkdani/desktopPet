@@ -1,4 +1,4 @@
-using UnityEngine;
+ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class PoopController : MonoBehaviour, IPointerDownHandler
@@ -8,10 +8,7 @@ public class PoopController : MonoBehaviour, IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         GameManager.Instance.poopCollected += poopValue;
-        PlayerPrefs.SetInt("Money", GameManager.Instance.poopCollected);
-        PlayerPrefs.Save();
         UIManager.Instance.UpdatePoopCounter();
-
         GameManager.Instance.DespawnPoop(gameObject);
     }
 }
