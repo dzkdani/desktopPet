@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     [Header("Game Area")]
     public GameObject petPrefab;
     public RectTransform gameArea;
+    public RectTransform poolContainer;
     [Header("Game Settings")]
     public int petCost = 10;
     public int MaxPets = 5;
@@ -49,33 +50,37 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < initialPoolSize; i++)
         {
-            var f = Instantiate(foodPrefab, gameArea);
+            var f = Instantiate(foodPrefab, poolContainer);
             f.SetActive(false);
             _foodPool.Enqueue(f);
 
-            var p = Instantiate(poopPrefab, gameArea);
+            var p = Instantiate(poopPrefab, poolContainer);
             p.SetActive(false);
             _poopPool.Enqueue(p);
 
-            var c = Instantiate(coinPrefab, gameArea);
+            var c = Instantiate(coinPrefab, poolContainer);
             c.SetActive(false);
             _coinPool.Enqueue(c);
         }
     }
 
-    public GameObject SpawnFoodAt(Vector2 anchoredPos)
+    public void SpawnFood()
     {
-        GameObject f = _foodPool.Count > 0 ? _foodPool.Dequeue() 
+        SpawnFoodAt();
+    }
+
+    public void SpawnFoodAt()
+    {
+        GameObject f = _foodPool.Count > 0 ? _foodPool.Dequeue()
                                            : Instantiate(foodPrefab, gameArea);
         var rt = f.GetComponent<RectTransform>();
-        rt.anchoredPosition = anchoredPos;
+        rt.anchoredPosition = GetRandomPositionInGameArea();
         f.SetActive(true);
-        return f;
     }
     public GameObject SpawnCoinAt(Vector2 anchoredPos)
     {
         GameObject c = _coinPool.Count > 0 ? _coinPool.Dequeue() 
-                                           : Instantiate(foodPrefab, gameArea);
+                                           : Instantiate(coinPrefab, gameArea);
         var rt = c.GetComponent<RectTransform>();
         rt.anchoredPosition = anchoredPos;
         c.SetActive(true);
@@ -181,8 +186,30 @@ public class GameManager : MonoBehaviour
         Vector2 max = gameArea.rect.max;
         return new Vector2(
             UnityEngine.Random.Range(min.x, max.x),
-            UnityEngine.Random.Range(min.y, max.y)
+            UnityEngine.Random.Range(min.y + 5, max.y - 5)
         );
+    }
+    public static Vector2 ScreenToCanvasPosition(Canvas canvas)
+    {
+        // 1. Get the RectTransform of the Canvas
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+
+        // 2. Convert screen point to local point
+        Vector2 localPoint;
+        // For Screen Space - Overlay canvases, pass `null` as the camera.
+        // For Screen Space - Camera or World Space canvases, pass canvas.worldCamera.
+        Camera cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay 
+                    ? null 
+                    : canvas.worldCamera;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect,
+            Input.mousePosition,
+            cam,
+            out localPoint
+        );
+
+        return localPoint;
     }
 
     public void BuyPet()
@@ -197,35 +224,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void DebugPetData()
-    {
-        string savedIds = PlayerPrefs.GetString("SavedPetIDs");
-        Debug.Log("Saved Pet IDs: " + savedIds);
-        foreach (string id in savedIds.Split(','))
-        {
-            string petData = PlayerPrefs.GetString($"Pet{id}");
-            Debug.Log($"Pet ID: {id}, Data: {petData}");
-        }
-    }
-    public void SpawnFood()
-    {
-        GameObject food = Instantiate(GameManager.Instance.foodPrefab,
-            GameManager.Instance.gameArea);
-        food.GetComponent<RectTransform>().anchoredPosition =
-            GameManager.Instance.GetRandomPositionInGameArea();
-    }
-
     public bool IsPositionInGameArea(Vector2 position)
     {
         return gameArea.rect.Contains(position);
     }
 
-    void OnApplicationQuit()
-    {
-        SaveAllPets();
-        PlayerPrefs.SetInt("Coin", coinCollected);
-        PlayerPrefs.SetInt("Poop", poopCollected);
-        DebugPetData();
-        PlayerPrefs.Save();
-    }
+    // void OnApplicationQuit()
+    // {
+    //     SaveAllPets();
+    //     PlayerPrefs.SetInt("Coin", coinCollected);
+    //     PlayerPrefs.SetInt("Poop", poopCollected);
+    //     DebugPetData();
+    //     PlayerPrefs.Save();
+    // }
 }

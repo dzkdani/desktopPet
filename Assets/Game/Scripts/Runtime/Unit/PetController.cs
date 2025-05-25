@@ -37,6 +37,7 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Coroutine _hungerRoutine;
     private Coroutine _poopRoutine;
     private Coroutine _foodRoutine;
+    private Coroutine _coinRoutine;
 
     public void OnPointerEnter(PointerEventData e) => isHovered = true;
     public void OnPointerExit (PointerEventData e) => isHovered = false;
@@ -74,7 +75,7 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         _hungerRoutine = StartCoroutine(HungerRoutine());
         _poopRoutine = StartCoroutine(PoopRoutine());
         _foodRoutine = StartCoroutine(FoodScanLoop());
-
+        _coinRoutine = StartCoroutine(CoinCoroutine());
         OnHungerChanged += UpdatePetColor;   
         OnHoverChanged  += ToggleHungerUI;  
     }
@@ -82,7 +83,6 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void OnDisable()
     {
         StopAllCoroutines();
-
         OnHungerChanged -= UpdatePetColor;
         OnHoverChanged  -= ToggleHungerUI;
     }
@@ -91,14 +91,6 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         rectTransform = GetComponent<RectTransform>();
         GameManager.Instance.RegisterPet(this);
-
-        _hungerRoutine = StartCoroutine(HungerRoutine());
-        _poopRoutine = StartCoroutine(PoopRoutine());
-        _foodRoutine = StartCoroutine(FoodScanLoop());
-
-        OnHungerChanged += UpdatePetColor;   
-        OnHoverChanged  += ToggleHungerUI;  
-
         LoadPetData();
         petImage.color = normalColor;
 
@@ -140,8 +132,7 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
  
         while (true)
         {
-            if (currentHunger > hungerThresholdToEat)
-                Poop();   
+            Poop();   
             yield return new WaitForSeconds(poopInterval);
         }       
     }  
@@ -154,6 +145,17 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             FindNearestFood();       
             yield return wait;
         }
+    }
+
+    private IEnumerator CoinCoroutine()
+    {
+        yield return new WaitForSeconds(6f);
+ 
+        while (true)
+        {
+            DropCoin();
+            yield return new WaitForSeconds(6f);
+        }  
     }
 
     public void SavePetData()
@@ -278,18 +280,20 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void Poop()
     {
-        if (currentHunger > hungerThresholdToEat)
-        {
-            GameManager.Instance.SpawnPoopAt(rectTransform.anchoredPosition);
-        }
+        Debug.Log("Pet Poop Time");
+        GameManager.Instance.SpawnPoopAt(rectTransform.anchoredPosition);
+    }
+
+    private void DropCoin()
+    {
+        GameManager.Instance.SpawnCoinAt(rectTransform.anchoredPosition);
     }
 
     private void OnDestroy()
     {
         StopAllCoroutines();
-
         OnHungerChanged -= UpdatePetColor;
-        OnHoverChanged  -= ToggleHungerUI;
+        OnHoverChanged -= ToggleHungerUI;
         GameManager.Instance.activePets.Remove(this);
     }
     public void SetTargetPosition(Vector2 targetPos)
