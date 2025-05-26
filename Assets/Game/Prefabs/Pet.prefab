@@ -244,6 +244,8 @@ MonoBehaviour:
   moveSpeed: 100
   foodDetectionRange: 200
   eatDistance: 30
+  monsterData: {fileID: 11400000, guid: fdb93e250cd9e5b47aa07af6a3467f57, type: 2}
+  isEvolved: 0
   hungerInfo: {fileID: 1890837207535386077}
   hungerText: {fileID: 9072586404376867894}
   petImage: {fileID: 6121177312731832266}

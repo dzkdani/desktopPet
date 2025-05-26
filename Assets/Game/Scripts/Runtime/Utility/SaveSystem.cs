@@ -4,24 +4,26 @@ using System.Collections.Generic;
 public static class SaveSystem
 {
     // Pets
-    public static void SavePet(PetData data)
+    public static void SavePet(MonsterSaveData data)
     {
-        string key = $"Pet{data.petName}";
+        string key = $"Pet{data.monsterId}";
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString(key, json);
     }
 
-    public static bool TryLoadPet(string petID, out PetData data)
+    public static bool TryLoadPet(string petID, out MonsterSaveData data)
     {
         string key = $"Pet{petID}";
         if (PlayerPrefs.HasKey(key))
         {
-            data = JsonUtility.FromJson<PetData>(PlayerPrefs.GetString(key));
+            data = JsonUtility.FromJson<MonsterSaveData>(PlayerPrefs.GetString(key));
             return true;
         }
+
         data = null;
         return false;
     }
+
 
     // Global game state
     private const string CoinKey = "Coin";

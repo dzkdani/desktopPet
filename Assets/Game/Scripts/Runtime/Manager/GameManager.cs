@@ -29,9 +29,10 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public int poopCollected;
     [HideInInspector] public int coinCollected;
 
-    [HideInInspector] public List<PetController> activePets = new List<PetController>();
+    [HideInInspector] public List<MonsterController> activeMonsters = new List<MonsterController>();
     public List<FoodController> activeFoods = new List<FoodController>();
     private List<string> savedPetIDs = new List<string>();
+    public MonsterDatabaseSO monsterDatabase;
 
     private void Awake()
     {
@@ -77,13 +78,17 @@ public class GameManager : MonoBehaviour
         rt.anchoredPosition = GetRandomPositionInGameArea();
         f.SetActive(true);
     }
-    public GameObject SpawnCoinAt(Vector2 anchoredPos)
+    public GameObject SpawnCoinAt(Vector2 anchoredPos, CoinType type)
     {
-        GameObject c = _coinPool.Count > 0 ? _coinPool.Dequeue() 
+        GameObject c = _coinPool.Count > 0 ? _coinPool.Dequeue()
                                            : Instantiate(coinPrefab, gameArea);
         var rt = c.GetComponent<RectTransform>();
         rt.anchoredPosition = anchoredPos;
         c.SetActive(true);
+
+        CoinController coinController = c.GetComponent<CoinController>();
+        coinController.Initialize(type);
+
         return c;
     }
 
@@ -115,18 +120,19 @@ public class GameManager : MonoBehaviour
         _coinPool.Enqueue(coin);
     }
 
-    public void RegisterPet(PetController pet)
+    public void RegisterPet(MonsterController monster)
     {
-        if (!activePets.Contains(pet))
+        if (!activeMonsters.Contains(monster))
         {
-            activePets.Add(pet);
+            activeMonsters.Add(monster);
         }
     }
 
     private void LoadGame()
     {
         coinCollected = SaveSystem.LoadCoin();
-        savedPetIDs   = SaveSystem.LoadSavedPetIDs();
+        savedPetIDs = SaveSystem.LoadSavedPetIDs();
+        Debug.Log($"Loaded {savedPetIDs.Count} saved pets with IDs: {string.Join(", ", savedPetIDs)}");
         foreach (var id in savedPetIDs)
             if (SaveSystem.TryLoadPet(id, out var d))
                 SpawnSavedPets(id);
@@ -143,11 +149,12 @@ public class GameManager : MonoBehaviour
 
     public void SaveAllPets()
     {
-        foreach (var pet in activePets)
-            SaveSystem.SavePet(new PetData {
-                petName  = pet.petID,
-                lastHunger   = pet.currentHunger,
-                lastPosition = pet.GetComponent<RectTransform>().anchoredPosition
+        foreach (var monster in activeMonsters)
+            SaveSystem.SavePet(new MonsterSaveData
+            {
+                monsterId = monster.monsterID,
+                lastHunger = monster.currentHunger,
+                isEvolved = monster.isEvolved,
             });
         SaveSystem.SavePetIDs(savedPetIDs);
         SaveSystem.Flush();
@@ -156,17 +163,17 @@ public class GameManager : MonoBehaviour
     private void SpawnSavedPets(string petID)
     {
         GameObject pet = Instantiate(petPrefab, gameArea);
-        PetController petController = pet.GetComponent<PetController>();
-        petController.petID = petID;
-        petController.LoadPetData();
+        MonsterController monsterController = pet.GetComponent<MonsterController>();
+        monsterController.monsterID = petID;
+        monsterController.LoadPetData();
         pet.SetActive(true);
     }
     private void SpawnNewPet()
     {
         GameObject pet = Instantiate(petPrefab, gameArea);
-        PetController petController = pet.GetComponent<PetController>();
-        petController.petID = GenerateRandomID(8);
-        savedPetIDs.Add(petController.petID);
+        MonsterController monsterController = pet.GetComponent<MonsterController>();
+        monsterController.monsterID = GenerateRandomID(8);
+        savedPetIDs.Add(monsterController.monsterID);
         PlayerPrefs.SetString("SavedPetIDs", string.Join(",", savedPetIDs));
     }
     private string GenerateRandomID(int length)
@@ -198,8 +205,8 @@ public class GameManager : MonoBehaviour
         Vector2 localPoint;
         // For Screen Space - Overlay canvases, pass `null` as the camera.
         // For Screen Space - Camera or World Space canvases, pass canvas.worldCamera.
-        Camera cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay 
-                    ? null 
+        Camera cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay
+                    ? null
                     : canvas.worldCamera;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -229,12 +236,12 @@ public class GameManager : MonoBehaviour
         return gameArea.rect.Contains(position);
     }
 
-    // void OnApplicationQuit()
-    // {
-    //     SaveAllPets();
-    //     PlayerPrefs.SetInt("Coin", coinCollected);
-    //     PlayerPrefs.SetInt("Poop", poopCollected);
-    //     DebugPetData();
-    //     PlayerPrefs.Save();
-    // }
+    void OnApplicationQuit()
+    {
+        SaveAllPets();
+        PlayerPrefs.SetInt("Coin", coinCollected);
+        PlayerPrefs.SetInt("Poop", poopCollected);
+        // DebugPetData();
+        PlayerPrefs.Save();
+    }
 }

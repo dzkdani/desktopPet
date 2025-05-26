@@ -4,49 +4,53 @@ using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections;
 using System;
+using Unity.Collections;
 
-public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("Pet Data")]
+    [Header("Monster Data")]
     public float hungerDepletionRate = 0.1f;
-    public float poopInterval = 1200f;           
+    public float poopInterval = 1200f;
     public float hungerThresholdToEat = 30f;
     public float moveSpeed = 100f;
     public float foodDetectionRange = 200f;
     public float eatDistance = 30f;
+    public MonsterDataSO monsterData;
+    public bool isEvolved;
 
-    [Header("Pet Visual")]
+    [Header("Monster Visual")]
     public GameObject hungerInfo;
     [SerializeField] private TextMeshProUGUI hungerText;
-    public Image petImage;
+    public Image monsterImage;
     public Color normalColor = Color.white;
     public Color hungryColor = Color.red;
     public float colorChangeThreshold = 50f;
-    public string petID;
+    public string monsterID;
 
     private float _foodDetectionRangeSqr;
     private float _eatDistanceSqr;
-    private Image _petImage;
+    private Image _monsterImage;
     private TextMeshProUGUI _hungerText;
     private CanvasGroup _hungerInfoCg;
     private RectTransform rectTransform;
     private Vector2 targetPosition;
     private FoodController nearestFood;
     private float bottomYPosition; // Stores the bottom position
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
     private Coroutine _hungerRoutine;
     private Coroutine _poopRoutine;
     private Coroutine _foodRoutine;
-    private Coroutine _coinRoutine;
+    private Coroutine _goldCoinRoutine;
+    private Coroutine _silverCoinRoutine;
 
     public void OnPointerEnter(PointerEventData e) => isHovered = true;
-    public void OnPointerExit (PointerEventData e) => isHovered = false;
+    public void OnPointerExit(PointerEventData e) => isHovered = false;
 
     public event Action<float> OnHungerChanged;
-    public event Action<bool>  OnHoverChanged;
+    public event Action<bool> OnHoverChanged;
 
     private float _currentHunger = 100f;
-    public  float currentHunger
+    public float currentHunger
     {
         get => _currentHunger;
         private set
@@ -75,16 +79,18 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         _hungerRoutine = StartCoroutine(HungerRoutine());
         _poopRoutine = StartCoroutine(PoopRoutine());
         _foodRoutine = StartCoroutine(FoodScanLoop());
-        _coinRoutine = StartCoroutine(CoinCoroutine());
-        OnHungerChanged += UpdatePetColor;   
-        OnHoverChanged  += ToggleHungerUI;  
+        _goldCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes(30).TotalSeconds, CoinType.Gold));
+        _silverCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes(1).TotalSeconds, CoinType.Silver));
+
+        OnHungerChanged += UpdatePetColor;
+        OnHoverChanged += ToggleHungerUI;
     }
 
     private void OnDisable()
     {
         StopAllCoroutines();
         OnHungerChanged -= UpdatePetColor;
-        OnHoverChanged  -= ToggleHungerUI;
+        OnHoverChanged -= ToggleHungerUI;
     }
 
     private void Awake()
@@ -92,20 +98,22 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         rectTransform = GetComponent<RectTransform>();
         GameManager.Instance.RegisterPet(this);
         LoadPetData();
-        petImage.color = normalColor;
+        bottomYPosition = GameManager.Instance.gameArea.rect.yMin + rectTransform.rect.height / 2;
+        SetRandomTarget();
+        monsterImage.color = normalColor;
 
-        _petImage = petImage;                
-        _hungerText = hungerText;              
+        _monsterImage = monsterImage;
+        _hungerText = hungerText;
         _hungerInfoCg = hungerInfo.GetComponent<CanvasGroup>();
         _hungerInfoCg.alpha = 0;
 
         _foodDetectionRangeSqr = foodDetectionRange * foodDetectionRange;
         _eatDistanceSqr = eatDistance * eatDistance;
     }
-    void OnApplicationQuit()
-    {
-        SavePetData();
-    }
+    // void OnApplicationQuit()
+    // {
+    //     SavePetData();
+    // }
 
     private IEnumerator HungerRoutine()
     {
@@ -113,80 +121,97 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         while (true)
         {
             currentHunger = Mathf.Clamp(currentHunger - hungerDepletionRate, 0f, 100f);
-            yield return wait;     
+            yield return wait;
             // toggle hunger UI via cached CanvasGroup
             _hungerInfoCg.alpha = isHovered ? 1 : 0;
             // update hunger text via _hungerText
             _hungerText.text = $"Hunger: {currentHunger:F1}%";
             // change sprite color via cached _petImage
-            _petImage.color = currentHunger <= colorChangeThreshold
+            _monsterImage.color = currentHunger <= colorChangeThreshold
                 ? Color.Lerp(normalColor, hungryColor, 1 - (currentHunger / colorChangeThreshold))
                 : normalColor;
-            }
         }
+    }
 
     private IEnumerator PoopRoutine()
     {
         // wait initial interval, then loop
         yield return new WaitForSeconds(poopInterval);
- 
+
         while (true)
         {
-            Poop();   
+            Poop();
             yield return new WaitForSeconds(poopInterval);
-        }       
-    }  
-    
+        }
+    }
+
     private IEnumerator FoodScanLoop()
     {
         var wait = new WaitForSeconds(0.2f); // every 200 ms
         while (true)
         {
-            FindNearestFood();       
+            FindNearestFood();
             yield return wait;
         }
     }
 
-    private IEnumerator CoinCoroutine()
+    private IEnumerator CoinCoroutine(float delay, CoinType type)
     {
-        yield return new WaitForSeconds(6f);
- 
+        yield return new WaitForSeconds(delay);
+
         while (true)
         {
-            DropCoin();
-            yield return new WaitForSeconds(6f);
-        }  
+            DropCoin(type);
+            yield return new WaitForSeconds(delay);
+        }
     }
 
     public void SavePetData()
     {
-        var data = new PetData
+        var data = new MonsterSaveData
         {
-            petName = petID,
+            monsterId = monsterID,
             lastHunger = currentHunger,
-            lastPosition = rectTransform.anchoredPosition
+            isEvolved = isEvolved // Track evolution state
         };
         SaveSystem.SavePet(data);
     }
 
     public void LoadPetData()
     {
-        if (PlayerPrefs.HasKey($"Pet{petID}"))
+        if (monsterData == null)
         {
-            string jsonData = PlayerPrefs.GetString($"Pet{petID}");
-            PetData petData = JsonUtility.FromJson<PetData>(jsonData);
-            currentHunger = petData.lastHunger;
-            rectTransform.anchoredPosition = petData.lastPosition;
-            gameObject.name = petData.petName;
-            petID = petData.petName;
+            Debug.LogError($"No MonsterDataSO found for petID: {monsterID}");
+            return;
+        }
+
+        // Step 2: Load runtime data (hunger, evolution state)
+        if (SaveSystem.TryLoadPet(monsterID, out MonsterSaveData savedData))
+        {
+            currentHunger = savedData.lastHunger;
+            monsterID = savedData.monsterId;
+            monsterData.isEvolved = savedData.isEvolved; // You can also track evolution per pet
         }
         else
         {
-            bottomYPosition = GameManager.Instance.gameArea.rect.yMin + rectTransform.rect.height / 2;
-            SetRandomTarget();
+            currentHunger = 100f; // Default
+            monsterData.isEvolved = false;
         }
 
+        // Step 3: Apply monsterData values to runtime
+        moveSpeed = monsterData.moveSpd;
+        hungerDepletionRate = monsterData.hungerDepleteRate;
+        poopInterval = monsterData.poopRate;
+
+        // Set correct pet image
+        if (monsterData.petImgs != null && monsterData.petImgs.Length > 0)
+        {
+            int imgIndex = monsterData.isEvolved ? 1 : 0;
+            imgIndex = Mathf.Clamp(imgIndex, 0, monsterData.petImgs.Length - 1);
+            monsterImage.sprite = monsterData.petImgs[imgIndex];
+        }
     }
+
     private void Update()
     {
         HandleMovement();
@@ -255,7 +280,7 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void UpdatePetColor(float hunger)
     {
-        _petImage.color = (hunger <= colorChangeThreshold)
+        _monsterImage.color = (hunger <= colorChangeThreshold)
             ? Color.Lerp(normalColor, hungryColor, 1 - (hunger / colorChangeThreshold))
             : normalColor;
     }
@@ -284,9 +309,9 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         GameManager.Instance.SpawnPoopAt(rectTransform.anchoredPosition);
     }
 
-    private void DropCoin()
+    private void DropCoin(CoinType type)
     {
-        GameManager.Instance.SpawnCoinAt(rectTransform.anchoredPosition);
+        GameManager.Instance.SpawnCoinAt(rectTransform.anchoredPosition, type);
     }
 
     private void OnDestroy()
@@ -294,18 +319,19 @@ public class PetController : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         StopAllCoroutines();
         OnHungerChanged -= UpdatePetColor;
         OnHoverChanged -= ToggleHungerUI;
-        GameManager.Instance.activePets.Remove(this);
+        GameManager.Instance.activeMonsters.Remove(this);
     }
     public void SetTargetPosition(Vector2 targetPos)
     {
         targetPosition = targetPos;
     }
 }
-
 [System.Serializable]
-public class PetData
+public class MonsterSaveData
 {
+    public string monsterId;
     public float lastHunger;
-    public Vector2 lastPosition;
-    public string petName;
+    public bool isEvolved;
 }
+
+

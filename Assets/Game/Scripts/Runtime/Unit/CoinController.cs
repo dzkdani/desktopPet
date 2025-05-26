@@ -1,3 +1,4 @@
+using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,8 +9,20 @@ public class CoinController : MonoBehaviour, IPointerDownHandler
     [SerializeField] float rate;
     [SerializeField] int value;
 
-    private void OnEnable() {
+    public void Initialize(CoinType coinType)
+    {
+        type = coinType;
+        // rate = CalculateSpawnRate(coin.InGame);
         value = CalculateValue(type);
+        Image image = GetComponent<Image>();
+        if (coinType == CoinType.Gold)
+        {
+            image.color = Color.yellow; // Gold color
+        }
+        else if (coinType == CoinType.Silver)
+        {
+            image.color = Color.gray; // Silver color
+        }
     }
 
     public int CalculateValue(CoinType type)
@@ -18,6 +31,7 @@ public class CoinController : MonoBehaviour, IPointerDownHandler
         if (type == CoinType.Gold) value = 10;
         return value;
     }
+
 
     public float CalculateSpawnRate(bool isInGame)
     {
@@ -48,8 +62,4 @@ public class Coin
     public bool InGame = true;
 }
 
-public enum CoinType
-{
-    Silver,
-    Gold
-}
+
