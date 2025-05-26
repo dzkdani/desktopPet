@@ -40,6 +40,12 @@ public class TransparentWindow : MonoBehaviour
 
     private void Start()
     {
+        if (Application.platform != RuntimePlatform.WindowsPlayer)
+        {
+            Debug.LogWarning("TransparentWindow script is only supported on Windows platforms.");
+            return;
+        }
+
         // Setup camera transparency
         Camera.main.clearFlags = CameraClearFlags.SolidColor;
         Camera.main.backgroundColor = new Color(0, 0, 0, 0);
