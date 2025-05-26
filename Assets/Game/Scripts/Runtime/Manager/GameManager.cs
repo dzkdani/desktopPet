@@ -144,6 +144,7 @@ public class GameManager : MonoBehaviour
         coinCollected -= amount;
         SaveSystem.SaveCoin(coinCollected);
         UIManager.Instance.UpdatePoopCounter();
+        UIManager.Instance.UpdateCoinCounter();
         return true;
     }
 

@@ -248,8 +248,8 @@ MonoBehaviour:
   isEvolved: 0
   hungerInfo: {fileID: 1890837207535386077}
   hungerText: {fileID: 9072586404376867894}
-  petImage: {fileID: 6121177312731832266}
+  monsterImage: {fileID: 6121177312731832266}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   hungryColor: {r: 1, g: 0, b: 0, a: 1}
   colorChangeThreshold: 50
-  petID: 
+  monsterID: 
