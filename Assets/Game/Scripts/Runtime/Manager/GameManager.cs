@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -27,7 +28,13 @@ public class GameManager : MonoBehaviour
     public List<FoodController> activeFoods = new List<FoodController>();
     private List<string> savedMonIDs = new List<string>();
     public MonsterDatabaseSO monsterDatabase;
-    private float groundPositionY = -33f; 
+    private float groundPositionY = -33f;
+    [Header("Food Placement Settings")]
+    public GameObject foodPlacementIndicator; // Assign a semi-transparent food sprite in inspector
+    public Color validPositionColor = Color.green;
+    public Color invalidPositionColor = Color.red;
+    private bool isInPlacementMode = false;
+    private int pendingFoodCost = 0;
 
     private void Awake()
     {
@@ -59,6 +66,109 @@ public class GameManager : MonoBehaviour
             _coinPool.Enqueue(c);
         }
     }
+    void Update()
+    {
+        if (isInPlacementMode)
+        {
+            UpdateFoodPlacement();
+
+            if (Input.GetMouseButtonDown(0)) // Left click confirms
+            {
+                TryPlaceFood();
+            }
+            else if (Input.GetMouseButtonDown(1)) // Right click cancels
+            {
+                CancelPlacement();
+            }
+        }
+    }
+    public void StartFoodPurchase(int cost)
+    {
+        if (coinCollected >= cost)
+        {
+            pendingFoodCost = cost;
+            isInPlacementMode = true;
+            foodPlacementIndicator.SetActive(true);
+            UIManager.Instance.ShowMessage("Click to place food (Right-click to cancel)");
+        }
+        else
+        {
+            UIManager.Instance.ShowMessage("Not enough coins!");
+        }
+    }
+
+    private void UpdateFoodPlacement()
+    {
+        Vector2 localPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            gameArea,
+            Input.mousePosition,
+            mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCanvas.worldCamera,
+            out localPos
+        );
+
+        // Move the indicator
+        foodPlacementIndicator.GetComponent<RectTransform>().anchoredPosition = ScreenToCanvasPosition(mainCanvas);
+
+        // Check if position is valid
+        bool isValid = gameArea.rect.Contains(localPos);
+        foodPlacementIndicator.GetComponent<Image>().color = isValid ? validPositionColor : invalidPositionColor;
+    }
+
+
+    private void TryPlaceFood()
+    {
+        Vector2 localPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            gameArea,
+            Input.mousePosition,
+            mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCanvas.worldCamera,
+            out localPos
+        );
+
+        if (gameArea.rect.Contains(localPos))
+        {
+            if (SpentCoin(pendingFoodCost))
+            {
+                SpawnFoodAtPosition(localPos);
+            }
+            EndPlacement();
+        }
+        else
+        {
+            UIManager.Instance.ShowMessage("Can't place here!", 1f);
+        }
+    }
+
+
+    private void SpawnFoodAtPosition(Vector2 position)
+    {
+        GameObject f = _foodPool.Count > 0 ? _foodPool.Dequeue()
+                                         : Instantiate(foodPrefab, poolContainer);
+        var rt = f.GetComponent<RectTransform>();
+        rt.SetParent(gameArea, false);
+        rt.anchoredPosition = position;
+        f.SetActive(true);
+
+        var foodController = f.GetComponent<FoodController>();
+        if (foodController != null && !activeFoods.Contains(foodController))
+        {
+            activeFoods.Add(foodController);
+        }
+    }
+
+    private void CancelPlacement()
+    {
+        EndPlacement();
+        UIManager.Instance.ShowMessage("Placement canceled", 1f);
+    }
+
+    private void EndPlacement()
+    {
+        isInPlacementMode = false;
+        pendingFoodCost = 0;
+        foodPlacementIndicator.SetActive(false);
+    }
 
     public void SpawnFood()
     {
@@ -88,10 +198,10 @@ public class GameManager : MonoBehaviour
 
         return c;
     }
-                                  
+
     public GameObject SpawnPoopAt(Vector2 anchoredPos)
-    { 
-        GameObject p = _poopPool.Count >                                                                                                                                                                                                                                                                                                                                                                                         0 ? _poopPool.Dequeue()
+    {
+        GameObject p = _poopPool.Count > 0 ? _poopPool.Dequeue()
                                            : Instantiate(poopPrefab, poolContainer);
         var rt = p.GetComponent<RectTransform>();
         rt.SetParent(gameArea, false);
@@ -99,31 +209,31 @@ public class GameManager : MonoBehaviour
         p.SetActive(true);
         return p;
     }
- 
+
     public void DespawnFood(GameObject food)
     {
-         food.transform.SetParent(poolContainer, false);
+        food.transform.SetParent(poolContainer, false);
         food.SetActive(false);
         _foodPool.Enqueue(food);
-    } 
- 
+    }
+
     public void DespawnPoop(GameObject poop)
     {
-        poop.transform.SetParent(poolContainer, false );
+        poop.transform.SetParent(poolContainer, false);
         poop.SetActive(false);
         _poopPool.Enqueue(poop);
-    } 
- 
+    }
+
     public void DespawnCoin(GameObject coin)
-    { 
-        coin.transform.SetParent( poolContainer, false);
+    {
+        coin.transform.SetParent(poolContainer, false);
         coin.SetActive(false);
-        _coinPool.Enqueue(coin); 
+        _coinPool.Enqueue(coin);
     }
 
     public void BuyMons(int cost = 10)
     {
-        if (SpentCoin(cost)) 
+        if (SpentCoin(cost))
             SpawnNewMon();
         else
             Debug.Log("Not enough coins to buy a mons!");
@@ -195,11 +305,22 @@ public class GameManager : MonoBehaviour
         );
     }
 
-    
+
     public bool IsPositionInGameArea(Vector2 position)
     {
         return gameArea.rect.Contains(position);
     }
+    void OnDrawGizmosSelected()
+    {
+        if (gameArea != null)
+        {
+            Gizmos.color = Color.green;
+            Vector3 center = gameArea.position;
+            Vector3 size = new Vector3(gameArea.rect.width, gameArea.rect.height, 0);
+            Gizmos.DrawWireCube(center, size);
+        }
+    }
+
 
     public static Vector2 ScreenToCanvasPosition(Canvas canvas)
     {
