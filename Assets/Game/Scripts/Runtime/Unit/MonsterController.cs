@@ -95,6 +95,15 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         monsterImage.color = normalColor;
         _monsterImage = monsterImage;
 
+        // Assign Spine reference
+        _monsterSpineGraphic = monsterSpine;
+
+        // Initialize Spine animation to idle
+        if (_monsterSpineGraphic != null)
+        {
+            _monsterSpineGraphic.AnimationState.SetAnimation(0, "idle", true);
+        }
+
         //hunger info setup
         _hungerText = hungerText;
         _hungerInfoCg = hungerInfo.GetComponent<CanvasGroup>();
@@ -263,12 +272,40 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void HandleMovement()
     {
         Vector2 pos = rectTransform.anchoredPosition;
+        Vector2 target = new Vector2(targetPosition.x, groundPos);
 
         // Move horizontally while maintaining bottom position
         rectTransform.anchoredPosition = Vector2.MoveTowards(
-            new Vector2(rectTransform.anchoredPosition.x, groundPos),
-            new Vector2(targetPosition.x, groundPos),
-            moveSpeed * Time.deltaTime);
+            pos, target, moveSpeed * Time.deltaTime);
+
+        // --- SPINE ANIMATION LOGIC ---
+        if (_monsterSpineGraphic != null)
+        {
+            float distance = Vector2.Distance(pos, target);
+            if (distance > 1f)
+            {
+                // Play walk animation if not already playing
+                var current = _monsterSpineGraphic.AnimationState.GetCurrent(0);
+                if (current == null || current.Animation.Name != "walking")
+                    _monsterSpineGraphic.AnimationState.SetAnimation(0, "walking", true);
+
+                // Flip skeleton based on direction
+                float dir = target.x - pos.x;
+                if (Mathf.Abs(dir) > 0.1f)
+                {
+                    Vector3 scale = rectTransform.localScale;
+                    scale.x = Mathf.Abs(scale.x) * (dir < 0 ? 1f : -1f);
+                    rectTransform.localScale = scale;
+                }
+            }
+            else
+            {
+                // Play idle animation if not already playing
+                var current = _monsterSpineGraphic.AnimationState.GetCurrent(0);
+                if (current == null || current.Animation.Name != "idle")
+                    _monsterSpineGraphic.AnimationState.SetAnimation(0, "idle", true);
+            }
+        }
 
         // Check if reached target
         if (Mathf.Abs(rectTransform.anchoredPosition.x - targetPosition.x) < 10f)
@@ -278,7 +315,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 Vector2.Distance(rectTransform.anchoredPosition, nearestFood.GetComponent<RectTransform>().anchoredPosition) < eatDistance)
             {
                 Feed(nearestFood.nutritionValue);
-                Destroy(nearestFood.gameObject);
+                ServiceLocator.Get<GameManager>().DespawnFood(nearestFood.gameObject);
             }
             SetRandomTarget();
         }
