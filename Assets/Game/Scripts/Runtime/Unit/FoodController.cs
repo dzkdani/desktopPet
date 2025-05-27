@@ -65,9 +65,9 @@ public class FoodController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     public void OnPointerUp(PointerEventData eventData)
     {
         IsBeingDragged = false;
-        if (!GameManager.Instance.IsPositionInGameArea(rectTransform.anchoredPosition))
+        if (!ServiceLocator.Get<GameManager>().IsPositionInGameArea(rectTransform.anchoredPosition))
         {
-            GameManager.Instance.DespawnFood(gameObject);
+            ServiceLocator.Get<GameManager>().DespawnFood(gameObject);
         }
     }
 }

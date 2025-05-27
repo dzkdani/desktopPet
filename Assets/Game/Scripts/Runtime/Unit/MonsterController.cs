@@ -11,9 +11,9 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 {
     [Header("Monster Data")]
     public float hungerDepletionRate = 0.1f;
-    public float poopInterval = 1200f; 
+    public float poopInterval = 1200f;
     public float hungerThresholdToEat = 30f;
-    public float moveSpeed = 100f;                                                                                                                                                                                                                                                                                             
+    public float moveSpeed = 100f;
     public float foodDetectionRange = 200f;
     public float eatDistance = 30f;
     public MonsterDataSO monsterData;
@@ -77,12 +77,17 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             OnHoverChanged?.Invoke(_isHovered);
         }
     }
-                                                                                                                                                                                                                                                                                                                                           
-    private void Awake()
+    private bool isLoaded = false;
+
+    private void Start()
     {
-        GameManager.Instance.RegisterToActiveMons(this);
+        ServiceLocator.Get<GameManager>().RegisterToActiveMons(this);
         rectTransform = GetComponent<RectTransform>();
-        groundPos = GameManager.Instance.gameArea.rect.yMin + rectTransform.rect.height / 2;
+        groundPos = ServiceLocator.Get<GameManager>().gameArea.rect.yMin + rectTransform.rect.height / 2;
+        if (ServiceLocator.Get<GameManager>().isActiveAndEnabled)
+        {
+            isLoaded = true;
+        }
 
         LoadMonData();
         SetRandomTarget();
@@ -105,30 +110,33 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _hungerInfoCg.alpha = 0;
 
         //food detection setup
-        _foodDetectionRangeSqr = foodDetectionRange * foodDetectionRange; 
+        _foodDetectionRangeSqr = foodDetectionRange * foodDetectionRange;
         _eatDistanceSqr = eatDistance * eatDistance;
     }
 
     private void OnEnable()
     {
+        if (isLoaded)
+        {
+        }
+        _foodRoutine = StartCoroutine(FoodScanLoop());
         _hungerRoutine = StartCoroutine(HungerRoutine());
         _poopRoutine = StartCoroutine(PoopRoutine());
-        _foodRoutine = StartCoroutine(FoodScanLoop());
         _goldCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes(30).TotalSeconds, CoinType.Gold));
         _silverCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes(1).TotalSeconds, CoinType.Silver));
 
-        OnHungerChanged += UpdateColor;
+        // OnHungerChanged += UpdateColor;
         OnHoverChanged += ToggleHungerUI;
-    } 
-                                                                                                                                                                                                                                                                                                                                                                                                                 
+    }
+
     private void OnDisable()
     {
-        StopAllCoroutines(); 
-        OnHungerChanged -= UpdateColor;
+        StopAllCoroutines();
+        // OnHungerChanged -= UpdateColor;
         OnHoverChanged -= ToggleHungerUI;
-    }  
-     
-     private IEnumerator HungerRoutine()
+    }
+
+    private IEnumerator HungerRoutine()
     {
         var wait = new WaitForSeconds(1f);
         while (true)
@@ -187,7 +195,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             isEvolved = isEvolved, // Track evolution state
             isFinalForm = isFinalForm, // Track final form state
             evolutionLevel = evolutionLevel // Track evolution level
-            
+
         };
         SaveSystem.SaveMon(data);
     }
@@ -211,10 +219,10 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
         else
         {
-            currentHunger = 100f; 
+            currentHunger = 100f;
             monsterData.isEvolved = false;
             monsterData.isFinalEvol = false;
-            monsterData.evolutionLevel = 0; 
+            monsterData.evolutionLevel = 0;
         }
 
         // Step 3: Apply monsterData values to runtime
@@ -234,16 +242,18 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void Update()
     {
         HandleMovement();
-        float x = rectTransform.anchoredPosition.x;
     }
 
     private void FindNearestFood()
     {
+        if (!isLoaded)
+            return;
+
         nearestFood = null;
         float closestSqr = float.MaxValue;
         Vector2 pos = rectTransform.anchoredPosition;
 
-        foreach (FoodController food in GameManager.Instance.activeFoods)
+        foreach (FoodController food in ServiceLocator.Get<GameManager>().activeFoods)
         {
             if (food == null) continue;
             RectTransform foodRt = food.GetComponent<RectTransform>();
@@ -305,7 +315,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 Vector2.Distance(rectTransform.anchoredPosition, nearestFood.GetComponent<RectTransform>().anchoredPosition) < eatDistance)
             {
                 Feed(nearestFood.nutritionValue);
-                GameManager.Instance.DespawnFood(nearestFood.gameObject);
+                ServiceLocator.Get<GameManager>().DespawnFood(nearestFood.gameObject);
             }
             SetRandomTarget();
         }
@@ -317,19 +327,20 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             if ((foodPos - pos).sqrMagnitude < _eatDistanceSqr)
             {
                 Feed(nearestFood.nutritionValue);
-                GameManager.Instance.DespawnFood(nearestFood.gameObject);
+                // return food to pool or destroy
+                ServiceLocator.Get<GameManager>().DespawnFood(nearestFood.gameObject);
                 nearestFood = null;
                 SetRandomTarget();
             }
         }
     }
 
-    private void UpdateColor(float hunger)
-    {
-        _monsterImage.color = (hunger <= colorChangeThreshold)
-            ? Color.Lerp(normalColor, hungryColor, 1 - (hunger / colorChangeThreshold))
-            : normalColor;
-    }
+    // private void UpdateColor(float hunger)
+    // {
+    //     _monsterImage.color = (hunger <= colorChangeThreshold)
+    //         ? Color.Lerp(normalColor, hungryColor, 1 - (hunger / colorChangeThreshold))
+    //         : normalColor;
+    // }
 
     private void ToggleHungerUI(bool show)
     {
@@ -341,7 +352,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void SetRandomTarget()
     {
         targetPosition = new Vector2(
-            UnityEngine.Random.Range(GameManager.Instance.gameArea.rect.xMin, GameManager.Instance.gameArea.rect.xMax), groundPos);
+            UnityEngine.Random.Range(ServiceLocator.Get<GameManager>().gameArea.rect.xMin, ServiceLocator.Get<GameManager>().gameArea.rect.xMax), groundPos);
     }
 
     public void Feed(float amount)
@@ -351,21 +362,15 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void Poop()
     {
-        GameManager.Instance.SpawnPoopAt(rectTransform.anchoredPosition);
+        ServiceLocator.Get<GameManager>().SpawnPoopAt(rectTransform.anchoredPosition);
     }
 
     private void DropCoin(CoinType type)
     {
-        GameManager.Instance.SpawnCoinAt(rectTransform.anchoredPosition, type);
+        ServiceLocator.Get<GameManager>().SpawnCoinAt(rectTransform.anchoredPosition, type);
     }
 
-    private void OnDestroy()
-    {
-        StopAllCoroutines();
-        OnHungerChanged -= UpdateColor;
-        OnHoverChanged -= ToggleHungerUI;
-        GameManager.Instance.activeMonsters.Remove(this);
-    }
+
     public void SetTargetPosition(Vector2 targetPos)
     {
         targetPosition = targetPos;
@@ -378,7 +383,7 @@ public class MonsterSaveData
     public float lastHunger;
     public bool isEvolved;
     public bool isFinalForm;
-    public int evolutionLevel;  
+    public int evolutionLevel;
 }
 
 
