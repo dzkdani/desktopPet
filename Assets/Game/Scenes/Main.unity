@@ -670,7 +670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bfc632a2b556ef4095f1748e4bf8604, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  petPrefab: {fileID: 5578401352906056681, guid: 641343ba321f0f849a1b0b3813f2f9c7, type: 3}
+  monPrefab: {fileID: 5578401352906056681, guid: 641343ba321f0f849a1b0b3813f2f9c7, type: 3}
   foodPrefab: {fileID: 8094414825485508866, guid: 0d00a465e4aac244c8c3551159ae65b3, type: 3}
   poopPrefab: {fileID: 7355564376651181307, guid: f50cf4956ca36ce4a877bb2c5c9c6239, type: 3}
   coinPrefab: {fileID: 8094414825485508866, guid: 7bac7b4aca24ef34ba1a86ddd8b3a799, type: 3}
@@ -679,7 +679,7 @@ MonoBehaviour:
   gameArea: {fileID: 17609072}
   poopCollected: 0
   coinCollected: 0
-  mainCanvas: {fileID: 0}
+  mainCanvas: {fileID: 1457136190}
   activeMonsters: []
   activeFoods: []
   monsterDatabase: {fileID: 11400000, guid: e5208434c48913e4e82c7661db33630a, type: 2}

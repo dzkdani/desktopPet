@@ -1,0 +1,51 @@
+DaoonMons.png
+size:2044,2044
+filter:Linear,Linear
+Blush
+bounds:740,1963,363,79
+offsets:4,5,372,89
+Body
+bounds:921,1406,644,636
+rotate:180
+Ear L
+bounds:740,1694,191,267
+Ear R
+bounds:2,1633,167,239
+Eyes Closed L
+bounds:1105,2013,60,29
+Eyes Closed R
+bounds:1915,2018,50,24
+Eyes Half L
+bounds:1709,2000,48,42
+Eyes Half R
+bounds:876,1922,43,39
+Eyes Open L
+bounds:608,1816,56,69
+rotate:90
+Eyes Open R
+bounds:1484,1976,45,66
+Foot Back L
+bounds:1533,1756,229,286
+rotate:180
+Foot Back R
+bounds:1763,1769,229,273
+rotate:180
+Foot Front L
+bounds:326,1680,152,192
+Foot Front R
+bounds:170,1680,154,192
+Mouth Closed
+bounds:1980,1958,84,51
+offsets:1,2,86,54
+rotate:90
+Mouth Open
+bounds:1994,1899,57,48
+rotate:90
+Shadw
+bounds:2,1874,736,168
+offsets:12,11,761,190
+Tail
+bounds:473,1703,187,169
+offsets:65,57,252,226
+Tail Flower
+bounds:929,1832,107,129

@@ -4,15 +4,16 @@ using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections;
 using System;
-using Unity.Collections;
+using Spine;
+using Spine.Unity;
 
 public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("Monster Data")]
     public float hungerDepletionRate = 0.1f;
-    public float poopInterval = 1200f;
+    public float poopInterval = 1200f; 
     public float hungerThresholdToEat = 30f;
-    public float moveSpeed = 100f;
+    public float moveSpeed = 100f;                                                                                                                                                                                                                                                                                             
     public float foodDetectionRange = 200f;
     public float eatDistance = 30f;
     public MonsterDataSO monsterData;
@@ -28,10 +29,12 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public Color hungryColor = Color.red;
     public float colorChangeThreshold = 50f;
     public string monsterID;
+    public SkeletonGraphic monsterSpine;
 
     private float _foodDetectionRangeSqr;
     private float _eatDistanceSqr;
     private Image _monsterImage;
+    private SkeletonGraphic _monsterSpineGraphic;
     private TextMeshProUGUI _hungerText;
     private CanvasGroup _hungerInfoCg;
     private RectTransform rectTransform;
@@ -74,10 +77,31 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             OnHoverChanged?.Invoke(_isHovered);
         }
     }
+                                                                                                                                                                                                                                                                                                                                           
+    private void Awake()
+    {
+        GameManager.Instance.RegisterToActiveMons(this);
+        rectTransform = GetComponent<RectTransform>();
+        groundPos = GameManager.Instance.gameArea.rect.yMin + rectTransform.rect.height / 2;
+
+        LoadMonData();
+        SetRandomTarget();
+
+        monsterImage.color = normalColor;
+        _monsterImage = monsterImage;
+
+        //hunger info setup
+        _hungerText = hungerText;
+        _hungerInfoCg = hungerInfo.GetComponent<CanvasGroup>();
+        _hungerInfoCg.alpha = 0;
+
+        //food detection setup
+        _foodDetectionRangeSqr = foodDetectionRange * foodDetectionRange; 
+        _eatDistanceSqr = eatDistance * eatDistance;
+    }
 
     private void OnEnable()
     {
-        // start both loops
         _hungerRoutine = StartCoroutine(HungerRoutine());
         _poopRoutine = StartCoroutine(PoopRoutine());
         _foodRoutine = StartCoroutine(FoodScanLoop());
@@ -86,34 +110,16 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
         OnHungerChanged += UpdateColor;
         OnHoverChanged += ToggleHungerUI;
-    }
-
+    } 
+                                                                                                                                                                                                                                                                                                                                                                                                                 
     private void OnDisable()
     {
-        StopAllCoroutines();
+        StopAllCoroutines(); 
         OnHungerChanged -= UpdateColor;
         OnHoverChanged -= ToggleHungerUI;
-    }
-
-    private void Awake()
-    {
-        rectTransform = GetComponent<RectTransform>();
-        GameManager.Instance.RegisterToActiveMons(this);
-        LoadMonData();
-        groundPos = GameManager.Instance.gameArea.rect.yMin + rectTransform.rect.height / 2;
-        SetRandomTarget();
-        monsterImage.color = normalColor;
-
-        _monsterImage = monsterImage;
-        _hungerText = hungerText;
-        _hungerInfoCg = hungerInfo.GetComponent<CanvasGroup>();
-        _hungerInfoCg.alpha = 0;
-
-        _foodDetectionRangeSqr = foodDetectionRange * foodDetectionRange;
-        _eatDistanceSqr = eatDistance * eatDistance;
-    }
-
-    private IEnumerator HungerRoutine()
+    }  
+     
+     private IEnumerator HungerRoutine()
     {
         var wait = new WaitForSeconds(1f);
         while (true)
@@ -190,13 +196,16 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         {
             currentHunger = savedData.lastHunger;
             monsterID = savedData.monsterId;
-            monsterData.isEvolved = savedData.isEvolved; // You can also track evolution per monster
-            monsterData.isFinalForm = savedData.isFinalForm;
+            monsterData.isEvolved = savedData.isEvolved;
+            monsterData.isFinalEvol = savedData.isFinalForm;
+            monsterData.evolutionLevel = savedData.evolutionLevel;
         }
         else
         {
-            currentHunger = 100f; // Default
+            currentHunger = 100f; 
             monsterData.isEvolved = false;
+            monsterData.isFinalEvol = false;
+            monsterData.evolutionLevel = 0; 
         }
 
         // Step 3: Apply monsterData values to runtime

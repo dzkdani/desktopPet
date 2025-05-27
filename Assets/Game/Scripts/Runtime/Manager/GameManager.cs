@@ -88,10 +88,10 @@ public class GameManager : MonoBehaviour
 
         return c;
     }
-
+                                  
     public GameObject SpawnPoopAt(Vector2 anchoredPos)
-    {
-        GameObject p = _poopPool.Count > 0 ? _poopPool.Dequeue()
+    { 
+        GameObject p = _poopPool.Count >                                                                                                                                                                                                                                                                                                                                                                                         0 ? _poopPool.Dequeue()
                                            : Instantiate(poopPrefab, poolContainer);
         var rt = p.GetComponent<RectTransform>();
         rt.SetParent(gameArea, false);
@@ -99,31 +99,31 @@ public class GameManager : MonoBehaviour
         p.SetActive(true);
         return p;
     }
-
+ 
     public void DespawnFood(GameObject food)
     {
-        food.transform.SetParent(poolContainer, false);
+         food.transform.SetParent(poolContainer, false);
         food.SetActive(false);
         _foodPool.Enqueue(food);
-    }
-
+    } 
+ 
     public void DespawnPoop(GameObject poop)
     {
-        poop.transform.SetParent(poolContainer, false);
+        poop.transform.SetParent(poolContainer, false );
         poop.SetActive(false);
         _poopPool.Enqueue(poop);
-    }
-
+    } 
+ 
     public void DespawnCoin(GameObject coin)
-    {
-        coin.transform.SetParent(poolContainer, false);
+    { 
+        coin.transform.SetParent( poolContainer, false);
         coin.SetActive(false);
-        _coinPool.Enqueue(coin);
+        _coinPool.Enqueue(coin); 
     }
 
     public void BuyMons(int cost = 10)
     {
-        if (SpentCoin(cost))
+        if (SpentCoin(cost)) 
             SpawnNewMon();
         else
             Debug.Log("Not enough coins to buy a mons!");
