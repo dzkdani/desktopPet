@@ -8,31 +8,26 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     [Header("Prefabs & Pool Settings")]
+    public GameObject monPrefab;
     public GameObject foodPrefab;
     public GameObject poopPrefab;
     public GameObject coinPrefab;
+    public RectTransform poolContainer;
     [Tooltip("Initial pool size for each type")]
     public int initialPoolSize = 20;
     private Queue<GameObject> _foodPool = new Queue<GameObject>();
     private Queue<GameObject> _poopPool = new Queue<GameObject>();
     private Queue<GameObject> _coinPool = new Queue<GameObject>();
-
-    [Header("Game Area")]
-    public GameObject petPrefab;
-    public RectTransform gameArea;
-    public RectTransform poolContainer;
     [Header("Game Settings")]
-    public int petCost = 10;
-    public int MaxPets = 5;
-    [Header("Pet Variety")]
-    public string[] possiblePetNames;
+    public RectTransform gameArea;
     [HideInInspector] public int poopCollected;
     [HideInInspector] public int coinCollected;
-
+    public Canvas mainCanvas;
     [HideInInspector] public List<MonsterController> activeMonsters = new List<MonsterController>();
     public List<FoodController> activeFoods = new List<FoodController>();
-    private List<string> savedPetIDs = new List<string>();
+    private List<string> savedMonIDs = new List<string>();
     public MonsterDatabaseSO monsterDatabase;
+    private float groundPositionY = -33f; 
 
     private void Awake()
     {
@@ -73,16 +68,18 @@ public class GameManager : MonoBehaviour
     public void SpawnFoodAt()
     {
         GameObject f = _foodPool.Count > 0 ? _foodPool.Dequeue()
-                                           : Instantiate(foodPrefab, gameArea);
+                                           : Instantiate(foodPrefab, poolContainer);
         var rt = f.GetComponent<RectTransform>();
+        rt.SetParent(gameArea, false);
         rt.anchoredPosition = GetRandomPositionInGameArea();
         f.SetActive(true);
     }
     public GameObject SpawnCoinAt(Vector2 anchoredPos, CoinType type)
     {
         GameObject c = _coinPool.Count > 0 ? _coinPool.Dequeue()
-                                           : Instantiate(coinPrefab, gameArea);
+                                           : Instantiate(coinPrefab, poolContainer);
         var rt = c.GetComponent<RectTransform>();
+        rt.SetParent(gameArea, false);
         rt.anchoredPosition = anchoredPos;
         c.SetActive(true);
 
@@ -95,8 +92,9 @@ public class GameManager : MonoBehaviour
     public GameObject SpawnPoopAt(Vector2 anchoredPos)
     {
         GameObject p = _poopPool.Count > 0 ? _poopPool.Dequeue()
-                                           : Instantiate(poopPrefab, gameArea);
+                                           : Instantiate(poopPrefab, poolContainer);
         var rt = p.GetComponent<RectTransform>();
+        rt.SetParent(gameArea, false);
         rt.anchoredPosition = anchoredPos;
         p.SetActive(true);
         return p;
@@ -104,23 +102,34 @@ public class GameManager : MonoBehaviour
 
     public void DespawnFood(GameObject food)
     {
+        food.transform.SetParent(poolContainer, false);
         food.SetActive(false);
         _foodPool.Enqueue(food);
     }
 
     public void DespawnPoop(GameObject poop)
     {
+        poop.transform.SetParent(poolContainer, false);
         poop.SetActive(false);
         _poopPool.Enqueue(poop);
     }
 
     public void DespawnCoin(GameObject coin)
     {
+        coin.transform.SetParent(poolContainer, false);
         coin.SetActive(false);
         _coinPool.Enqueue(coin);
     }
 
-    public void RegisterPet(MonsterController monster)
+    public void BuyMons(int cost = 10)
+    {
+        if (SpentCoin(cost))
+            SpawnNewMon();
+        else
+            Debug.Log("Not enough coins to buy a mons!");
+    }
+
+    public void RegisterToActiveMons(MonsterController monster)
     {
         if (!activeMonsters.Contains(monster))
         {
@@ -128,55 +137,43 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void LoadGame()
-    {
-        coinCollected = SaveSystem.LoadCoin();
-        savedPetIDs = SaveSystem.LoadSavedPetIDs();
-        Debug.Log($"Loaded {savedPetIDs.Count} saved pets with IDs: {string.Join(", ", savedPetIDs)}");
-        foreach (var id in savedPetIDs)
-            if (SaveSystem.TryLoadPet(id, out var d))
-                SpawnSavedPets(id);
-    }
-
     public bool SpentCoin(int amount)
     {
         if (coinCollected < amount) return false;
         coinCollected -= amount;
         SaveSystem.SaveCoin(coinCollected);
-        UIManager.Instance.UpdatePoopCounter();
         UIManager.Instance.UpdateCoinCounter();
         return true;
     }
 
-    public void SaveAllPets()
+
+    private void SpawnLoadedMons(string monID)
     {
-        foreach (var monster in activeMonsters)
-            SaveSystem.SavePet(new MonsterSaveData
-            {
-                monsterId = monster.monsterID,
-                lastHunger = monster.currentHunger,
-                isEvolved = monster.isEvolved,
-            });
-        SaveSystem.SavePetIDs(savedPetIDs);
-        SaveSystem.Flush();
+        GameObject monster = Instantiate(monPrefab, gameArea);
+        Vector2 min = gameArea.rect.min;
+        Vector2 max = gameArea.rect.max;
+        monster.transform.localPosition = new Vector2(
+            UnityEngine.Random.Range(min.x, max.x), groundPositionY
+        );
+        MonsterController monsterController = monster.GetComponent<MonsterController>();
+        monsterController.monsterID = monID;
+        monsterController.LoadMonData();
+        monster.SetActive(true);
+    }
+    private void SpawnNewMon()
+    {
+        GameObject monster = Instantiate(monPrefab, gameArea);
+        Vector2 min = gameArea.rect.min;
+        Vector2 max = gameArea.rect.max;
+        monster.transform.localPosition = new Vector2(
+            UnityEngine.Random.Range(min.x, max.x), groundPositionY
+        );
+        MonsterController monsterController = monster.GetComponent<MonsterController>();
+        monsterController.monsterID = GenerateRandomID(8);
+        savedMonIDs.Add(monsterController.monsterID);
+        PlayerPrefs.SetString("SavedMonIDs", string.Join(",", savedMonIDs));
     }
 
-    private void SpawnSavedPets(string petID)
-    {
-        GameObject pet = Instantiate(petPrefab, gameArea);
-        MonsterController monsterController = pet.GetComponent<MonsterController>();
-        monsterController.monsterID = petID;
-        monsterController.LoadPetData();
-        pet.SetActive(true);
-    }
-    private void SpawnNewPet()
-    {
-        GameObject pet = Instantiate(petPrefab, gameArea);
-        MonsterController monsterController = pet.GetComponent<MonsterController>();
-        monsterController.monsterID = GenerateRandomID(8);
-        savedPetIDs.Add(monsterController.monsterID);
-        PlayerPrefs.SetString("SavedPetIDs", string.Join(",", savedPetIDs));
-    }
     private string GenerateRandomID(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -197,6 +194,13 @@ public class GameManager : MonoBehaviour
             UnityEngine.Random.Range(min.y + 5, max.y - 5)
         );
     }
+
+    
+    public bool IsPositionInGameArea(Vector2 position)
+    {
+        return gameArea.rect.Contains(position);
+    }
+
     public static Vector2 ScreenToCanvasPosition(Canvas canvas)
     {
         // 1. Get the RectTransform of the Canvas
@@ -220,29 +224,33 @@ public class GameManager : MonoBehaviour
         return localPoint;
     }
 
-    public void BuyPet()
+    private void LoadGame()
     {
-        if (SpentCoin(petCost))
-        {
-            SpawnNewPet();
-        }
-        else
-        {
-            Debug.Log("Not enough money to buy a pet");
-        }
+        coinCollected = SaveSystem.LoadCoin();
+        savedMonIDs = SaveSystem.LoadSavedMonIDs();
+        Debug.Log($"Loaded {savedMonIDs.Count} saved monss with IDs: {string.Join(", ", savedMonIDs)}");
+        foreach (var id in savedMonIDs)
+            if (SaveSystem.LoadMon(id, out var d))
+                SpawnLoadedMons(id);
     }
-
-    public bool IsPositionInGameArea(Vector2 position)
+    public void SaveAllMons()
     {
-        return gameArea.rect.Contains(position);
+        foreach (var monster in activeMonsters)
+            SaveSystem.SaveMon(new MonsterSaveData
+            {
+                monsterId = monster.monsterID,
+                lastHunger = monster.currentHunger,
+                isEvolved = monster.isEvolved,
+            });
+        SaveSystem.SaveMonIDs(savedMonIDs);
+        SaveSystem.Flush();
     }
 
     void OnApplicationQuit()
     {
-        SaveAllPets();
-        PlayerPrefs.SetInt("Coin", coinCollected);
-        PlayerPrefs.SetInt("Poop", poopCollected);
-        // DebugPetData();
-        PlayerPrefs.Save();
+        SaveAllMons();
+        SaveSystem.SavePoop(poopCollected);
+        SaveSystem.SaveCoin(coinCollected);
+        SaveSystem.Flush();
     }
 }

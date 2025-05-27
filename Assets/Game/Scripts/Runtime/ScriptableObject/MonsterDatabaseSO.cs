@@ -10,11 +10,4 @@ public class MonsterDatabaseSO : ScriptableObject
     {
         return allMonsters.Find(monster => monster.monID == id);
     }
-
-    public MonsterDataSO GetRandomByRarity(MonsterType rarity)
-    {
-        var matching = allMonsters.FindAll(monster => monster.monType == rarity);
-        if (matching.Count == 0) return null;
-        return matching[Random.Range(0, matching.Count)];
-    }
 }

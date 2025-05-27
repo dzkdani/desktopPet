@@ -10,4 +10,5 @@ public class FacilityDataSO : ScriptableObject
     public int constructionCost;
     public float buildTime;
     public Sprite facilityImage;
+    public Vector2 facilitySize; // Width x Height in grid units
 }

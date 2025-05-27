@@ -17,6 +17,8 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public float eatDistance = 30f;
     public MonsterDataSO monsterData;
     public bool isEvolved;
+    public bool isFinalForm;
+    public int evolutionLevel;
 
     [Header("Monster Visual")]
     public GameObject hungerInfo;
@@ -35,7 +37,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private RectTransform rectTransform;
     private Vector2 targetPosition;
     private FoodController nearestFood;
-    private float bottomYPosition; // Stores the bottom position
+    private float groundPos; // Stores the bottom position
 
     private Coroutine _hungerRoutine;
     private Coroutine _poopRoutine;
@@ -82,23 +84,23 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _goldCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes(30).TotalSeconds, CoinType.Gold));
         _silverCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes(1).TotalSeconds, CoinType.Silver));
 
-        OnHungerChanged += UpdatePetColor;
+        OnHungerChanged += UpdateColor;
         OnHoverChanged += ToggleHungerUI;
     }
 
     private void OnDisable()
     {
         StopAllCoroutines();
-        OnHungerChanged -= UpdatePetColor;
+        OnHungerChanged -= UpdateColor;
         OnHoverChanged -= ToggleHungerUI;
     }
 
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-        GameManager.Instance.RegisterPet(this);
-        LoadPetData();
-        bottomYPosition = GameManager.Instance.gameArea.rect.yMin + rectTransform.rect.height / 2;
+        GameManager.Instance.RegisterToActiveMons(this);
+        LoadMonData();
+        groundPos = GameManager.Instance.gameArea.rect.yMin + rectTransform.rect.height / 2;
         SetRandomTarget();
         monsterImage.color = normalColor;
 
@@ -110,10 +112,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _foodDetectionRangeSqr = foodDetectionRange * foodDetectionRange;
         _eatDistanceSqr = eatDistance * eatDistance;
     }
-    // void OnApplicationQuit()
-    // {
-    //     SavePetData();
-    // }
 
     private IEnumerator HungerRoutine()
     {
@@ -126,7 +124,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             _hungerInfoCg.alpha = isHovered ? 1 : 0;
             // update hunger text via _hungerText
             _hungerText.text = $"Hunger: {currentHunger:F1}%";
-            // change sprite color via cached _petImage
+            // change sprite color via cached _monImage
             _monsterImage.color = currentHunger <= colorChangeThreshold
                 ? Color.Lerp(normalColor, hungryColor, 1 - (currentHunger / colorChangeThreshold))
                 : normalColor;
@@ -137,7 +135,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         // wait initial interval, then loop
         yield return new WaitForSeconds(poopInterval);
-
         while (true)
         {
             Poop();
@@ -147,7 +144,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private IEnumerator FoodScanLoop()
     {
-        var wait = new WaitForSeconds(0.2f); // every 200 ms
+        var wait = new WaitForSeconds(2f); // every 2000 ms
         while (true)
         {
             FindNearestFood();
@@ -166,31 +163,35 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
-    public void SavePetData()
+    public void SaveMonData()
     {
         var data = new MonsterSaveData
         {
             monsterId = monsterID,
             lastHunger = currentHunger,
-            isEvolved = isEvolved // Track evolution state
+            isEvolved = isEvolved, // Track evolution state
+            isFinalForm = isFinalForm, // Track final form state
+            evolutionLevel = evolutionLevel // Track evolution level
+            
         };
-        SaveSystem.SavePet(data);
+        SaveSystem.SaveMon(data);
     }
 
-    public void LoadPetData()
+    public void LoadMonData()
     {
         if (monsterData == null)
         {
-            Debug.LogError($"No MonsterDataSO found for petID: {monsterID}");
+            Debug.LogError($"No MonsterDataSO found for monID: {monsterID}");
             return;
         }
 
         // Step 2: Load runtime data (hunger, evolution state)
-        if (SaveSystem.TryLoadPet(monsterID, out MonsterSaveData savedData))
+        if (SaveSystem.LoadMon(monsterID, out MonsterSaveData savedData))
         {
             currentHunger = savedData.lastHunger;
             monsterID = savedData.monsterId;
-            monsterData.isEvolved = savedData.isEvolved; // You can also track evolution per pet
+            monsterData.isEvolved = savedData.isEvolved; // You can also track evolution per monster
+            monsterData.isFinalForm = savedData.isFinalForm;
         }
         else
         {
@@ -203,12 +204,12 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         hungerDepletionRate = monsterData.hungerDepleteRate;
         poopInterval = monsterData.poopRate;
 
-        // Set correct pet image
-        if (monsterData.petImgs != null && monsterData.petImgs.Length > 0)
+        // Set correct image
+        if (monsterData.monsImgs != null && monsterData.monsImgs.Length > 0)
         {
             int imgIndex = monsterData.isEvolved ? 1 : 0;
-            imgIndex = Mathf.Clamp(imgIndex, 0, monsterData.petImgs.Length - 1);
-            monsterImage.sprite = monsterData.petImgs[imgIndex];
+            imgIndex = Mathf.Clamp(imgIndex, 0, monsterData.monsImgs.Length - 1);
+            monsterImage.sprite = monsterData.monsImgs[imgIndex];
         }
     }
 
@@ -246,8 +247,8 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
         // Move horizontally while maintaining bottom position
         rectTransform.anchoredPosition = Vector2.MoveTowards(
-            new Vector2(rectTransform.anchoredPosition.x, bottomYPosition),
-            new Vector2(targetPosition.x, bottomYPosition),
+            new Vector2(rectTransform.anchoredPosition.x, groundPos),
+            new Vector2(targetPosition.x, groundPos),
             moveSpeed * Time.deltaTime);
 
         // Check if reached target
@@ -278,7 +279,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
-    private void UpdatePetColor(float hunger)
+    private void UpdateColor(float hunger)
     {
         _monsterImage.color = (hunger <= colorChangeThreshold)
             ? Color.Lerp(normalColor, hungryColor, 1 - (hunger / colorChangeThreshold))
@@ -295,7 +296,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void SetRandomTarget()
     {
         targetPosition = new Vector2(
-            UnityEngine.Random.Range(GameManager.Instance.gameArea.rect.xMin, GameManager.Instance.gameArea.rect.xMax), bottomYPosition);
+            UnityEngine.Random.Range(GameManager.Instance.gameArea.rect.xMin, GameManager.Instance.gameArea.rect.xMax), groundPos);
     }
 
     public void Feed(float amount)
@@ -305,7 +306,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void Poop()
     {
-        Debug.Log("Pet Poop Time");
         GameManager.Instance.SpawnPoopAt(rectTransform.anchoredPosition);
     }
 
@@ -317,7 +317,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void OnDestroy()
     {
         StopAllCoroutines();
-        OnHungerChanged -= UpdatePetColor;
+        OnHungerChanged -= UpdateColor;
         OnHoverChanged -= ToggleHungerUI;
         GameManager.Instance.activeMonsters.Remove(this);
     }
@@ -332,6 +332,8 @@ public class MonsterSaveData
     public string monsterId;
     public float lastHunger;
     public bool isEvolved;
+    public bool isFinalForm;
+    public int evolutionLevel;  
 }
 
 

@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        spawnPetButton.onClick.AddListener(GameManager.Instance.BuyPet);
+        spawnPetButton.onClick.AddListener(() => GameManager.Instance.BuyMons());
         spawnFoodButton.onClick.AddListener(GameManager.Instance.SpawnFood);
         UpdatePoopCounter();
         UpdateCoinCounter();
