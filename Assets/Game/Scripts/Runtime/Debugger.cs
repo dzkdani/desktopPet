@@ -5,8 +5,9 @@ public class Debugger : MonoBehaviour
 {
     public Button resetPlayerPrefBtn;
 
-    private void Awake() {
-        resetPlayerPrefBtn.onClick.AddListener(ResetPlayePref);
+    private void Awake()
+    {
+        // resetPlayerPrefBtn.onClick.AddListener(ResetPlayePref);
     }
 
     public void ResetPlayePref()

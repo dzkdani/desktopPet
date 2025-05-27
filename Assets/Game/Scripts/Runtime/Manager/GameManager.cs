@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
 
     [Header("Prefabs & Pool Settings")]
     public GameObject monPrefab;
@@ -38,17 +37,14 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitializePools();
-            LoadGame();
-
-        }
-        else Destroy(gameObject);
+        ServiceLocator.Register(this);
+        InitializePools();
     }
+    void Start()
+    {
+        LoadGame();
 
+    }
     private void InitializePools()
     {
         for (int i = 0; i < initialPoolSize; i++)
@@ -89,11 +85,11 @@ public class GameManager : MonoBehaviour
             pendingFoodCost = cost;
             isInPlacementMode = true;
             foodPlacementIndicator.SetActive(true);
-            UIManager.Instance.ShowMessage("Click to place food (Right-click to cancel)");
+            ServiceLocator.Get<UIManager>().ShowMessage("Click to place food (Right-click to cancel)");
         }
         else
         {
-            UIManager.Instance.ShowMessage("Not enough coins!");
+            ServiceLocator.Get<UIManager>().ShowMessage("Not enough coins!", 1f);
         }
     }
 
@@ -136,7 +132,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            UIManager.Instance.ShowMessage("Can't place here!", 1f);
+            ServiceLocator.Get<UIManager>().ShowMessage("Can't place here!", 1f);
         }
     }
 
@@ -160,7 +156,7 @@ public class GameManager : MonoBehaviour
     private void CancelPlacement()
     {
         EndPlacement();
-        UIManager.Instance.ShowMessage("Placement canceled", 1f);
+        ServiceLocator.Get<UIManager>().ShowMessage("Placement canceled", 1f);
     }
 
     private void EndPlacement()
@@ -252,7 +248,7 @@ public class GameManager : MonoBehaviour
         if (coinCollected < amount) return false;
         coinCollected -= amount;
         SaveSystem.SaveCoin(coinCollected);
-        UIManager.Instance.UpdateCoinCounter();
+        ServiceLocator.Get<UIManager>().UpdateCoinCounter();
         return true;
     }
 
@@ -390,5 +386,9 @@ public class GameManager : MonoBehaviour
         SaveSystem.SavePoop(poopCollected);
         SaveSystem.SaveCoin(coinCollected);
         SaveSystem.Flush();
+    }
+    void OnDestroy()
+    {
+        ServiceLocator.Unregister<GameManager>();
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 
 public class GachaManager : MonoBehaviour
 {
-    public static GachaManager Instance;
     [System.Serializable]
     public class RarityWeight
     {
@@ -17,12 +16,11 @@ public class GachaManager : MonoBehaviour
     public int gachaCost = 10;
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        ServiceLocator.Register(this);
     }
     public void RollGacha()
     {
-        if (!GameManager.Instance.SpentCoin(gachaCost))
+        if (!ServiceLocator.Get<GameManager>().SpentCoin(gachaCost))
         {
             Debug.Log("Not enough coins for gacha!");
             return;
@@ -42,7 +40,7 @@ public class GachaManager : MonoBehaviour
 
         MonsterDataSO selected = candidates[Random.Range(0, candidates.Count)];
         SpawnMonster(selected.monID);
-        UIManager.Instance.ShowMessage($"You got: {selected.monName} ({selected.monType})", 2f);
+        ServiceLocator.Get<UIManager>().ShowMessage($"You got: {selected.monName} ({selected.monType})", 2f);
     }
 
     private MonsterType GetRandomRarity()
@@ -63,6 +61,10 @@ public class GachaManager : MonoBehaviour
 
     private void SpawnMonster(string monsterID)
     {
-        GameManager.Instance.SpawnLoadedMonsViaGacha(monsterID);
+        ServiceLocator.Get<GameManager>().SpawnLoadedMonsViaGacha(monsterID);
+    }
+    void OnDestroy()
+    {
+        ServiceLocator.Unregister<GachaManager>();
     }
 }

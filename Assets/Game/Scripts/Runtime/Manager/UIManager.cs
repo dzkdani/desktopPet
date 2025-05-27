@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager Instance;
 
     [Header("UI Elements")]
     public TextMeshProUGUI poopCounterText;
@@ -17,29 +16,30 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-
-        spawnPetButton.onClick.AddListener(() => GameManager.Instance.BuyMons());
+        ServiceLocator.Register(this);
+    }
+    void Start()
+    {
+        spawnPetButton.onClick.AddListener(() => ServiceLocator.Get<GameManager>().BuyMons());
         spawnFoodButton.onClick.AddListener(StartFoodPlacement);
-        gachaButton.onClick.AddListener(() => GachaManager.Instance.RollGacha());
+        gachaButton.onClick.AddListener(() => ServiceLocator.Get<GachaManager>().RollGacha());
         UpdatePoopCounter();
         UpdateCoinCounter();
     }
     public void StartFoodPlacement()
     {
-        GameManager.Instance.StartFoodPurchase(0);
+        ServiceLocator.Get<GameManager>().StartFoodPurchase(0);
     }
 
 
     public void UpdatePoopCounter()
     {
-        poopCounterText.text = $"Poop : {GameManager.Instance.poopCollected}";
+        poopCounterText.text = $"Poop : {ServiceLocator.Get<GameManager>().poopCollected}";
     }
 
     public void UpdateCoinCounter()
     {
-        coinCounterText.text = $"Coin : {GameManager.Instance.coinCollected}";
+        coinCounterText.text = $"Coin : {ServiceLocator.Get<GameManager>().coinCollected}";
     }
     public void ShowMessage(string message, float duration = 1f)
     {
@@ -52,5 +52,10 @@ public class UIManager : MonoBehaviour
     private void HideMessage()
     {
         messageText.gameObject.SetActive(false);
+    }
+    void OnDestroy()
+    {
+        // Unregister this instance from the ServiceLocator
+        ServiceLocator.Unregister<UIManager>();
     }
 }

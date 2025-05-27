@@ -42,11 +42,12 @@ public class CoinController : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        GameManager.Instance.coinCollected += value;
-        PlayerPrefs.SetInt("Coin", GameManager.Instance.coinCollected);
+        ServiceLocator.Get<GameManager>().coinCollected += value;
+
+        PlayerPrefs.SetInt("Coin", ServiceLocator.Get<GameManager>().coinCollected);
         PlayerPrefs.Save();
-        UIManager.Instance.UpdateCoinCounter();
-        GameManager.Instance.DespawnCoin(gameObject);
+        ServiceLocator.Get<UIManager>().UpdateCoinCounter();
+        ServiceLocator.Get<GameManager>().DespawnCoin(gameObject);
     }
 }
 

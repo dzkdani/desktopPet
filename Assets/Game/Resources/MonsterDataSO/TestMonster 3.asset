@@ -15,14 +15,17 @@ MonoBehaviour:
   monName: Daoons
   monID: 
   monPrice: 10
-  monType: 0
+  monType: 3
   moveSpd: 100
   hungerDepleteRate: 0.1
   poopRate: 1200
   clickToCollectPoop: 1
   canEvolve: 0
-  monsterSpine: {fileID: 11400000, guid: 92f3d94a09de2404784a546bfe69bee6, type: 2}
   isEvolved: 0
-  isFinalForm: 0
+  isFinalEvol: 0
   evolutionLevel: 0
+  monsterSpine:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   monsImgs: []
