@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI coinCounterText;
     public Button spawnPetButton;
     public Button spawnFoodButton;
+    public Button gachaButton; // Assuming you have a Gacha button
 
     public TextMeshProUGUI messageText;
 
@@ -21,6 +22,7 @@ public class UIManager : MonoBehaviour
 
         spawnPetButton.onClick.AddListener(() => GameManager.Instance.BuyMons());
         spawnFoodButton.onClick.AddListener(StartFoodPlacement);
+        gachaButton.onClick.AddListener(() => GachaManager.Instance.RollGacha());
         UpdatePoopCounter();
         UpdateCoinCounter();
     }

@@ -283,6 +283,23 @@ public class GameManager : MonoBehaviour
         savedMonIDs.Add(monsterController.monsterID);
         PlayerPrefs.SetString("SavedMonIDs", string.Join(",", savedMonIDs));
     }
+    public void SpawnLoadedMonsViaGacha(string monID)
+    {
+        GameObject monster = Instantiate(monPrefab, gameArea);
+        Vector2 min = gameArea.rect.min;
+        Vector2 max = gameArea.rect.max;
+        monster.transform.localPosition = new Vector2(
+            UnityEngine.Random.Range(min.x, max.x), -33f
+        );
+        MonsterController monsterController = monster.GetComponent<MonsterController>();
+        monsterController.monsterID = monID;
+        monsterController.LoadMonData();
+        savedMonIDs.Add(monID);
+        activeMonsters.Add(monsterController);
+        PlayerPrefs.SetString("SavedMonIDs", string.Join(",", savedMonIDs));
+        monster.SetActive(true);
+    }
+
 
     private string GenerateRandomID(int length)
     {

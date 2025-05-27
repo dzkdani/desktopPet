@@ -10,4 +10,8 @@ public class MonsterDatabaseSO : ScriptableObject
     {
         return allMonsters.Find(monster => monster.monID == id);
     }
+    public List<MonsterDataSO> GetMonstersByType(MonsterType type)
+    {
+        return allMonsters.FindAll(monster => monster.monType == type);
+    }
 }
