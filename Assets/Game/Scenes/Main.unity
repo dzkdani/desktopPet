@@ -3022,6 +3022,8 @@ MonoBehaviour:
   heightPositionValueText: {fileID: 642010696}
   monsterValueText: {fileID: 820293700}
   uiValueText: {fileID: 662711938}
+  updateInRealTime: 1
+  updateThreshold: 0.1
 --- !u!114 &1263922717
 MonoBehaviour:
   m_ObjectHideFlags: 0

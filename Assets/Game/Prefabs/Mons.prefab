@@ -424,3 +424,5 @@ MonoBehaviour:
   colorChangeThreshold: 50
   monsterID: 
   monsterSpine: {fileID: 3640949446737527384}
+  monsterStates: []
+  monsterState: {fileID: 11400000, guid: 0f41864180db05a4685e69bb21413adb, type: 2}

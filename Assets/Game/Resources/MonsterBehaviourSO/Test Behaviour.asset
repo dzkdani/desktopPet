@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66e75b6ab0f7a294d8b313663eff76f7, type: 3}
+  m_Name: Test Behaviour
+  m_EditorClassIdentifier: 
+  behaviorName: Base
+  description: base
+  stateConfigurations:
+  - state: 1
+    animationName: walking
+    possibleTransitions:
+    - targetState: 0
+      probability: 20
+      minDuration: 1
+      maxDuration: 5
+    - targetState: 2
+      probability: 50
+      minDuration: 1
+      maxDuration: 5
+    - targetState: 1
+      probability: 30
+      minDuration: 1
+      maxDuration: 5
+    minStateDuration: 1
+    maxStateDuration: 5
+    requiresMovement: 1
+    canBeInterrupted: 1
+    moveSpeedMultiplier: 1.5
+  stateChangeFrequency: 1.5
+  allowInterruptions: 1
+  animationChangeRate: 1.5
