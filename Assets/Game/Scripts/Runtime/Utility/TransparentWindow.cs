@@ -46,7 +46,7 @@ public class TransparentWindow : MonoBehaviour
             return;
         }
 
-        // Setup camera transparency
+        // Setup came ra transparency
         Camera.main.clearFlags = CameraClearFlags.SolidColor;
         Camera.main.backgroundColor = new Color(0, 0, 0, 0);
         Camera.main.allowHDR = false;
@@ -82,7 +82,7 @@ public class TransparentWindow : MonoBehaviour
     //     IntPtr hWnd = GetActiveWindow();
     //     SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
     // }
-    // void OnApplicationFocus(bool hasFocus)
+    // void  OnApplicationFocus(bool hasFocus)
     // {
     //     if (hasFocus) MakeTopMost();
     // }
@@ -105,6 +105,6 @@ public class TransparentWindow : MonoBehaviour
             ShowWindow(hWnd, SW_RESTORE);
             SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
         }
-    }
-}
-#endif
+    }                                                                                                                                                                                                         
+}  
+#endif                                      

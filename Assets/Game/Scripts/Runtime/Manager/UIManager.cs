@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
     {
         ServiceLocator.Register(this);
     }
+    
     void Start()
     {
         spawnPetButton.onClick.AddListener(() => ServiceLocator.Get<GameManager>().BuyMons());
@@ -26,11 +27,11 @@ public class UIManager : MonoBehaviour
         UpdatePoopCounter();
         UpdateCoinCounter();
     }
+
     public void StartFoodPlacement()
     {
         ServiceLocator.Get<GameManager>().StartFoodPurchase(0);
     }
-
 
     public void UpdatePoopCounter()
     {
@@ -53,6 +54,7 @@ public class UIManager : MonoBehaviour
     {
         messageText.gameObject.SetActive(false);
     }
+
     void OnDestroy()
     {
         // Unregister this instance from the ServiceLocator

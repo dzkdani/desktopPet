@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class FoodController : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     FoodDataSO foodData;
-    public float nutritionValue = 25f;
+    public float nutritionValue;
     [SerializeField] private bool isRotten = false;
     [SerializeField] private Image foodImages;
     public bool IsBeingDragged { get; private set; }
@@ -66,8 +66,6 @@ public class FoodController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     {
         IsBeingDragged = false;
         if (!ServiceLocator.Get<GameManager>().IsPositionInGameArea(rectTransform.anchoredPosition))
-        {
-            ServiceLocator.Get<GameManager>().DespawnFood(gameObject);
-        }
+            ServiceLocator.Get<GameManager>().DespawnPools(gameObject);
     }
 }

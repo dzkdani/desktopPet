@@ -2,9 +2,18 @@ using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[System.Serializable]
+public class Coin
+{
+    public CoinType coinType;
+    public float onSpawnRate;
+    public float offSpawnRate;
+    public bool InGame = true;
+    public Sprite coinImg;
+}
+
 public class CoinController : MonoBehaviour, IPointerDownHandler
 {
-    [SerializeField] Coin coin;
     [SerializeField] CoinType type;
     [SerializeField] float rate;
     [SerializeField] int value;
@@ -25,42 +34,19 @@ public class CoinController : MonoBehaviour, IPointerDownHandler
         }
     }
 
-    public int CalculateValue(CoinType type)
-    {
-        if (type == CoinType.Silver) value = 1;
-        if (type == CoinType.Gold) value = 10;
-        return value;
-    }
+    public int CalculateValue(CoinType type) => value = (int)type;
 
-
-    public float CalculateSpawnRate(bool isInGame)
-    {
-        if (isInGame) rate = coin.onSpawnRate;
-        if (!isInGame) rate = coin.offSpawnRate;
-        return rate;
-    }
+    // public float CalculateSpawnRate(bool isInGame) => rate = isInGame ? coin.onSpawnRate : coin.offSpawnRate;
 
     public void OnPointerDown(PointerEventData eventData)
     {
         ServiceLocator.Get<GameManager>().coinCollected += value;
 
-        PlayerPrefs.SetInt("Coin", ServiceLocator.Get<GameManager>().coinCollected);
-        PlayerPrefs.Save();
+        SaveSystem.SaveCoin(ServiceLocator.Get<GameManager>().coinCollected);
+        SaveSystem.Flush();
+
         ServiceLocator.Get<UIManager>().UpdateCoinCounter();
-        ServiceLocator.Get<GameManager>().DespawnCoin(gameObject);
+        ServiceLocator.Get<GameManager>().DespawnPools(gameObject);
     }
 }
-
-[System.Serializable]
-public class Coin
-{
-    public CoinType coinType;
-    public float onSpawnRate;
-    public float offSpawnRate;
-    public float spawnRate;
-    public Sprite coinImg;
-    public int coinValue;
-    public bool InGame = true;
-}
-
 

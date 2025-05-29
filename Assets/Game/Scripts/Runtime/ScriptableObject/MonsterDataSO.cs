@@ -16,7 +16,7 @@ public class MonsterDataSO : ScriptableObject
     [Header("Stats")]
     public float moveSpd = 100f;       // Move speed
     public float hungerDepleteRate = 0.1f;  // How fast hunger depletes
-    public float poopRate = 1200f;     // Default: 20 minutes in seconds
+    public float poopRate = 20f;     // Default: 20 minutes
     [Header("Poop Behavior")]
     public bool clickToCollectPoop = true;
     [Header("Evolution")]
@@ -30,12 +30,6 @@ public class MonsterDataSO : ScriptableObject
     [Header("Images")]
     [Tooltip("Sprites: 0 = base, 1+ = evolved versions")]
     public Sprite[] monsImgs;           // [0] base, [1+] evolved forms
-
-    public bool EvolutionAvailable()
-    {
-        // Check if the monster can evolve based on its current state
-        return canEvolve;
-    }
 
     public Sprite GetCurrentSprite()
     {

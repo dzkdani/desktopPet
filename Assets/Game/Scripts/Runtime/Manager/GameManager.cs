@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
@@ -27,7 +28,8 @@ public class GameManager : MonoBehaviour
     public List<FoodController> activeFoods = new List<FoodController>();
     private List<string> savedMonIDs = new List<string>();
     public MonsterDatabaseSO monsterDatabase;
-    private float groundPositionY = -33f;
+    private float groundPos = -33f;
+
     [Header("Food Placement Settings")]
     public GameObject foodPlacementIndicator; // Assign a semi-transparent food sprite in inspector
     public Color validPositionColor = Color.green;
@@ -206,31 +208,29 @@ public class GameManager : MonoBehaviour
         return p;
     }
 
-    public void DespawnFood(GameObject food)
+    public void DespawnPools(GameObject pool)
     {
-        food.transform.SetParent(poolContainer, false);
-        food.SetActive(false);
-        _foodPool.Enqueue(food);
-    }
-
-    public void DespawnPoop(GameObject poop)
-    {
-        poop.transform.SetParent(poolContainer, false);
-        poop.SetActive(false);
-        _poopPool.Enqueue(poop);
-    }
-
-    public void DespawnCoin(GameObject coin)
-    {
-        coin.transform.SetParent(poolContainer, false);
-        coin.SetActive(false);
-        _coinPool.Enqueue(coin);
+        pool.transform.SetParent(poolContainer, false);
+        pool.SetActive(false);
+        if (pool.name.Contains("Poop"))
+        {
+            _poopPool.Enqueue(pool);
+        }
+        if (pool.name.Contains("Coin"))
+        {
+            _coinPool.Enqueue(pool);
+        }
+        if (pool.name.Contains("Food"))
+        {
+            _foodPool.Enqueue(pool);
+        }
+        
     }
 
     public void BuyMons(int cost = 10)
     {
         if (SpentCoin(cost))
-            SpawnNewMon();
+            SpawnMonFromShop();
         else
             Debug.Log("Not enough coins to buy a mons!");
     }
@@ -252,60 +252,63 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
+    private void SpawnMonFromShop(string _id = "monIDs")
+    {
+        GameObject monster = Instantiate(monPrefab, gameArea);
+        Vector2 min = gameArea.rect.min;
+        Vector2 max = gameArea.rect.max;
+        
+        // Calculate ground position as bottom of game area + small offset
+        float groundY = min.y + 20f; // 20f offset from bottom
+        
+        monster.transform.localPosition = new Vector2(
+            UnityEngine.Random.Range(min.x, max.x), 
+            groundY  // Use calculated ground position
+        );
+        MonsterController monsterController = monster.GetComponent<MonsterController>();
+        savedMonIDs.Add(monsterController.monsterID);
+        SaveSystem.SaveMonIDs(savedMonIDs);
+        RegisterToActiveMons(monsterController);
+    }
 
     private void SpawnLoadedMons(string monID)
     {
         GameObject monster = Instantiate(monPrefab, gameArea);
         Vector2 min = gameArea.rect.min;
         Vector2 max = gameArea.rect.max;
+        
+        // Calculate ground position as bottom of game area + small offset
+        float groundY = min.y + 20f; // 20f offset from bottom
+        
         monster.transform.localPosition = new Vector2(
-            UnityEngine.Random.Range(min.x, max.x), groundPositionY
+            UnityEngine.Random.Range(min.x, max.x), 
+            groundY  // Use calculated ground position
         );
         MonsterController monsterController = monster.GetComponent<MonsterController>();
         monsterController.monsterID = monID;
         monsterController.LoadMonData();
-        monster.SetActive(true);
+        RegisterToActiveMons(monsterController);
     }
-    private void SpawnNewMon()
-    {
-        GameObject monster = Instantiate(monPrefab, gameArea);
-        Vector2 min = gameArea.rect.min;
-        Vector2 max = gameArea.rect.max;
-        monster.transform.localPosition = new Vector2(
-            UnityEngine.Random.Range(min.x, max.x), groundPositionY
-        );
-        MonsterController monsterController = monster.GetComponent<MonsterController>();
-        monsterController.monsterID = GenerateRandomID(8);
-        savedMonIDs.Add(monsterController.monsterID);
-        PlayerPrefs.SetString("SavedMonIDs", string.Join(",", savedMonIDs));
-    }
+ 
     public void SpawnLoadedMonsViaGacha(string monID)
     {
         GameObject monster = Instantiate(monPrefab, gameArea);
-        Vector2 min = gameArea.rect.min;
+        Vector2 min = gameArea.rect.min; 
         Vector2 max = gameArea.rect.max;
+        
+        // Calculate ground position as bottom of game area + small offset
+        float groundY = min.y + 20f; // 20f offset from bottom
+        
         monster.transform.localPosition = new Vector2(
-            UnityEngine.Random.Range(min.x, max.x), -33f
+            UnityEngine.Random.Range(min.x, max.x), 
+            groundY  // Use calculated ground position
         );
-        MonsterController monsterController = monster.GetComponent<MonsterController>();
+        MonsterController monsterController = monster  .GetComponent<MonsterController>();
         monsterController.monsterID = monID;
         monsterController.LoadMonData();
         savedMonIDs.Add(monID);
-        activeMonsters.Add(monsterController);
-        PlayerPrefs.SetString("SavedMonIDs", string.Join(",", savedMonIDs));
-        monster.SetActive(true);
-    }
-
-
-    private string GenerateRandomID(int length)
-    {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        char[] id = new char[length];
-        for (int i = 0; i < length; i++)
-        {
-            id[i] = chars[UnityEngine.Random.Range(0, chars.Length)];
-        }
-        return new string(id);
+        SaveSystem.SaveMonIDs(savedMonIDs);
+        RegisterToActiveMons(monsterController);
     }
 
     public Vector2 GetRandomPositionInGameArea()
@@ -318,11 +321,11 @@ public class GameManager : MonoBehaviour
         );
     }
 
-
     public bool IsPositionInGameArea(Vector2 position)
     {
         return gameArea.rect.Contains(position);
     }
+
     void OnDrawGizmosSelected()
     {
         if (gameArea != null)
@@ -387,6 +390,7 @@ public class GameManager : MonoBehaviour
         SaveSystem.SaveCoin(coinCollected);
         SaveSystem.Flush();
     }
+
     void OnDestroy()
     {
         ServiceLocator.Unregister<GameManager>();

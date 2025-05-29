@@ -47,4 +47,22 @@ public static class SaveSystem
             : new List<string>(csv.Split(','));
     }
     public static void Flush() => PlayerPrefs.Save();
-}
+
+    public static void ClearSaveData()
+    {
+        PlayerPrefs.DeleteKey(CoinKey);
+        PlayerPrefs.DeleteKey(PoopKey);
+        PlayerPrefs.DeleteKey(SavedPetsKey);
+
+        // Clear all pet data
+        var keys = PlayerPrefs.GetString(SavedPetsKey, "").Split(',');
+        foreach (var key in keys)
+        {
+            if (!string.IsNullOrEmpty(key))
+                PlayerPrefs.DeleteKey($"Pet{key}");
+        }
+
+        PlayerPrefs.Save();
+    }         
+}                                                                                                                                                                                       
+       

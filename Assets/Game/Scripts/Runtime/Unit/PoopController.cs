@@ -9,6 +9,6 @@ public class PoopController : MonoBehaviour, IPointerDownHandler
     {
         ServiceLocator.Get<GameManager>().poopCollected += poopValue;
         ServiceLocator.Get<UIManager>().UpdatePoopCounter();
-        ServiceLocator.Get<GameManager>().DespawnPoop(gameObject);
+        ServiceLocator.Get<GameManager>().DespawnPools(gameObject);
     }
 }

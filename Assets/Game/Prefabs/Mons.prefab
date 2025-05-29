@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hungerDepletionRate: 0.1
-  poopInterval: 10
+  poopInterval: 20
   hungerThresholdToEat: 30
   moveSpeed: 100
   foodDetectionRange: 200
