@@ -2968,15 +2968,15 @@ MonoBehaviour:
   poolContainer: {fileID: 880935774}
   initialPoolSize: 20
   gameArea: {fileID: 17609072}
-  poopCollected: 0
-  coinCollected: 0
   mainCanvas: {fileID: 1457136190}
-  activeMonsters: []
-  activeFoods: []
   monsterDatabase: {fileID: 11400000, guid: e5208434c48913e4e82c7661db33630a, type: 2}
   foodPlacementIndicator: {fileID: 230084415}
   validPositionColor: {r: 0, g: 1, b: 0, a: 1}
   invalidPositionColor: {r: 1, g: 0, b: 0, a: 1}
+  poopCollected: 0
+  coinCollected: 0
+  activeMonsters: []
+  activeFoods: []
 --- !u!114 &1263922715
 MonoBehaviour:
   m_ObjectHideFlags: 0
