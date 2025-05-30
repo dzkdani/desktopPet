@@ -9,32 +9,73 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66e75b6ab0f7a294d8b313663eff76f7, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d13ea62b0bc2c842be03fee1a76eafc, type: 3}
   m_Name: Test Behaviour
   m_EditorClassIdentifier: 
-  behaviorName: Base
-  description: base
-  stateConfigurations:
-  - state: 1
-    animationName: walking
-    possibleTransitions:
-    - targetState: 0
-      probability: 20
-      minDuration: 1
-      maxDuration: 5
-    - targetState: 2
-      probability: 50
-      minDuration: 1
-      maxDuration: 5
-    - targetState: 1
-      probability: 30
-      minDuration: 1
-      maxDuration: 5
-    minStateDuration: 1
-    maxStateDuration: 5
-    requiresMovement: 1
-    canBeInterrupted: 1
-    moveSpeedMultiplier: 1.5
-  stateChangeFrequency: 1.5
-  allowInterruptions: 1
-  animationChangeRate: 1.5
+  transitions:
+  - fromState: 0
+    toState: 3
+    probability: 0.7
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+  - fromState: 0
+    toState: 1
+    probability: 0.7
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+  - fromState: 0
+    toState: 2
+    probability: 0.5
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+  - fromState: 3
+    toState: 0
+    probability: 0.8
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+  - fromState: 1
+    toState: 0
+    probability: 0.4
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+  - fromState: 1
+    toState: 2
+    probability: 0.6
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+  - fromState: 2
+    toState: 0
+    probability: 0.6
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+  - fromState: 2
+    toState: 1
+    probability: 0.6
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+  minIdleDuration: 2
+  maxIdleDuration: 5
+  minWalkDuration: 3
+  maxWalkDuration: 8
+  minRunDuration: 1
+  maxRunDuration: 3
+  jumpDuration: 1
+  walkSpeed: 100
+  runSpeed: 200
+  jumpHeight: 50

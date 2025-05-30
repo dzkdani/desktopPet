@@ -1,0 +1,676 @@
+fileFormatVersion: 2
+guid: bc587939726478c4497abb6fd4237f1f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -797061311589649985
+    second: Maple Dragoon_0
+  - first:
+      213: -1498321515523711278
+    second: Maple Dragoon_1
+  - first:
+      213: -8906727567516148861
+    second: Maple Dragoon_2
+  - first:
+      213: 1637604216360342674
+    second: Maple Dragoon_3
+  - first:
+      213: 3691648464271102617
+    second: Maple Dragoon_4
+  - first:
+      213: 105132905042262472
+    second: Maple Dragoon_5
+  - first:
+      213: -6364890618098662155
+    second: Maple Dragoon_6
+  - first:
+      213: -2702088256680376047
+    second: Maple Dragoon_7
+  - first:
+      213: -8729856625612288591
+    second: Maple Dragoon_8
+  - first:
+      213: -6504524138011168618
+    second: Maple Dragoon_9
+  - first:
+      213: -8260749197604895855
+    second: Maple Dragoon_10
+  - first:
+      213: -7999469812565111534
+    second: Maple Dragoon_11
+  - first:
+      213: -1176038554140332736
+    second: Maple Dragoon_12
+  - first:
+      213: -7056996887612610600
+    second: Maple Dragoon_13
+  - first:
+      213: -5581749916631969614
+    second: Maple Dragoon_14
+  - first:
+      213: -1390368497966149805
+    second: Maple Dragoon_15
+  - first:
+      213: 4414592230900412344
+    second: Maple Dragoon_16
+  - first:
+      213: -6057052956083485839
+    second: Maple Dragoon_17
+  - first:
+      213: -7642620676696945854
+    second: Maple Dragoon_18
+  - first:
+      213: -4253048088364486040
+    second: Maple Dragoon_19
+  - first:
+      213: -667079077648082770
+    second: Maple Dragoon_20
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 0
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 0
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 0
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Maple Dragoon_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 423
+        width: 149
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb1fd7ac5f440f4f0800000000000000
+      internalID: -797061311589649985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_1
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 175
+        width: 565
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2de52e32584e43be0800000000000000
+      internalID: -1498321515523711278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_2
+      rect:
+        serializedVersion: 2
+        x: 559
+        y: 176
+        width: 185
+        height: 255
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38b550b9772f46480800000000000000
+      internalID: -8906727567516148861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_3
+      rect:
+        serializedVersion: 2
+        x: 569
+        y: 427
+        width: 128
+        height: 126
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29417debb50f9b610800000000000000
+      internalID: 1637604216360342674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_4
+      rect:
+        serializedVersion: 2
+        x: 744
+        y: 342
+        width: 187
+        height: 275
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 992de7418be5b3330800000000000000
+      internalID: 3691648464271102617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_5
+      rect:
+        serializedVersion: 2
+        x: 848
+        y: 2
+        width: 661
+        height: 476
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c9bf33f1d1857100800000000000000
+      internalID: 105132905042262472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_6
+      rect:
+        serializedVersion: 2
+        x: 1456
+        y: 404
+        width: 93
+        height: 191
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f4430a94bd5ba7a0800000000000000
+      internalID: -6364890618098662155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_7
+      rect:
+        serializedVersion: 2
+        x: 1510
+        y: 2
+        width: 378
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 119cfccfb01408ad0800000000000000
+      internalID: -2702088256680376047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_8
+      rect:
+        serializedVersion: 2
+        x: 1549
+        y: 402
+        width: 314
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bd0a4ad6a159d680800000000000000
+      internalID: -8729856625612288591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_9
+      rect:
+        serializedVersion: 2
+        x: 1862
+        y: 326
+        width: 184
+        height: 247
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 690f3e842c94bb5a0800000000000000
+      internalID: -6504524138011168618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_10
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 188
+        width: 54
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 193ca224f5ceb5d80800000000000000
+      internalID: -8260749197604895855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_11
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 175
+        width: 24
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21d8896a69c2cf090800000000000000
+      internalID: -7999469812565111534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_12
+      rect:
+        serializedVersion: 2
+        x: 747
+        y: 176
+        width: 78
+        height: 151
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04d2d4a7a2fddafe0800000000000000
+      internalID: -1176038554140332736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_13
+      rect:
+        serializedVersion: 2
+        x: 1859
+        y: 2
+        width: 182
+        height: 274
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d720d468b2801e90800000000000000
+      internalID: -7056996887612610600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_14
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 1
+        width: 868
+        height: 174
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b0d5123604a982b0800000000000000
+      internalID: -5581749916631969614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_15
+      rect:
+        serializedVersion: 2
+        x: 1107
+        y: 1
+        width: 92
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35f85d3b73b64bce0800000000000000
+      internalID: -1390368497966149805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_16
+      rect:
+        serializedVersion: 2
+        x: 1199
+        y: 1
+        width: 17
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bfa4079e38c34d30800000000000000
+      internalID: 4414592230900412344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_17
+      rect:
+        serializedVersion: 2
+        x: 1481
+        y: 49
+        width: 37
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1730ae69d6601fba0800000000000000
+      internalID: -6057052956083485839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_18
+      rect:
+        serializedVersion: 2
+        x: 1216
+        y: 1
+        width: 43
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24b4c64acf4ffe590800000000000000
+      internalID: -7642620676696945854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_19
+      rect:
+        serializedVersion: 2
+        x: 1437
+        y: 1
+        width: 112
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86271681c432af4c0800000000000000
+      internalID: -4253048088364486040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_20
+      rect:
+        serializedVersion: 2
+        x: 1808
+        y: 1
+        width: 37
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea8d0bbfc1f0eb6f0800000000000000
+      internalID: -667079077648082770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Maple Dragoon_0: -797061311589649985
+      Maple Dragoon_1: -1498321515523711278
+      Maple Dragoon_10: -8260749197604895855
+      Maple Dragoon_11: -7999469812565111534
+      Maple Dragoon_12: -1176038554140332736
+      Maple Dragoon_13: -7056996887612610600
+      Maple Dragoon_14: -5581749916631969614
+      Maple Dragoon_15: -1390368497966149805
+      Maple Dragoon_16: 4414592230900412344
+      Maple Dragoon_17: -6057052956083485839
+      Maple Dragoon_18: -7642620676696945854
+      Maple Dragoon_19: -4253048088364486040
+      Maple Dragoon_2: -8906727567516148861
+      Maple Dragoon_20: -667079077648082770
+      Maple Dragoon_3: 1637604216360342674
+      Maple Dragoon_4: 3691648464271102617
+      Maple Dragoon_5: 105132905042262472
+      Maple Dragoon_6: -6364890618098662155
+      Maple Dragoon_7: -2702088256680376047
+      Maple Dragoon_8: -8729856625612288591
+      Maple Dragoon_9: -6504524138011168618
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,85 +1,197 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.IO;
-using System;
 using UnityEngine.UI;
-using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
-
     [Header("Prefabs & Pool Settings")]
     public GameObject monPrefab;
     public GameObject foodPrefab;
     public GameObject poopPrefab;
     public GameObject coinPrefab;
     public RectTransform poolContainer;
-    [Tooltip("Initial pool size for each type")]
     public int initialPoolSize = 20;
+    
+    [Header("Game Settings")]
+    public RectTransform gameArea;
+    public Canvas mainCanvas;
+    public MonsterDatabaseSO monsterDatabase;
+    
+    [Header("Food Placement Settings")]
+    public GameObject foodPlacementIndicator;
+    public Color validPositionColor = Color.green;
+    public Color invalidPositionColor = Color.red;
+    
+    // Object Pools
     private Queue<GameObject> _foodPool = new Queue<GameObject>();
     private Queue<GameObject> _poopPool = new Queue<GameObject>();
     private Queue<GameObject> _coinPool = new Queue<GameObject>();
-    [Header("Game Settings")]
-    public RectTransform gameArea;
+    
+    // Game State
     [HideInInspector] public int poopCollected;
     [HideInInspector] public int coinCollected;
-    public Canvas mainCanvas;
     [HideInInspector] public List<MonsterController> activeMonsters = new List<MonsterController>();
     public List<FoodController> activeFoods = new List<FoodController>();
     private List<string> savedMonIDs = new List<string>();
-    public MonsterDatabaseSO monsterDatabase;
-    private float groundPos = -33f;
-
-    [Header("Food Placement Settings")]
-    public GameObject foodPlacementIndicator; // Assign a semi-transparent food sprite in inspector
-    public Color validPositionColor = Color.green;
-    public Color invalidPositionColor = Color.red;
+    
+    // Food Placement
     private bool isInPlacementMode = false;
     private int pendingFoodCost = 0;
-
+    
     private void Awake()
     {
         ServiceLocator.Register(this);
         InitializePools();
     }
-    void Start()
-    {
-        LoadGame();
 
-    }
-    private void InitializePools()
-    {
-        for (int i = 0; i < initialPoolSize; i++)
-        {
-            var f = Instantiate(foodPrefab, poolContainer);
-            f.SetActive(false);
-            _foodPool.Enqueue(f);
+    void Start() => LoadGame();
 
-            var p = Instantiate(poopPrefab, poolContainer);
-            p.SetActive(false);
-            _poopPool.Enqueue(p);
-
-            var c = Instantiate(coinPrefab, poolContainer);
-            c.SetActive(false);
-            _coinPool.Enqueue(c);
-        }
-    }
     void Update()
     {
         if (isInPlacementMode)
         {
             UpdateFoodPlacement();
+            HandleFoodPlacementInput();
+        }
+    }
 
-            if (Input.GetMouseButtonDown(0)) // Left click confirms
+    #region Initialization
+    private void InitializePools()
+    {
+        for (int i = 0; i < initialPoolSize; i++)
+        {
+            CreatePoolObject(foodPrefab, _foodPool);
+            CreatePoolObject(poopPrefab, _poopPool);
+            CreatePoolObject(coinPrefab, _coinPool);
+        }
+    }
+
+    private void CreatePoolObject(GameObject prefab, Queue<GameObject> pool)
+    {
+        var obj = Instantiate(prefab, poolContainer);
+        obj.SetActive(false);
+        pool.Enqueue(obj);
+    }
+    #endregion
+
+    #region Save/Load System
+    private void LoadGame()
+    {
+        coinCollected = SaveSystem.LoadCoin();
+        poopCollected = SaveSystem.LoadPoop();
+        savedMonIDs = SaveSystem.LoadSavedMonIDs();
+        
+        foreach (var id in savedMonIDs)
+        {
+            if (SaveSystem.LoadMon(id, out var data))
             {
-                TryPlaceFood();
-            }
-            else if (Input.GetMouseButtonDown(1)) // Right click cancels
-            {
-                CancelPlacement();
+                SpawnLoadedMons(id);
             }
         }
     }
+
+    public void SaveAllMons()
+    {
+        foreach (var monster in activeMonsters)
+        {
+            var saveData = new MonsterSaveData
+            {
+                monsterId = monster.monsterID,
+                lastHunger = monster.currentHunger,
+                isEvolved = monster.isEvolved,
+            };
+            SaveSystem.SaveMon(saveData);
+        }
+        
+        SaveSystem.SaveMonIDs(savedMonIDs);
+        SaveSystem.Flush();
+    }
+
+    private void SaveGameData()
+    {
+        SaveAllMons();
+        SaveSystem.SavePoop(poopCollected);
+        SaveSystem.SaveCoin(coinCollected);
+        SaveSystem.Flush();
+    }
+    #endregion
+
+    #region Monster Management
+    public void BuyMons(int cost = 10)
+    {
+        if (SpentCoin(cost))
+        {
+            SpawnMonFromShop();
+        }
+    }
+
+    private void SpawnMonFromShop()
+    {
+        var monster = CreateMonster();
+        var monsterController = monster.GetComponent<MonsterController>();
+        
+        monsterController.monsterID = System.Guid.NewGuid().ToString();
+        monsterController.LoadMonData();
+        
+        RegisterMonster(monsterController);
+    }
+
+    private void SpawnLoadedMons(string monID)
+    {
+        var monster = CreateMonster();
+        var monsterController = monster.GetComponent<MonsterController>();
+        
+        monsterController.monsterID = monID;
+        monsterController.LoadMonData();
+        RegisterToActiveMons(monsterController);
+    }
+
+    public void SpawnLoadedMonsViaGacha(string monID)
+    {
+        var monster = CreateMonster();
+        var monsterController = monster.GetComponent<MonsterController>();
+        
+        if (string.IsNullOrEmpty(monID))
+        {
+            monID = System.Guid.NewGuid().ToString();
+        }
+        
+        monsterController.monsterID = monID;
+        monsterController.LoadMonData();
+        
+        RegisterMonster(monsterController);
+    }
+
+    private GameObject CreateMonster()
+    {
+        var monster = Instantiate(monPrefab, gameArea);
+        var bounds = gameArea.rect;
+        
+        monster.transform.localPosition = new Vector2(
+            UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
+            bounds.min.y + 20f
+        );
+        
+        return monster;
+    }
+
+    private void RegisterMonster(MonsterController monsterController)
+    {
+        savedMonIDs.Add(monsterController.monsterID);
+        SaveSystem.SaveMonIDs(savedMonIDs);
+        RegisterToActiveMons(monsterController);
+    }
+
+    public void RegisterToActiveMons(MonsterController monster)
+    {
+        if (!activeMonsters.Contains(monster))
+        {
+            activeMonsters.Add(monster);
+        }
+    }
+    #endregion
+
+    #region Food System
     public void StartFoodPurchase(int cost)
     {
         if (coinCollected >= cost)
@@ -97,38 +209,28 @@ public class GameManager : MonoBehaviour
 
     private void UpdateFoodPlacement()
     {
-        Vector2 localPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            gameArea,
-            Input.mousePosition,
-            mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCanvas.worldCamera,
-            out localPos
-        );
+        var indicatorPos = ScreenToCanvasPosition(mainCanvas);
+        foodPlacementIndicator.GetComponent<RectTransform>().anchoredPosition = indicatorPos;
 
-        // Move the indicator
-        foodPlacementIndicator.GetComponent<RectTransform>().anchoredPosition = ScreenToCanvasPosition(mainCanvas);
-
-        // Check if position is valid
-        bool isValid = gameArea.rect.Contains(localPos);
+        bool isValid = gameArea.rect.Contains(indicatorPos);
         foodPlacementIndicator.GetComponent<Image>().color = isValid ? validPositionColor : invalidPositionColor;
     }
 
+    private void HandleFoodPlacementInput()
+    {
+        if (Input.GetMouseButtonDown(0)) TryPlaceFood();
+        else if (Input.GetMouseButtonDown(1)) CancelPlacement();
+    }
 
     private void TryPlaceFood()
     {
-        Vector2 localPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            gameArea,
-            Input.mousePosition,
-            mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCanvas.worldCamera,
-            out localPos
-        );
-
-        if (gameArea.rect.Contains(localPos))
+        var position = ScreenToCanvasPosition(mainCanvas);
+        
+        if (gameArea.rect.Contains(position))
         {
             if (SpentCoin(pendingFoodCost))
             {
-                SpawnFoodAtPosition(localPos);
+                SpawnFoodAtPosition(position);
             }
             EndPlacement();
         }
@@ -138,17 +240,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     private void SpawnFoodAtPosition(Vector2 position)
     {
-        GameObject f = _foodPool.Count > 0 ? _foodPool.Dequeue()
-                                         : Instantiate(foodPrefab, poolContainer);
-        var rt = f.GetComponent<RectTransform>();
-        rt.SetParent(gameArea, false);
-        rt.anchoredPosition = position;
-        f.SetActive(true);
+        var food = GetPooledObject(_foodPool, foodPrefab);
+        SetupPooledObject(food, gameArea, position);
 
-        var foodController = f.GetComponent<FoodController>();
+        var foodController = food.GetComponent<FoodController>();
         if (foodController != null && !activeFoods.Contains(foodController))
         {
             activeFoods.Add(foodController);
@@ -170,229 +267,106 @@ public class GameManager : MonoBehaviour
 
     public void SpawnFood()
     {
-        SpawnFoodAt();
+        var food = GetPooledObject(_foodPool, foodPrefab);
+        SetupPooledObject(food, gameArea, GetRandomPositionInGameArea());
     }
+    #endregion
 
-    public void SpawnFoodAt()
-    {
-        GameObject f = _foodPool.Count > 0 ? _foodPool.Dequeue()
-                                           : Instantiate(foodPrefab, poolContainer);
-        var rt = f.GetComponent<RectTransform>();
-        rt.SetParent(gameArea, false);
-        rt.anchoredPosition = GetRandomPositionInGameArea();
-        f.SetActive(true);
-    }
+    #region Object Spawning
     public GameObject SpawnCoinAt(Vector2 anchoredPos, CoinType type)
     {
-        GameObject c = _coinPool.Count > 0 ? _coinPool.Dequeue()
-                                           : Instantiate(coinPrefab, poolContainer);
-        var rt = c.GetComponent<RectTransform>();
-        rt.SetParent(gameArea, false);
-        rt.anchoredPosition = anchoredPos;
-        c.SetActive(true);
-
-        CoinController coinController = c.GetComponent<CoinController>();
-        coinController.Initialize(type);
-
-        return c;
+        var coin = GetPooledObject(_coinPool, coinPrefab);
+        SetupPooledObject(coin, gameArea, anchoredPos);
+        
+        coin.GetComponent<CoinController>().Initialize(type);
+        return coin;
     }
 
     public GameObject SpawnPoopAt(Vector2 anchoredPos)
     {
-        GameObject p = _poopPool.Count > 0 ? _poopPool.Dequeue()
-                                           : Instantiate(poopPrefab, poolContainer);
-        var rt = p.GetComponent<RectTransform>();
-        rt.SetParent(gameArea, false);
-        rt.anchoredPosition = anchoredPos;
-        p.SetActive(true);
-        return p;
+        var poop = GetPooledObject(_poopPool, poopPrefab);
+        SetupPooledObject(poop, gameArea, anchoredPos);
+        return poop;
     }
 
-    public void DespawnPools(GameObject pool)
+    private GameObject GetPooledObject(Queue<GameObject> pool, GameObject prefab)
     {
-        pool.transform.SetParent(poolContainer, false);
-        pool.SetActive(false);
-        if (pool.name.Contains("Poop"))
-        {
-            _poopPool.Enqueue(pool);
-        }
-        if (pool.name.Contains("Coin"))
-        {
-            _coinPool.Enqueue(pool);
-        }
-        if (pool.name.Contains("Food"))
-        {
-            _foodPool.Enqueue(pool);
-        }
-        
+        return pool.Count > 0 ? pool.Dequeue() : Instantiate(prefab, poolContainer);
     }
 
-    public void BuyMons(int cost = 10)
+    private void SetupPooledObject(GameObject obj, RectTransform parent, Vector2 position)
     {
-        if (SpentCoin(cost))
-            SpawnMonFromShop();
-        else
-            Debug.Log("Not enough coins to buy a mons!");
+        var rt = obj.GetComponent<RectTransform>();
+        rt.SetParent(parent, false);
+        rt.anchoredPosition = position;
+        obj.SetActive(true);
     }
 
-    public void RegisterToActiveMons(MonsterController monster)
+    public void DespawnPools(GameObject obj)
     {
-        if (!activeMonsters.Contains(monster))
-        {
-            activeMonsters.Add(monster);
-        }
-    }
+        obj.transform.SetParent(poolContainer, false);
+        obj.SetActive(false);
 
+        if (obj.name.Contains("Poop")) _poopPool.Enqueue(obj);
+        else if (obj.name.Contains("Coin")) _coinPool.Enqueue(obj);
+        else if (obj.name.Contains("Food")) _foodPool.Enqueue(obj);
+    }
+    #endregion
+
+    #region Utility
     public bool SpentCoin(int amount)
     {
         if (coinCollected < amount) return false;
+        
         coinCollected -= amount;
         SaveSystem.SaveCoin(coinCollected);
         ServiceLocator.Get<UIManager>().UpdateCoinCounter();
         return true;
     }
 
-    private void SpawnMonFromShop(string _id = "monIDs")
-    {
-        GameObject monster = Instantiate(monPrefab, gameArea);
-        Vector2 min = gameArea.rect.min;
-        Vector2 max = gameArea.rect.max;
-        
-        // Calculate ground position as bottom of game area + small offset
-        float groundY = min.y + 20f; // 20f offset from bottom
-        
-        monster.transform.localPosition = new Vector2(
-            UnityEngine.Random.Range(min.x, max.x), 
-            groundY  // Use calculated ground position
-        );
-        MonsterController monsterController = monster.GetComponent<MonsterController>();
-        savedMonIDs.Add(monsterController.monsterID);
-        SaveSystem.SaveMonIDs(savedMonIDs);
-        RegisterToActiveMons(monsterController);
-    }
-
-    private void SpawnLoadedMons(string monID)
-    {
-        GameObject monster = Instantiate(monPrefab, gameArea);
-        Vector2 min = gameArea.rect.min;
-        Vector2 max = gameArea.rect.max;
-        
-        // Calculate ground position as bottom of game area + small offset
-        float groundY = min.y + 20f; // 20f offset from bottom
-        
-        monster.transform.localPosition = new Vector2(
-            UnityEngine.Random.Range(min.x, max.x), 
-            groundY  // Use calculated ground position
-        );
-        MonsterController monsterController = monster.GetComponent<MonsterController>();
-        monsterController.monsterID = monID;
-        monsterController.LoadMonData();
-        RegisterToActiveMons(monsterController);
-    }
- 
-    public void SpawnLoadedMonsViaGacha(string monID)
-    {
-        GameObject monster = Instantiate(monPrefab, gameArea);
-        Vector2 min = gameArea.rect.min; 
-        Vector2 max = gameArea.rect.max;
-        
-        // Calculate ground position as bottom of game area + small offset
-        float groundY = min.y + 20f; // 20f offset from bottom
-        
-        monster.transform.localPosition = new Vector2(
-            UnityEngine.Random.Range(min.x, max.x), 
-            groundY  // Use calculated ground position
-        );
-        MonsterController monsterController = monster  .GetComponent<MonsterController>();
-        monsterController.monsterID = monID;
-        monsterController.LoadMonData();
-        savedMonIDs.Add(monID);
-        SaveSystem.SaveMonIDs(savedMonIDs);
-        RegisterToActiveMons(monsterController);
-    }
-
     public Vector2 GetRandomPositionInGameArea()
     {
-        Vector2 min = gameArea.rect.min;
-        Vector2 max = gameArea.rect.max;
+        var bounds = gameArea.rect;
         return new Vector2(
-            UnityEngine.Random.Range(min.x, max.x),
-            UnityEngine.Random.Range(min.y + 5, max.y - 5)
+            UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
+            UnityEngine.Random.Range(bounds.min.y + 5, bounds.max.y - 5)
         );
     }
 
-    public bool IsPositionInGameArea(Vector2 position)
-    {
-        return gameArea.rect.Contains(position);
-    }
+    public bool IsPositionInGameArea(Vector2 position) => gameArea.rect.Contains(position);
 
+    public static Vector2 ScreenToCanvasPosition(Canvas canvas)
+    {
+        var canvasRect = canvas.GetComponent<RectTransform>();
+        var cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect, Input.mousePosition, cam, out Vector2 localPoint);
+
+        return localPoint;
+    }
+    #endregion
+
+    #region Application Lifecycle
+    void OnApplicationQuit() => SaveGameData();
+    void OnApplicationPause(bool pauseStatus) { if (pauseStatus) SaveGameData(); }
+
+#if UNITY_EDITOR
+    void OnDisable() { if (Application.isPlaying) SaveGameData(); }
+#endif
+
+    void OnDestroy() => ServiceLocator.Unregister<GameManager>();
+    #endregion
+
+    #region Debug
     void OnDrawGizmosSelected()
     {
         if (gameArea != null)
         {
             Gizmos.color = Color.green;
-            Vector3 center = gameArea.position;
-            Vector3 size = new Vector3(gameArea.rect.width, gameArea.rect.height, 0);
-            Gizmos.DrawWireCube(center, size);
+            Gizmos.DrawWireCube(gameArea.position, 
+                new Vector3(gameArea.rect.width, gameArea.rect.height, 0));
         }
     }
-
-
-    public static Vector2 ScreenToCanvasPosition(Canvas canvas)
-    {
-        // 1. Get the RectTransform of the Canvas
-        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
-
-        // 2. Convert screen point to local point
-        Vector2 localPoint;
-        // For Screen Space - Overlay canvases, pass `null` as the camera.
-        // For Screen Space - Camera or World Space canvases, pass canvas.worldCamera.
-        Camera cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay
-                    ? null
-                    : canvas.worldCamera;
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvasRect,
-            Input.mousePosition,
-            cam,
-            out localPoint
-        );
-
-        return localPoint;
-    }
-
-    private void LoadGame()
-    {
-        coinCollected = SaveSystem.LoadCoin();
-        savedMonIDs = SaveSystem.LoadSavedMonIDs();
-        Debug.Log($"Loaded {savedMonIDs.Count} saved monss with IDs: {string.Join(", ", savedMonIDs)}");
-        foreach (var id in savedMonIDs)
-            if (SaveSystem.LoadMon(id, out var d))
-                SpawnLoadedMons(id);
-    }
-    public void SaveAllMons()
-    {
-        foreach (var monster in activeMonsters)
-            SaveSystem.SaveMon(new MonsterSaveData
-            {
-                monsterId = monster.monsterID,
-                lastHunger = monster.currentHunger,
-                isEvolved = monster.isEvolved,
-            });
-        SaveSystem.SaveMonIDs(savedMonIDs);
-        SaveSystem.Flush();
-    }
-
-    void OnApplicationQuit()
-    {
-        SaveAllMons();
-        SaveSystem.SavePoop(poopCollected);
-        SaveSystem.SaveCoin(coinCollected);
-        SaveSystem.Flush();
-    }
-
-    void OnDestroy()
-    {
-        ServiceLocator.Unregister<GameManager>();
-    }
+    #endregion
 }

@@ -4,9 +4,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections;
 using System;
-using Spine;
 using Spine.Unity;
-using System.Collections.Generic;
 
 [System.Serializable]
 public class MonsterSaveData
@@ -35,33 +33,42 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     [Header("Monster Visual")]
     public GameObject hungerInfo;
     [SerializeField] private TextMeshProUGUI hungerText;
-    public Image monsterImage;
     public Color normalColor = Color.white;
     public Color hungryColor = Color.red;
-    public float colorChangeThreshold = 50f;
     public string monsterID;
     public SkeletonGraphic monsterSpine;
 
-    private float _foodDetectionRangeSqr;
-    private float _eatDistanceSqr;
+    [Header("State Machine")]
+    public MonsterStateMachine stateMachine;
+
+    // Cached Components
     private SkeletonGraphic _monsterSpineGraphic;
     private TextMeshProUGUI _hungerText;
     private CanvasGroup _hungerInfoCg;
     private RectTransform rectTransform;
-    private Vector2 targetPosition;
-    private FoodController nearestFood;
+    private GameManager _gameManager;
+    private RectTransform _nearestFoodRect;
 
+    // Movement & Food Detection
+    private Vector2 targetPosition;
+    private float _foodDetectionRangeSqr;
+    private float _eatDistanceSqr;
+    private float _cachedFoodDistanceSqr = float.MaxValue;
+    private bool _isNearFood = false;
+    private bool isLoaded = false;
+
+    // Coroutines
     private Coroutine _hungerRoutine;
     private Coroutine _poopRoutine;
     private Coroutine _foodRoutine;
     private Coroutine _goldCoinRoutine;
     private Coroutine _silverCoinRoutine;
-    private float _cachedFoodDistanceSqr = float.MaxValue;
-    private bool _isNearFood = false;
-    private GameManager _gameManager;
-    private RectTransform _nearestFoodRect;
+
     private readonly WaitForSeconds _foodScanWait = new WaitForSeconds(2f);
     private readonly WaitForSeconds _hungerWait = new WaitForSeconds(1f);
+
+    // Properties
+    public FoodController nearestFood { get; private set; }
 
     public event Action<float> OnHungerChanged;
     public event Action<bool> OnHoverChanged;
@@ -89,48 +96,70 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             OnHoverChanged?.Invoke(_isHovered);
         }
     }
-    private bool isLoaded = false;
 
     public void OnPointerEnter(PointerEventData e) => isHovered = true;
     public void OnPointerExit(PointerEventData e) => isHovered = false;
 
+    #region Initialization
+    private void Awake()
+    {
+        // Generate ID if not already set (for new monsters)
+        if (string.IsNullOrEmpty(monsterID))
+        {
+            monsterID = System.Guid.NewGuid().ToString();
+        }
+    }
+
     private void Start()
     {
-        // Cache GameManager reference
-        _gameManager = ServiceLocator.Get<GameManager>();
-        _gameManager.RegisterToActiveMons(this);
-        
-        rectTransform = GetComponent<RectTransform>();
-        if (_gameManager.isActiveAndEnabled) isLoaded = true;
-
-        LoadMonData();
+        InitializeComponents();
+        InitializeStateMachine();
+        InitializeValues();
         SetRandomTarget();
+    }
 
-        // Assign Spine reference
+    private void InitializeComponents()
+    {
+        // Cache component references
+        rectTransform = GetComponent<RectTransform>();
         _monsterSpineGraphic = monsterSpine;
-
-        // Initialize Spine animation to idle
-        if (_monsterSpineGraphic != null)
-            _monsterSpineGraphic.AnimationState.SetAnimation(0, "idle", true);
-
-        //hunger info setup
         _hungerText = hungerText;
         _hungerInfoCg = hungerInfo.GetComponent<CanvasGroup>();
+        
+        // Initialize UI
         _hungerInfoCg.alpha = 0;
+        
+        // Initialize Spine animation
+        if (_monsterSpineGraphic != null)
+            _monsterSpineGraphic.AnimationState.SetAnimation(0, "idle", true);
+    }
 
-        //food detection setup
+    private void InitializeStateMachine()
+    {
+        stateMachine = GetComponent<MonsterStateMachine>();
+        if (stateMachine != null)
+            stateMachine.OnStateChanged += OnStateChanged;
+    }
+
+    private void InitializeValues()
+    {
+        // Register with GameManager
+        _gameManager = ServiceLocator.Get<GameManager>();
+        _gameManager?.RegisterToActiveMons(this);
+        
+        if (_gameManager != null && _gameManager.isActiveAndEnabled) 
+            isLoaded = true;
+
+        // Setup food detection ranges
         _foodDetectionRangeSqr = foodDetectionRange * foodDetectionRange;
         _eatDistanceSqr = eatDistance * eatDistance;
     }
+    #endregion
 
+    #region Lifecycle
     private void OnEnable()
     {
-        _foodRoutine = StartCoroutine(FoodScanLoop());
-        _hungerRoutine = StartCoroutine(HungerRoutine());
-        _poopRoutine = StartCoroutine(PoopRoutine((float)TimeSpan.FromMinutes(poopInterval).TotalSeconds));
-        _goldCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes((double)CoinType.Gold).TotalSeconds, CoinType.Gold));
-        _silverCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes((double)CoinType.Silver).TotalSeconds, CoinType.Silver));
-
+        StartCoroutines();
         OnHoverChanged += ToggleHungerUI;
     }
 
@@ -142,51 +171,41 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void Update()
     {
+        if (!isLoaded) return;
         HandleMovement();
     }
 
+    private void StartCoroutines()
+    {
+        _foodRoutine = StartCoroutine(FoodScanLoop());
+        _hungerRoutine = StartCoroutine(HungerRoutine());
+        _poopRoutine = StartCoroutine(PoopRoutine());
+        _goldCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes((double)CoinType.Gold).TotalSeconds, CoinType.Gold));
+        _silverCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes((double)CoinType.Silver).TotalSeconds, CoinType.Silver));
+    }
+    #endregion
+
+    #region Movement & Animation
     private void HandleMovement()
     {
         Vector2 pos = rectTransform.anchoredPosition;
         Vector2 target = targetPosition;
-
+        
+        // Get movement speed based on current state
+        float currentSpeed = GetCurrentMoveSpeed();
+        
         // Move toward target
-        rectTransform.anchoredPosition = Vector2.MoveTowards(pos, target, moveSpeed * Time.deltaTime);
-
-        // --- SPINE ANIMATION LOGIC ---
-        if (_monsterSpineGraphic != null)
+        rectTransform.anchoredPosition = Vector2.MoveTowards(pos, target, currentSpeed * Time.deltaTime);
+        
+        // Handle state-specific behavior
+        HandleStateSpecificBehavior(pos, target);
+        
+        // Handle food logic (only if in walking/running state)
+        if (CanMoveToFood())
         {
-            float distance = Vector2.Distance(pos, target);
-            if (distance > 1f)
-            {
-                // Play walking animation
-                var current = _monsterSpineGraphic.AnimationState.GetCurrent(0);
-                if (current == null || current.Animation.Name != "walking")
-                {
-                    _monsterSpineGraphic.AnimationState.SetAnimation(0, "walking", true);
-                }
-
-                // Handle flipping
-                float dir = target.x - pos.x;
-                if (Mathf.Abs(dir) > 0.1f)
-                {
-                    Vector3 scale = rectTransform.localScale;
-                    scale.x = Mathf.Abs(scale.x) * (dir < 0 ? 1f : -1f);
-                    rectTransform.localScale = scale;
-                }
-            }
-            else
-            {
-                // Play idle animation
-                var current = _monsterSpineGraphic.AnimationState.GetCurrent(0);
-                if (current == null || current.Animation.Name != "idle")
-                    _monsterSpineGraphic.AnimationState.SetAnimation(0, "idle", true);
-            }
+            HandleFoodLogic(pos);
         }
-
-        // Handle food logic
-        HandleFoodLogic(pos);
-
+        
         // Check if reached target
         if (Vector2.Distance(pos, targetPosition) < 10f)
         {
@@ -194,22 +213,85 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
-    private void HandleFoodLogic(Vector2 pos)
+    private bool CanMoveToFood()
     {
-        if (nearestFood != null)
+        return stateMachine.CurrentState == MonsterState.Walking || 
+               stateMachine.CurrentState == MonsterState.Running;
+    }
+
+    private float GetCurrentMoveSpeed()
+    {
+        if (stateMachine == null) return moveSpeed;
+        
+        return stateMachine.CurrentState switch
         {
-            if (_isNearFood)
-            {
-                Feed(nearestFood.nutritionValue);
-                ServiceLocator.Get<GameManager>().DespawnPools(nearestFood.gameObject);
-                nearestFood = null;
-                SetRandomTarget();
-            }
-            else
-            {
-                // Move toward food
-                targetPosition = nearestFood.GetComponent<RectTransform>().anchoredPosition;
-            }
+            MonsterState.Walking => stateMachine.behaviorConfig.walkSpeed,
+            MonsterState.Running => stateMachine.behaviorConfig.runSpeed,
+            MonsterState.Jumping => stateMachine.behaviorConfig.walkSpeed * 0.5f,
+            _ => 0f // Idle, Eating, Itching don't move
+        };
+    }
+
+    private void HandleStateSpecificBehavior(Vector2 pos, Vector2 target)
+    {
+        if (_monsterSpineGraphic == null) return;
+        
+        var state = stateMachine?.CurrentState ?? MonsterState.Idle;
+        
+        // Update animation
+        UpdateAnimation(state);
+        
+        // Handle state-specific logic
+        switch (state)
+        {
+            case MonsterState.Jumping:
+            case MonsterState.Walking:
+            case MonsterState.Running:
+            case MonsterState.Itching:
+                HandleDirectionalFlipping(pos, target);
+                break;
+        }
+    }
+
+    private void UpdateAnimation(MonsterState state)
+    {
+        string animationName = GetAnimationForState(state);
+        var current = _monsterSpineGraphic.AnimationState.GetCurrent(0);
+        
+        if (current == null || current.Animation.Name != animationName)
+        {
+            _monsterSpineGraphic.AnimationState.SetAnimation(0, animationName, true);
+        }
+    }
+
+    private string GetAnimationForState(MonsterState state)
+    {
+        return state switch
+        {
+            MonsterState.Idle => "idle",
+            MonsterState.Walking => "walking",
+            MonsterState.Running => "running",
+            MonsterState.Jumping => "jumping",
+            MonsterState.Itching => "itching",
+            MonsterState.Eating => "eating",
+            _ => "idle"
+        };
+    }
+
+    private void HandleDirectionalFlipping(Vector2 pos, Vector2 target)
+    {
+        if (_monsterSpineGraphic == null) return;
+        
+        float direction = target.x - pos.x;
+        
+        if (Mathf.Abs(direction) > 0.1f)
+        {
+            Transform parentTransform = _monsterSpineGraphic.transform.parent;
+            Transform targetTransform = parentTransform ?? _monsterSpineGraphic.transform;
+            
+            Vector3 scale = targetTransform.localScale;
+            scale.x = direction > 0 ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+            targetTransform.localScale = scale;
         }
     }
 
@@ -232,46 +314,25 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             UnityEngine.Random.Range(minY, maxY)
         );
     }
+    #endregion
 
-    private IEnumerator HungerRoutine()
+    #region Food Logic
+    private void HandleFoodLogic(Vector2 pos)
     {
-        while (true)
+        if (nearestFood != null)
         {
-            currentHunger = Mathf.Clamp(currentHunger - hungerDepletionRate, 0f, 100f);
-            yield return _hungerWait;
-            
-            _hungerInfoCg.alpha = isHovered ? 1 : 0;
-            _hungerText.text = $"Hunger: {currentHunger:F1}%";
-        }
-    }
-
-    private IEnumerator PoopRoutine(float _delay)
-    {
-        float _tempDelay = 20f;
-        yield return new WaitForSeconds(_tempDelay);
-        while (true)
-        {
-            Poop();
-            yield return new WaitForSeconds(_tempDelay);
-        }
-    }
-
-    private IEnumerator FoodScanLoop()
-    {
-        while (true)
-        {
-            FindNearestFood();
-            yield return _foodScanWait;
-        }
-    }
-
-    private IEnumerator CoinCoroutine(float _delay, CoinType type)
-    {
-        yield return new WaitForSeconds(_delay);
-        while (true)
-        {
-            DropCoin(type);
-            yield return new WaitForSeconds(_delay);
+            if (_isNearFood)
+            {
+                Feed(nearestFood.nutritionValue);
+                ServiceLocator.Get<GameManager>().DespawnPools(nearestFood.gameObject);
+                nearestFood = null;
+                SetRandomTarget();
+            }
+            else
+            {
+                // Move toward food
+                targetPosition = nearestFood.GetComponent<RectTransform>().anchoredPosition;
+            }
         }
     }
 
@@ -287,10 +348,11 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         foreach (FoodController food in _gameManager.activeFoods)
         {
             if (food == null) continue;
+            
             RectTransform foodRt = food.GetComponent<RectTransform>();
             Vector2 foodPos = foodRt.anchoredPosition;
-
             float sqrDist = (foodPos - pos).sqrMagnitude;
+            
             if (sqrDist < _foodDetectionRangeSqr && sqrDist < closestSqr)
             {
                 closestSqr = sqrDist;
@@ -303,6 +365,13 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _isNearFood = _cachedFoodDistanceSqr < _eatDistanceSqr;
     }
 
+    public void Feed(float amount)
+    {
+        currentHunger = Mathf.Clamp(currentHunger + amount, 0f, 100f);
+    }
+    #endregion
+
+    #region Save/Load System
     public void SaveMonData()
     {
         var data = new MonsterSaveData
@@ -320,51 +389,121 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         if (monsterData == null)
         {
-            Debug.LogError($"No MonsterDataSO found for monID: {monsterID}");
+            InitializeAsNewMonster();
             return;
         }
 
         if (SaveSystem.LoadMon(monsterID, out MonsterSaveData savedData))
         {
-            currentHunger = savedData.lastHunger;
-            monsterID = savedData.monsterId;
-            monsterData.isEvolved = savedData.isEvolved;
-            monsterData.isFinalEvol = savedData.isFinalForm;
-            monsterData.evolutionLevel = savedData.evolutionLevel;
+            LoadFromSaveData(savedData);
         }
         else
         {
-            currentHunger = 100f;
+            InitializeAsNewMonster();
+        }
+
+        ApplyMonsterDataStats();
+    }
+
+    private void LoadFromSaveData(MonsterSaveData savedData)
+    {
+        currentHunger = savedData.lastHunger;
+        monsterID = savedData.monsterId;
+        monsterData.isEvolved = savedData.isEvolved;
+        monsterData.isFinalEvol = savedData.isFinalForm;
+        monsterData.evolutionLevel = savedData.evolutionLevel;
+    }
+
+    private void InitializeAsNewMonster()
+    {
+        currentHunger = 100f;
+        if (monsterData != null)
+        {
             monsterData.isEvolved = false;
             monsterData.isFinalEvol = false;
             monsterData.evolutionLevel = 0;
         }
+    }
 
-        moveSpeed = monsterData.moveSpd;
-        hungerDepletionRate = monsterData.hungerDepleteRate;
-        poopInterval = monsterData.poopRate;
-
-        if (monsterData.monsImgs != null && monsterData.monsImgs.Length > 0)
+    private void ApplyMonsterDataStats()
+    {
+        if (monsterData != null)
         {
-            int imgIndex = monsterData.isEvolved ? 1 : 0;
-            imgIndex = Mathf.Clamp(imgIndex, 0, monsterData.monsImgs.Length - 1);
-            monsterImage.sprite = monsterData.monsImgs[imgIndex];
+            moveSpeed = monsterData.moveSpd;
+            hungerDepletionRate = monsterData.hungerDepleteRate;
+            poopInterval = monsterData.poopRate;
+        }
+    }
+    #endregion
+
+    #region Coroutines
+    private IEnumerator HungerRoutine()
+    {
+        while (true)
+        {
+            currentHunger = Mathf.Clamp(currentHunger - hungerDepletionRate, 0f, 100f);
+            yield return _hungerWait;
+            
+            UpdateHungerUI();
         }
     }
 
-    public void Feed(float amount)
+    private IEnumerator PoopRoutine()
     {
-        currentHunger = Mathf.Clamp(currentHunger + amount, 0f, 100f);
+        yield return new WaitForSeconds(20f); // Initial delay
+        
+        while (true)
+        {
+            Poop();
+            yield return new WaitForSeconds(20f);
+        }
     }
 
-    private void Poop()
+    private IEnumerator FoodScanLoop()
     {
-        ServiceLocator.Get<GameManager>().SpawnPoopAt(rectTransform.anchoredPosition);
+        while (true)
+        {
+            FindNearestFood();
+            yield return _foodScanWait;
+        }
     }
 
-    private void DropCoin(CoinType type)
+    private IEnumerator CoinCoroutine(float delay, CoinType type)
     {
-        ServiceLocator.Get<GameManager>().SpawnCoinAt(rectTransform.anchoredPosition, type);
+        yield return new WaitForSeconds(delay);
+        
+        while (true)
+        {
+            DropCoin(type);
+            yield return new WaitForSeconds(delay);
+        }
+    }
+    #endregion
+
+    #region Actions
+    private void Poop() => ServiceLocator.Get<GameManager>().SpawnPoopAt(rectTransform.anchoredPosition);
+
+    private void DropCoin(CoinType type) => ServiceLocator.Get<GameManager>().SpawnCoinAt(rectTransform.anchoredPosition, type);
+
+    private void OnStateChanged(MonsterState newState)
+    {
+        switch (newState)
+        {
+            case MonsterState.Jumping:
+                SetRandomTarget(); // Jump to new location
+                break;
+            case MonsterState.Eating:
+                // Stop moving while eating, visual changes handled in animation
+                break;
+        }
+    }
+    #endregion
+
+    #region UI
+    private void UpdateHungerUI()
+    {
+        _hungerInfoCg.alpha = isHovered ? 1 : 0;
+        _hungerText.text = $"Hunger: {currentHunger:F1}%";
     }
 
     private void ToggleHungerUI(bool show)
@@ -373,6 +512,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         if (show)
             _hungerText.text = $"Hunger: {currentHunger:F1}%";
     }
+    #endregion
 }
 
 

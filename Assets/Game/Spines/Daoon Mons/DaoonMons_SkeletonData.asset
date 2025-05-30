@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DaoonMons_SkeletonData
   m_EditorClassIdentifier: 
   atlasAssets:
-  - {fileID: 11400000, guid: 637e37e33f755544b96989705b330f80, type: 2}
+  - {fileID: 11400000, guid: dec06330e74f7e9449c5ec73caa02b27, type: 2}
   scale: 0.01
-  skeletonJSON: {fileID: 4900000, guid: 7d2e71972d2f4834a8cebf9296b3c627, type: 3}
+  skeletonJSON: {fileID: 4900000, guid: e9aa6bb9220a6124fa019d1f6fb5adb8, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
     requiresBlendModeMaterials: 0
@@ -28,4 +28,4 @@ MonoBehaviour:
   toAnimation: []
   duration: []
   defaultMix: 0.2
-  controller: {fileID: 0}
+  controller: {fileID: 9100000, guid: 39f1c1c407aeb5d4aba4192959cb65a6, type: 2}

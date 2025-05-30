@@ -6,7 +6,7 @@ public static class SaveSystem
     // Global game state
     private const string CoinKey = "Coin";
     private const string PoopKey = "Poop";
-    private const string SavedPetsKey = "SavedPetIDs";
+    private const string MonsterKey = "MonsterIDs";
 
     public static void SaveCoin(int money) => PlayerPrefs.SetInt(CoinKey, money);
     public static int LoadCoin() => PlayerPrefs.GetInt(CoinKey, 100);
@@ -36,12 +36,12 @@ public static class SaveSystem
 
     public static void SaveMonIDs(List<string> ids)
     {
-        PlayerPrefs.SetString(SavedPetsKey, string.Join(",", ids));
+        PlayerPrefs.SetString(MonsterKey, string.Join(",", ids));
     }
 
     public static List<string> LoadSavedMonIDs()
     {
-        string csv = PlayerPrefs.GetString(SavedPetsKey, "");
+        string csv = PlayerPrefs.GetString(MonsterKey, "");
         return string.IsNullOrEmpty(csv)
             ? new List<string>()
             : new List<string>(csv.Split(','));
@@ -52,10 +52,10 @@ public static class SaveSystem
     {
         PlayerPrefs.DeleteKey(CoinKey);
         PlayerPrefs.DeleteKey(PoopKey);
-        PlayerPrefs.DeleteKey(SavedPetsKey);
+        PlayerPrefs.DeleteKey(MonsterKey);
 
         // Clear all pet data
-        var keys = PlayerPrefs.GetString(SavedPetsKey, "").Split(',');
+        var keys = PlayerPrefs.GetString(MonsterKey, "").Split(',');
         foreach (var key in keys)
         {
             if (!string.IsNullOrEmpty(key))
