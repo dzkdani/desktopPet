@@ -97,9 +97,12 @@ public class MonsterStateMachine : MonoBehaviour
         _previousState = _currentState;
         _currentState = newState;
         _stateTimer = 0f;
-        _currentStateDuration = GetStateDuration(newState);
-
+        
+        // Trigger state change event
         OnStateChanged?.Invoke(_currentState);
+        
+        // Set the duration based on the new state
+        _currentStateDuration = GetStateDuration(newState);
     }
 
     private float GetStateDuration(MonsterState state)
@@ -143,12 +146,22 @@ public class MonsterStateMachine : MonoBehaviour
 
     public void ForceState(MonsterState newState)
     {
-        // If forcing a poke state, start the cooldown timer
         if (newState == MonsterState.Jumping || newState == MonsterState.Itching)
         {
+            // Start poke cooldown to prevent rapid state changes
             _pokeCooldownTimer = POKE_COOLDOWN_DURATION;
         }
         
         ChangeState(newState);
+        
+        // Set a fixed short duration for poke animations
+        if (newState == MonsterState.Jumping || newState == MonsterState.Itching)
+        {
+            _currentStateDuration = Random.Range(1f, 3f); // Short duration for poke animations
+        }
+        else
+        {
+            _currentStateDuration = GetStateDuration(newState);
+        }
     }
 }

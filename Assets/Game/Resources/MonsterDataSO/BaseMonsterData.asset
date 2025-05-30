@@ -19,6 +19,8 @@ MonoBehaviour:
   moveSpd: 100
   hungerDepleteRate: 0.1
   poopRate: 20
+  pokeHappinessValue: 2
+  areaHappinessRate: 0.1
   clickToCollectPoop: 1
   canEvolve: 0
   isEvolved: 0

@@ -21,10 +21,10 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 {
     [Header("Monster Data")]
     public float hungerDepletionRate = 0.1f;
-    public float happinessDepletionRate = 0.05f; // Add happiness depletion rate
+    public float happinessDepletionRate = 0.05f; // This will be overridden by area-based system
     public float poopInterval = 20f;
     public float hungerThresholdToEat = 30f;
-    public float happinessThresholdForBehavior = 50f; // Add happiness threshold
+    public float happinessThresholdForBehavior = 50f;
     public float moveSpeed = 100f;
     public float foodDetectionRange = 200f;
     public float eatDistance = 30f;
@@ -32,6 +32,10 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public bool isEvolved;
     public bool isFinalForm;
     public int evolutionLevel;
+
+    [Header("Happiness System")]
+    public float pokeHappinessIncrease = 2f; // Changed from 15f to 2f
+    public float areaHappinessRate = 0.2f; // Changed from 0.1f to 0.2f
 
     [Header("Monster Visual")]
     public GameObject hungerInfo;
@@ -426,6 +430,26 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         currentHappiness = Mathf.Clamp(currentHappiness + amount, 0f, 100f);
     }
 
+    private void UpdateHappinessBasedOnArea()
+    {
+        var gameManager = ServiceLocator.Get<GameManager>();
+        if (gameManager?.gameArea == null) return;
+
+        float gameAreaWidth = gameManager.gameArea.sizeDelta.x;
+        float screenWidth = Screen.currentResolution.width;
+        float widthRatio = gameAreaWidth / screenWidth;
+
+        if (widthRatio >= 0.5f) // Half or more than screen width
+        {
+            // Passively increase happiness
+            currentHappiness = Mathf.Clamp(currentHappiness + areaHappinessRate, 0f, 100f);
+        }
+        else // Less than half of screen width
+        {
+            // Passively decrease happiness
+            currentHappiness = Mathf.Clamp(currentHappiness - areaHappinessRate, 0f, 100f);
+        }
+    }
     #endregion
 
     #region Save/Load System
@@ -435,7 +459,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         {
             monsterId = monsterID,
             lastHunger = currentHunger,
-            lastHappiness = currentHappiness, // Save happiness
+            lastHappiness = currentHappiness, 
             isEvolved = isEvolved,
             isFinalForm = isFinalForm,
             evolutionLevel = evolutionLevel
@@ -466,7 +490,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void LoadFromSaveData(MonsterSaveData savedData)
     {
         currentHunger = savedData.lastHunger;
-        currentHappiness = savedData.lastHappiness; // Load happiness
+        currentHappiness = savedData.lastHappiness; 
         monsterID = savedData.monsterId;
         monsterData.isEvolved = savedData.isEvolved;
         monsterData.isFinalEvol = savedData.isFinalForm;
@@ -476,7 +500,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void InitializeAsNewMonster()
     {
         currentHunger = 100f;
-        currentHappiness = 100f; // Initialize happiness for new monsters
+        currentHappiness = 0f; 
         if (monsterData != null)
         {
             monsterData.isEvolved = false;
@@ -491,8 +515,11 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         {
             moveSpeed = monsterData.moveSpd;
             hungerDepletionRate = monsterData.hungerDepleteRate;
-            happinessDepletionRate = monsterData.happinessDepleteRate; // Apply happiness depletion rate
             poopInterval = monsterData.poopRate;
+            
+            // Apply happiness system values from ScriptableObject
+            pokeHappinessIncrease = monsterData.pokeHappinessValue;
+            areaHappinessRate = monsterData.areaHappinessRate;
         }
     }
     #endregion
@@ -513,7 +540,8 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         while (true)
         {
-            currentHappiness = Mathf.Clamp(currentHappiness - happinessDepletionRate, 0f, 100f);
+            // Area-based happiness system
+            UpdateHappinessBasedOnArea();
             yield return _happinessWait;
             
             UpdateHappinessUI();
@@ -568,8 +596,8 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         // Start poke cooldown
         _pokeCooldownTimer = POKE_COOLDOWN_DURATION;
 
-        // Increase happiness when poked
-        IncreaseHappiness(15f);
+        // Increase happiness when poked with customizable value
+        IncreaseHappiness(pokeHappinessIncrease);
 
         // Set flag to drop coin after animation finishes
         _shouldDropCoinAfterPoke = true;
@@ -577,7 +605,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         // Choose random poke animation (jumping or itching)
         MonsterState pokeState = UnityEngine.Random.Range(0, 2) == 0 ? MonsterState.Jumping : MonsterState.Itching;
         
-        // Force the state machine to change to the poke state
+        // Force the state machine to change to the poke state with a specific duration
         if (stateMachine != null)
         {
             stateMachine.ForceState(pokeState);

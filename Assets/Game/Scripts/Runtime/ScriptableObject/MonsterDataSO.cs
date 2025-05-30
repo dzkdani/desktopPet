@@ -16,15 +16,21 @@ public class MonsterDataSO : ScriptableObject
     [Header("Stats")]
     public float moveSpd = 100f;       // Move speed
     public float hungerDepleteRate = 0.1f;  // How fast hunger depletes
-    public float happinessDepleteRate = 0.05f; // How fast happiness depletes
     public float poopRate = 20f;     // Default: 20 minutes
+    
+    [Header("Happiness System")]
+    public float pokeHappinessValue = 2f; // Customizable poke happiness increase - changed from 15f to 2f
+    public float areaHappinessRate = 0.2f; // Rate of happiness change based on area - changed from 0.1f to 0.2f
+
     [Header("Poop Behavior")]
     public bool clickToCollectPoop = true;
+    
     [Header("Evolution")]
     public bool canEvolve = false;
     public bool isEvolved = false; // Is this evolved?
     public bool isFinalEvol = false; // Is this the final form of the ?
     public int evolutionLevel = 0; // Current evolution level
+    
     [Header("Spine Data")]
     public SkeletonDataAsset[] monsterSpine;
 
