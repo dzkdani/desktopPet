@@ -84,6 +84,7 @@ public class MonsterStateMachine : MonoBehaviour
 
             if (transition.requiresFood && _controller.nearestFood == null) continue;
             if (_controller.currentHunger < transition.hungerThreshold) continue;
+            if (_controller.currentHappiness < transition.happinessThreshold) continue; // Add happiness check
 
             valid.Add(transition);
         }

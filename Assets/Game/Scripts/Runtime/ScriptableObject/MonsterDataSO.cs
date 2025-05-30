@@ -16,6 +16,7 @@ public class MonsterDataSO : ScriptableObject
     [Header("Stats")]
     public float moveSpd = 100f;       // Move speed
     public float hungerDepleteRate = 0.1f;  // How fast hunger depletes
+    public float happinessDepleteRate = 0.05f; // How fast happiness depletes
     public float poopRate = 20f;     // Default: 20 minutes
     [Header("Poop Behavior")]
     public bool clickToCollectPoop = true;

@@ -5,20 +5,20 @@ using UnityEngine.UI;
 public class FoodController : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     FoodDataSO foodData;
-    public float nutritionValue;
+    public float nutritionValue ;
     [SerializeField] private bool isRotten = false;
     [SerializeField] private Image foodImages;
     public bool IsBeingDragged { get; private set; }
 
     private RectTransform rectTransform;
     private Vector2 dragOffset;
-
-    private void Awake()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-    }
+    } 
     public void Initialize(FoodDataSO data)
-    {
+    {    
         foodData = data;
         nutritionValue = foodData.nutritionValue;
         isRotten = false;

@@ -98,6 +98,7 @@ public class GameManager : MonoBehaviour
             {
                 monsterId = monster.monsterID,
                 lastHunger = monster.currentHunger,
+                lastHappiness = monster.currentHappiness, // Save happiness
                 isEvolved = monster.isEvolved,
             };
             SaveSystem.SaveMon(saveData);

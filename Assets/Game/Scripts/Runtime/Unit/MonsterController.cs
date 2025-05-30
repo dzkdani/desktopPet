@@ -11,6 +11,7 @@ public class MonsterSaveData
 {
     public string monsterId;
     public float lastHunger;
+    public float lastHappiness; // Add happiness to save data
     public bool isEvolved;
     public bool isFinalForm;
     public int evolutionLevel;
@@ -20,8 +21,10 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 {
     [Header("Monster Data")]
     public float hungerDepletionRate = 0.1f;
+    public float happinessDepletionRate = 0.05f; // Add happiness depletion rate
     public float poopInterval = 20f;
     public float hungerThresholdToEat = 30f;
+    public float happinessThresholdForBehavior = 50f; // Add happiness threshold
     public float moveSpeed = 100f;
     public float foodDetectionRange = 200f;
     public float eatDistance = 30f;
@@ -32,19 +35,21 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     [Header("Monster Visual")]
     public GameObject hungerInfo;
+    public GameObject happinessInfo; // Add happiness UI
     [SerializeField] private TextMeshProUGUI hungerText;
+    [SerializeField] private TextMeshProUGUI happinessText; // Add happiness text
     public Color normalColor = Color.white;
     public Color hungryColor = Color.red;
+    public Color sadColor = Color.blue; // Add sad color for low happiness
     public string monsterID;
     public SkeletonGraphic monsterSpine;
-
-    [Header("State Machine")]
-    public MonsterStateMachine stateMachine;
 
     // Cached Components
     private SkeletonGraphic _monsterSpineGraphic;
     private TextMeshProUGUI _hungerText;
+    private TextMeshProUGUI _happinessText; // Add happiness text cache
     private CanvasGroup _hungerInfoCg;
+    private CanvasGroup _happinessInfoCg; // Add happiness UI cache
     private RectTransform rectTransform;
     private GameManager _gameManager;
     private RectTransform _nearestFoodRect;
@@ -64,21 +69,29 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     // Coroutines
     private Coroutine _hungerRoutine;
+    private Coroutine _happinessRoutine; // Add happiness coroutine
     private Coroutine _poopRoutine;
     private Coroutine _foodRoutine;
     private Coroutine _goldCoinRoutine;
     private Coroutine _silverCoinRoutine;
 
+    // State Machine
+    private MonsterStateMachine stateMachine;
+
     private readonly WaitForSeconds _foodScanWait = new WaitForSeconds(2f);
     private readonly WaitForSeconds _hungerWait = new WaitForSeconds(1f);
+    private readonly WaitForSeconds _happinessWait = new WaitForSeconds(1f); // Add happiness wait
 
     // Properties
     public FoodController nearestFood { get; private set; }
 
     public event Action<float> OnHungerChanged;
+    public event Action<float> OnHappinessChanged; // Add happiness event
     public event Action<bool> OnHoverChanged;
 
     private float _currentHunger = 100f;
+    private float _currentHappiness = 100f; // Add current happiness
+
     public float currentHunger
     {
         get => _currentHunger;
@@ -87,6 +100,17 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             if (Mathf.Approximately(_currentHunger, value)) return;
             _currentHunger = value;
             OnHungerChanged?.Invoke(_currentHunger);
+        }
+    }
+
+    public float currentHappiness // Add happiness property
+    {
+        get => _currentHappiness;
+        private set
+        {
+            if (Mathf.Approximately(_currentHappiness, value)) return;
+            _currentHappiness = value;
+            OnHappinessChanged?.Invoke(_currentHappiness);
         }
     }
 
@@ -136,10 +160,13 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         rectTransform = GetComponent<RectTransform>();
         _monsterSpineGraphic = monsterSpine;
         _hungerText = hungerText;
+        _happinessText = happinessText;
         _hungerInfoCg = hungerInfo.GetComponent<CanvasGroup>();
+        _happinessInfoCg = happinessInfo.GetComponent<CanvasGroup>();
         
         // Initialize UI
         _hungerInfoCg.alpha = 0;
+        _happinessInfoCg.alpha = 0;
         
         // Initialize Spine animation
         if (_monsterSpineGraphic != null)
@@ -173,12 +200,14 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         StartCoroutines();
         OnHoverChanged += ToggleHungerUI;
+        OnHoverChanged += ToggleHappinessUI; // Add happiness UI toggle
     }
 
     private void OnDisable()
     {
         StopAllCoroutines();
         OnHoverChanged -= ToggleHungerUI;
+        OnHoverChanged -= ToggleHappinessUI; // Remove happiness UI toggle
     }
 
     private void Update()
@@ -198,6 +227,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         _foodRoutine = StartCoroutine(FoodScanLoop());
         _hungerRoutine = StartCoroutine(HungerRoutine());
+        _happinessRoutine = StartCoroutine(HappinessRoutine()); // Start happiness routine
         _poopRoutine = StartCoroutine(PoopRoutine());
         _goldCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes((double)CoinType.Gold).TotalSeconds, CoinType.Gold));
         _silverCoinRoutine = StartCoroutine(CoinCoroutine((float)TimeSpan.FromMinutes((double)CoinType.Silver).TotalSeconds, CoinType.Silver));
@@ -387,7 +417,15 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void Feed(float amount)
     {
         currentHunger = Mathf.Clamp(currentHunger + amount, 0f, 100f);
+        // Feeding also increases happiness slightly
+        IncreaseHappiness(amount * 0.3f);
     }
+
+    public void IncreaseHappiness(float amount) // Add happiness increase method
+    {
+        currentHappiness = Mathf.Clamp(currentHappiness + amount, 0f, 100f);
+    }
+
     #endregion
 
     #region Save/Load System
@@ -397,6 +435,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         {
             monsterId = monsterID,
             lastHunger = currentHunger,
+            lastHappiness = currentHappiness, // Save happiness
             isEvolved = isEvolved,
             isFinalForm = isFinalForm,
             evolutionLevel = evolutionLevel
@@ -427,6 +466,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void LoadFromSaveData(MonsterSaveData savedData)
     {
         currentHunger = savedData.lastHunger;
+        currentHappiness = savedData.lastHappiness; // Load happiness
         monsterID = savedData.monsterId;
         monsterData.isEvolved = savedData.isEvolved;
         monsterData.isFinalEvol = savedData.isFinalForm;
@@ -436,6 +476,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void InitializeAsNewMonster()
     {
         currentHunger = 100f;
+        currentHappiness = 100f; // Initialize happiness for new monsters
         if (monsterData != null)
         {
             monsterData.isEvolved = false;
@@ -450,6 +491,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         {
             moveSpeed = monsterData.moveSpd;
             hungerDepletionRate = monsterData.hungerDepleteRate;
+            happinessDepletionRate = monsterData.happinessDepleteRate; // Apply happiness depletion rate
             poopInterval = monsterData.poopRate;
         }
     }
@@ -464,6 +506,17 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             yield return _hungerWait;
             
             UpdateHungerUI();
+        }
+    }
+
+    private IEnumerator HappinessRoutine() // Add happiness routine
+    {
+        while (true)
+        {
+            currentHappiness = Mathf.Clamp(currentHappiness - happinessDepletionRate, 0f, 100f);
+            yield return _happinessWait;
+            
+            UpdateHappinessUI();
         }
     }
 
@@ -515,6 +568,9 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         // Start poke cooldown
         _pokeCooldownTimer = POKE_COOLDOWN_DURATION;
 
+        // Increase happiness when poked
+        IncreaseHappiness(15f);
+
         // Set flag to drop coin after animation finishes
         _shouldDropCoinAfterPoke = true;
         
@@ -558,11 +614,38 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _hungerText.text = $"Hunger: {currentHunger:F1}%";
     }
 
+    private void UpdateHappinessUI() // Add happiness UI update
+    {
+        _happinessInfoCg.alpha = isHovered ? 1 : 0;
+        _happinessText.text = $"Happiness: {currentHappiness:F1}%";
+        
+        // Change color based on happiness level
+        if (currentHappiness < 30f)
+            _happinessText.color = sadColor;
+        else
+            _happinessText.color = normalColor;
+    }
+
     private void ToggleHungerUI(bool show)
     {
         _hungerInfoCg.alpha = show ? 1 : 0;
         if (show)
             _hungerText.text = $"Hunger: {currentHunger:F1}%";
+    }
+
+    private void ToggleHappinessUI(bool show) // Add happiness UI toggle
+    {
+        _happinessInfoCg.alpha = show ? 1 : 0;
+        if (show)
+        {
+            _happinessText.text = $"Happiness: {currentHappiness:F1}%";
+            
+            // Change color based on happiness level
+            if (currentHappiness < 30f)
+                _happinessText.color = sadColor;
+            else
+                _happinessText.color = normalColor;
+        }
     }
     #endregion
 }
