@@ -1,0 +1,65 @@
+Maple Dragoon Stage 1.png
+size:2048,2048
+filter:Linear,Linear
+Blush
+bounds:816,1951,379,93
+offsets:4,5,386,103
+Body
+bounds:552,1536,601,413
+offsets:0,0,602,413
+rotate:180
+Eyes Closed L
+bounds:1525,2020,91,24
+offsets:1,1,93,26
+Eyes Closed R
+bounds:1197,2022,73,22
+offsets:1,4,76,27
+Eyes Half L
+bounds:1950,1738,76,71
+offsets:1,1,78,73
+Eyes Half R
+bounds:1957,1681,68,55
+offsets:1,1,72,60
+Eyes open L
+bounds:1957,1811,72,85
+Eyes open R
+bounds:522,1785,68,85
+Foot L
+bounds:1626,1547,199,187
+rotate:180
+Foot R
+bounds:325,1683,197,187
+offsets:0,0,199,187
+Hand L
+bounds:607,1739,131,140
+rotate:90
+Hand R
+bounds:1914,1898,83,146
+Head
+bounds:1156,1613,494,431
+rotate:180
+Horn Ear L
+bounds:2,1632,180,238
+offsets:1,1,182,240
+Horn Ear R
+bounds:184,1632,139,238
+offsets:1,1,141,240
+Mouth Closed
+bounds:1090,1918,81,31
+offsets:1,1,83,33
+Mouth Open
+bounds:1999,1957,87,45
+rotate:90
+Shadow
+bounds:2,1872,812,172
+offsets:12,8,837,190
+Spine
+bounds:1147,1542,158,144
+offsets:3,0,161,144
+rotate:270
+Tail Tip
+bounds:325,1530,151,161
+offsets:1,1,153,163
+rotate:90
+Wng
+bounds:1614,1677,341,367

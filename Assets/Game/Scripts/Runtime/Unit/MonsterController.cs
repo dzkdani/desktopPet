@@ -435,16 +435,16 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         var gameManager = ServiceLocator.Get<GameManager>();
         if (gameManager?.gameArea == null) return;
 
-        float gameAreaWidth = gameManager.gameArea.sizeDelta.x;
-        float screenWidth = Screen.currentResolution.width;
-        float widthRatio = gameAreaWidth / screenWidth;
+        float gameAreaHeight = gameManager.gameArea.sizeDelta.y;
+        float screenHeight = Screen.currentResolution.height;
+        float heightRatio = gameAreaHeight / screenHeight;
 
-        if (widthRatio >= 0.5f) // Half or more than screen width
+        if (heightRatio >= 0.5f) // Half or more than screen height
         {
             // Passively increase happiness
             currentHappiness = Mathf.Clamp(currentHappiness + areaHappinessRate, 0f, 100f);
         }
-        else // Less than half of screen width
+        else // Less than half of screen height
         {
             // Passively decrease happiness
             currentHappiness = Mathf.Clamp(currentHappiness - areaHappinessRate, 0f, 100f);
