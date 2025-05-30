@@ -7,11 +7,17 @@ public class MonsterStateMachine : MonoBehaviour
     public MonsterBehaviorConfigSO behaviorConfig;
 
     private MonsterState _currentState = MonsterState.Idle;
+    private MonsterState _previousState = MonsterState.Idle;
     private float _stateTimer;
     private float _currentStateDuration;
     private MonsterController _controller;
 
+    // Cooldown for poke animations
+    private float _pokeCooldownTimer = 0f;
+    private const float POKE_COOLDOWN_DURATION = 5f; // 5 seconds cooldown after poke
+
     public MonsterState CurrentState => _currentState;
+    public MonsterState PreviousState => _previousState;
     public event System.Action<MonsterState> OnStateChanged;
 
     private void Start()
@@ -23,6 +29,12 @@ public class MonsterStateMachine : MonoBehaviour
     private void Update()
     {
         _stateTimer += Time.deltaTime;
+        
+        // Update poke cooldown timer
+        if (_pokeCooldownTimer > 0f)
+        {
+            _pokeCooldownTimer -= Time.deltaTime;
+        }
 
         if (_stateTimer >= _currentStateDuration)
         {
@@ -65,6 +77,11 @@ public class MonsterStateMachine : MonoBehaviour
         {
             if (transition.fromState != _currentState) continue;
 
+            // Prevent re-entry into poke animations while cooldown is active
+            if (_pokeCooldownTimer > 0f && 
+                (transition.toState == MonsterState.Jumping || transition.toState == MonsterState.Itching))
+                continue;
+
             if (transition.requiresFood && _controller.nearestFood == null) continue;
             if (_controller.currentHunger < transition.hungerThreshold) continue;
 
@@ -76,6 +93,7 @@ public class MonsterStateMachine : MonoBehaviour
 
     private void ChangeState(MonsterState newState)
     {
+        _previousState = _currentState;
         _currentState = newState;
         _stateTimer = 0f;
         _currentStateDuration = GetStateDuration(newState);
@@ -120,5 +138,16 @@ public class MonsterStateMachine : MonoBehaviour
             
             _ => 2f
         };
+    }
+
+    public void ForceState(MonsterState newState)
+    {
+        // If forcing a poke state, start the cooldown timer
+        if (newState == MonsterState.Jumping || newState == MonsterState.Itching)
+        {
+            _pokeCooldownTimer = POKE_COOLDOWN_DURATION;
+        }
+        
+        ChangeState(newState);
     }
 }

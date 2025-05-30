@@ -15,7 +15,7 @@ MonoBehaviour:
   transitions:
   - fromState: 0
     toState: 3
-    probability: 0.7
+    probability: 0.3
     minDuration: 1
     maxDuration: 3
     requiresFood: 0

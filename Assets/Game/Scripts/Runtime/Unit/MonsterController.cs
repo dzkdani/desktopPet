@@ -16,7 +16,7 @@ public class MonsterSaveData
     public int evolutionLevel;
 }
 
-public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [Header("Monster Data")]
     public float hungerDepletionRate = 0.1f;
@@ -56,6 +56,11 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private float _cachedFoodDistanceSqr = float.MaxValue;
     private bool _isNearFood = false;
     private bool isLoaded = false;
+    private bool _shouldDropCoinAfterPoke = false; // Add this flag
+
+    // Poke cooldown
+    private float _pokeCooldownTimer = 0f;
+    private const float POKE_COOLDOWN_DURATION = 5f; // 5 seconds cooldown for poke action
 
     // Coroutines
     private Coroutine _hungerRoutine;
@@ -99,6 +104,13 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void OnPointerEnter(PointerEventData e) => isHovered = true;
     public void OnPointerExit(PointerEventData e) => isHovered = false;
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (isHovered)
+        {
+            Poke();
+        }
+    }
 
     #region Initialization
     private void Awake()
@@ -172,6 +184,13 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void Update()
     {
         if (!isLoaded) return;
+        
+        // Update poke cooldown timer
+        if (_pokeCooldownTimer > 0f)
+        {
+            _pokeCooldownTimer -= Time.deltaTime;
+        }
+        
         HandleMovement();
     }
 
@@ -227,7 +246,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         {
             MonsterState.Walking => stateMachine.behaviorConfig.walkSpeed,
             MonsterState.Running => stateMachine.behaviorConfig.runSpeed,
-            MonsterState.Jumping => stateMachine.behaviorConfig.walkSpeed * 0.5f,
+            MonsterState.Jumping => 0f, // No movement during jumping
             _ => 0f // Idle, Eating, Itching don't move
         };
     }
@@ -485,15 +504,48 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void DropCoin(CoinType type) => ServiceLocator.Get<GameManager>().SpawnCoinAt(rectTransform.anchoredPosition, type);
 
+    public void Poke()
+    {
+        // Check if poke is on cooldown
+        if (_pokeCooldownTimer > 0f)
+        {
+            return; // Ignore poke if on cooldown
+        }
+
+        // Start poke cooldown
+        _pokeCooldownTimer = POKE_COOLDOWN_DURATION;
+
+        // Set flag to drop coin after animation finishes
+        _shouldDropCoinAfterPoke = true;
+        
+        // Choose random poke animation (jumping or itching)
+        MonsterState pokeState = UnityEngine.Random.Range(0, 2) == 0 ? MonsterState.Jumping : MonsterState.Itching;
+        
+        // Force the state machine to change to the poke state
+        if (stateMachine != null)
+        {
+            stateMachine.ForceState(pokeState);
+        }
+    }
+
     private void OnStateChanged(MonsterState newState)
     {
+        // Check if we just finished a poke animation and need to drop a coin
+        if (_shouldDropCoinAfterPoke && 
+            (stateMachine.PreviousState == MonsterState.Jumping || stateMachine.PreviousState == MonsterState.Itching) &&
+            newState != MonsterState.Jumping && newState != MonsterState.Itching)
+        {
+            DropCoin(CoinType.Silver);
+            _shouldDropCoinAfterPoke = false;
+        }
+
         switch (newState)
         {
             case MonsterState.Jumping:
-                SetRandomTarget(); // Jump to new location
+                // Don't move during jumping - movement speed is set to 0
                 break;
             case MonsterState.Eating:
-                // Stop moving while eating, visual changes handled in animation
+                // Stop moving while eating
                 break;
         }
     }
