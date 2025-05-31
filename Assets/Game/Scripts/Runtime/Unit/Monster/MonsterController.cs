@@ -46,7 +46,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private Coroutine _hungerCoroutine;
     private Coroutine _happinessCoroutine;
     private Coroutine _poopCoroutine;
-    private Coroutine _foodScanCoroutine;
     private Coroutine _goldCoinCoroutine;
     private Coroutine _silverCoinCoroutine;
 
@@ -124,7 +123,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _stateMachine = GetComponent<MonsterStateMachine>();
         if (_stateMachine != null)
         {
-            _stateMachine.OnStateChanged += OnStateChanged;
             _interactionHandler = new MonsterInteractionHandler(this, _stateMachine);
         }
     }
@@ -174,7 +172,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         float silverCoinInterval = (float)TimeSpan.FromMinutes((double)CoinType.Silver).TotalSeconds;
         float poopInterval = (float)TimeSpan.FromMinutes(20).TotalSeconds;
 
-        _foodScanCoroutine = StartCoroutine(FoodScanLoop(2f));
         _hungerCoroutine = StartCoroutine(HungerRoutine(1f));
         _happinessCoroutine = StartCoroutine(HappinessRoutine(1f));
         _poopCoroutine = StartCoroutine(PoopRoutine(poopInterval));
@@ -187,44 +184,54 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         if (_hungerCoroutine != null) StopCoroutine(_hungerCoroutine);
         if (_happinessCoroutine != null) StopCoroutine(_happinessCoroutine);
         if (_poopCoroutine != null) StopCoroutine(_poopCoroutine);
-        if (_foodScanCoroutine != null) StopCoroutine(_foodScanCoroutine);
         if (_goldCoinCoroutine != null) StopCoroutine(_goldCoinCoroutine);
         if (_silverCoinCoroutine != null) StopCoroutine(_silverCoinCoroutine);
     }
 
     private void HandleMovement()
     {
-        // Don't process movement logic while eating
         if (_stateMachine?.CurrentState == MonsterState.Eating)
+        {
             return;
-            
+        }
+        
+        if (_foodHandler?.IsEating == true)
+        {
+            return;
+        }
+        
+        bool isMovementState = _stateMachine?.CurrentState == MonsterState.Walking || 
+                              _stateMachine?.CurrentState == MonsterState.Running;
+        
+        if (isMovementState && _foodHandler?.NearestFood == null)
+        {
+            _foodHandler?.FindNearestFood();
+        }
+        
+        if (isMovementState && _foodHandler?.NearestFood != null)
+        {
+            _foodHandler?.HandleFoodLogic(ref _targetPosition);
+        }
+
         _movementHandler.UpdateMovement(ref _targetPosition, stats);
 
-        if (_stateMachine?.CurrentState == MonsterState.Walking ||
-            _stateMachine?.CurrentState == MonsterState.Running)
-            _foodHandler?.HandleFoodLogic(ref _targetPosition);
-
-        if (Vector2.Distance(_rectTransform.anchoredPosition, _targetPosition) < 10f)
+        bool isPursuingFood = _foodHandler?.NearestFood != null;
+        float distanceToTarget = Vector2.Distance(_rectTransform.anchoredPosition, _targetPosition);
+        if (distanceToTarget < 10f && !isPursuingFood && isMovementState)
+        {
             SetRandomTarget();
+        }
     }
 
-    private void OnStateChanged(MonsterState newState)
+    public void TriggerEating() 
     {
-        if (_shouldDropCoinAfterPoke &&
-            (_stateMachine.PreviousState == MonsterState.Jumping || _stateMachine.PreviousState == MonsterState.Itching) &&
-            newState != MonsterState.Jumping && newState != MonsterState.Itching)
-        {
-            DropCoin(CoinType.Silver);
-            _shouldDropCoinAfterPoke = false;
-        }
+        _stateMachine?.ForceState(MonsterState.Eating);
     }
 
     public void SetRandomTarget()
     {
         _targetPosition = _movementBounds?.GetRandomTarget() ?? Vector2.zero;
     }
-
-    public void TriggerEating() => _stateMachine?.ForceState(MonsterState.Eating);
 
     public void SetHunger(float value)
     {
@@ -253,6 +260,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void Feed(float amount)
     {
+        float oldHunger = currentHunger;
         SetHunger(Mathf.Clamp(currentHunger + amount, 0f, 100f));
         IncreaseHappiness(amount);
     }
@@ -307,6 +315,11 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _saveHandler?.LoadData();
     }
 
+    public void ForceResetEating()
+    {
+        _foodHandler?.ForceResetEating();
+    }
+
     private IEnumerator HungerRoutine(float interval)
     {
         while (true)
@@ -331,15 +344,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         while (true)
         {
             Poop();
-            yield return new WaitForSeconds(interval);
-        }
-    }
-
-    private IEnumerator FoodScanLoop(float interval)
-    {
-        while (true)
-        {
-            _foodHandler?.FindNearestFood();
             yield return new WaitForSeconds(interval);
         }
     }

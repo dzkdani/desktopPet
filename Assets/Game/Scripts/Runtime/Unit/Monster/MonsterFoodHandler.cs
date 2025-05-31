@@ -8,9 +8,13 @@ public class MonsterFoodHandler
     private float _foodDetectionRangeSqr;
     private float _eatDistanceSqr;
     private float _cachedFoodDistanceSqr = float.MaxValue;
+    private bool _isEating = false;
+    private float _lastEatingTime = 0f;
+    private const float EATING_COOLDOWN = 3f;
     
     public FoodController NearestFood { get; private set; }
     public bool IsNearFood { get; private set; }
+    public bool IsEating => _isEating;
     
     public MonsterFoodHandler(MonsterController controller, GameManager gameManager, RectTransform rectTransform)
     {
@@ -28,6 +32,11 @@ public class MonsterFoodHandler
     public void FindNearestFood()
     {
         if (!_controller.IsLoaded) return;
+        
+        if (Time.time - _lastEatingTime < EATING_COOLDOWN)
+        {
+            return;
+        }
 
         NearestFood = null;
         float closestSqr = float.MaxValue;
@@ -43,7 +52,6 @@ public class MonsterFoodHandler
 
             if (sqrDist < _foodDetectionRangeSqr && sqrDist < closestSqr)
             {
-                // Try to claim the food if it's close enough to pursue
                 if (food.TryClaim(_controller))
                 {
                     closestSqr = sqrDist;
@@ -60,26 +68,77 @@ public class MonsterFoodHandler
     {
         if (NearestFood == null) return;
 
-        // Double-check we still own this food
+        if (_isEating) return;
+
+        if (_controller.GetComponent<MonsterStateMachine>()?.CurrentState == MonsterState.Eating)
+        {
+            return;
+        }
+
         if (!NearestFood.TryClaim(_controller))
         {
-            // Another monster claimed it, find new food
             NearestFood = null;
             _controller.SetRandomTarget();
             return;
         }
 
-        if (IsNearFood)
+        Vector2 currentPos = _rectTransform.anchoredPosition;
+        Vector2 foodPos = NearestFood.GetComponent<RectTransform>().anchoredPosition;
+        float currentDistanceSqr = (foodPos - currentPos).sqrMagnitude;
+        
+        float adjustedEatDistanceSqr = _eatDistanceSqr * 3f;
+        bool isCurrentlyNearFood = currentDistanceSqr < adjustedEatDistanceSqr;
+
+        if (isCurrentlyNearFood)
         {
+            _isEating = true;
             _controller.TriggerEating();
-            _controller.Feed(NearestFood.nutritionValue);
-            ServiceLocator.Get<GameManager>().DespawnPools(NearestFood.gameObject);
-            NearestFood = null;
-            _controller.SetRandomTarget();
+            _controller.StartCoroutine(ConsumeAfterEating());
         }
         else
         {
-            targetPosition = NearestFood.GetComponent<RectTransform>().anchoredPosition;
+            targetPosition = foodPos;
         }
+    }
+    
+    private System.Collections.IEnumerator ConsumeAfterEating()
+    {
+        float eatingDuration = _controller.GetComponent<MonsterStateMachine>()?.GetCurrentStateDuration() ?? 2f;
+        yield return new WaitForSeconds(eatingDuration);
+        
+        if (NearestFood != null)
+        {
+            _controller.Feed(NearestFood.nutritionValue);
+            ServiceLocator.Get<GameManager>().activeFoods.Remove(NearestFood);
+            ServiceLocator.Get<GameManager>().DespawnPools(NearestFood.gameObject);
+            NearestFood = null;
+        }
+        
+        _lastEatingTime = Time.time;
+        _isEating = false;
+        
+        var stateMachine = _controller.GetComponent<MonsterStateMachine>();
+        stateMachine?.ForceState(MonsterState.Idle);
+        
+        _controller.SetRandomTarget();
+    }
+
+    public void ForceResetEating()
+    {
+        if (_isEating)
+        {
+            _controller.StopAllCoroutines();
+        }
+        
+        _isEating = false;
+        NearestFood = null;
+        
+        var stateMachine = _controller.GetComponent<MonsterStateMachine>();
+        if (stateMachine?.CurrentState == MonsterState.Eating)
+        {
+            stateMachine.ForceState(MonsterState.Idle);
+        }
+        
+        _controller.SetRandomTarget();
     }
 }

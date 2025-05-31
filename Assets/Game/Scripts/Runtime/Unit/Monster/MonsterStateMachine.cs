@@ -29,9 +29,10 @@ public class MonsterStateMachine : MonoBehaviour
     {
         _stateTimer += Time.deltaTime;
 
-        if (_currentState == MonsterState.Eating && _controller.nearestFood == null)
+        if (_currentState == MonsterState.Eating && _stateTimer > 10f)
         {
-            ChangeState(MonsterState.Idle);
+            var monsterController = _controller.GetComponent<MonsterController>();
+            monsterController?.ForceResetEating();
             return;
         }
 
@@ -97,6 +98,7 @@ public class MonsterStateMachine : MonoBehaviour
 
     private void ChangeState(MonsterState newState)
     {
+        Debug.Log($"[STATE DEBUG] {name} - State change: {_currentState} -> {newState}");
         _previousState = _currentState;
         _currentState = newState;
         _stateTimer = 0f;
@@ -104,6 +106,7 @@ public class MonsterStateMachine : MonoBehaviour
         PlayStateAnimation(newState);
         OnStateChanged?.Invoke(_currentState);
         _currentStateDuration = GetStateDuration(newState);
+        Debug.Log($"[STATE DEBUG] {name} - New state duration: {_currentStateDuration:F2}s");
     }
 
     private void PlayStateAnimation(MonsterState state)
@@ -160,24 +163,34 @@ public class MonsterStateMachine : MonoBehaviour
     {
         return state switch
         {
-            // Movement states: 3-5 seconds
+            // Movement states: Keep random duration 3-5 seconds
             MonsterState.Walking => GetRandomDuration(
                 behaviorConfig?.minWalkDuration, behaviorConfig?.maxWalkDuration, 3f, 5f),
             MonsterState.Running => GetRandomDuration(
                 behaviorConfig?.minRunDuration, behaviorConfig?.maxRunDuration, 3f, 5f),
             
-            // Non-movement states: 1-3 seconds
-            MonsterState.Idle => GetRandomDuration(
-                behaviorConfig?.minIdleDuration, behaviorConfig?.maxIdleDuration, 1f, 3f),
-            MonsterState.Jumping => GetRandomDuration(
-                null, null, 1f, 3f),
-            MonsterState.Itching => GetRandomDuration(
-                null, null, 1f, 3f),
-            MonsterState.Eating => GetRandomDuration(
-                null, null, 1f, 3f),
+            // Non-movement states: Use animation duration from Spine
+            MonsterState.Idle => GetAnimationDuration("idle"),
+            MonsterState.Jumping => GetAnimationDuration("jumping"),
+            MonsterState.Itching => GetAnimationDuration("itching"),
+            MonsterState.Eating => GetAnimationDuration("eating"),
             
-            _ => 2f
+            _ => 1f
         };
+    }
+
+    private float GetAnimationDuration(string animationName)
+    {
+        if (_skeletonGraphic == null || _skeletonGraphic.skeletonDataAsset == null)
+            return 1f;
+            
+        var skeletonData = _skeletonGraphic.skeletonDataAsset.GetSkeletonData(false);
+        if (skeletonData == null) return 1f;
+        
+        var animation = skeletonData.FindAnimation(animationName);
+        if (animation == null) return 1f;
+        
+        return animation.Duration;
     }
 
     private float GetRandomDuration(float? configMin, float? configMax, float defaultMin, float defaultMax)
@@ -191,5 +204,10 @@ public class MonsterStateMachine : MonoBehaviour
     {
         ChangeState(newState);
         _currentStateDuration = GetStateDuration(newState);
+    }
+
+    public float GetCurrentStateDuration()
+    {
+        return _currentStateDuration;
     }
 }

@@ -77,6 +77,14 @@ MonoBehaviour:
     requiresFood: 0
     hungerThreshold: 0
     happinessThreshold: 0
+  - fromState: 5
+    toState: 0
+    probability: 1
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
   - fromState: 4
     toState: 0
     probability: 1
