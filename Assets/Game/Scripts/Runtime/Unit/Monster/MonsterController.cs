@@ -194,6 +194,10 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void HandleMovement()
     {
+        // Don't process movement logic while eating
+        if (_stateMachine?.CurrentState == MonsterState.Eating)
+            return;
+            
         _movementHandler.UpdateMovement(ref _targetPosition, stats);
 
         if (_stateMachine?.CurrentState == MonsterState.Walking ||
@@ -220,7 +224,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _targetPosition = _movementBounds?.GetRandomTarget() ?? Vector2.zero;
     }
 
-    public void TriggerEating() => _stateMachine?.TriggerEating();
+    public void TriggerEating() => _stateMachine?.ForceState(MonsterState.Eating);
 
     public void SetHunger(float value)
     {
@@ -250,7 +254,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void Feed(float amount)
     {
         SetHunger(Mathf.Clamp(currentHunger + amount, 0f, 100f));
-        IncreaseHappiness(amount * 0.3f);
+        IncreaseHappiness(amount);
     }
 
     public void IncreaseHappiness(float amount)

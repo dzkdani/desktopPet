@@ -43,8 +43,12 @@ public class MonsterFoodHandler
 
             if (sqrDist < _foodDetectionRangeSqr && sqrDist < closestSqr)
             {
-                closestSqr = sqrDist;
-                NearestFood = food;
+                // Try to claim the food if it's close enough to pursue
+                if (food.TryClaim(_controller))
+                {
+                    closestSqr = sqrDist;
+                    NearestFood = food;
+                }
             }
         }
 
@@ -55,6 +59,15 @@ public class MonsterFoodHandler
     public void HandleFoodLogic(ref Vector2 targetPosition)
     {
         if (NearestFood == null) return;
+
+        // Double-check we still own this food
+        if (!NearestFood.TryClaim(_controller))
+        {
+            // Another monster claimed it, find new food
+            NearestFood = null;
+            _controller.SetRandomTarget();
+            return;
+        }
 
         if (IsNearFood)
         {

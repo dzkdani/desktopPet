@@ -12,7 +12,10 @@ public class FoodController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
     private RectTransform rectTransform;
     private Vector2 dragOffset;
+
+    public MonsterController claimedBy;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+
      private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -67,5 +70,15 @@ public class FoodController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         IsBeingDragged = false;
         if (!ServiceLocator.Get<GameManager>().IsPositionInGameArea(rectTransform.anchoredPosition))
             ServiceLocator.Get<GameManager>().DespawnPools(gameObject);
+    }
+
+    public bool TryClaim(MonsterController monster)
+    {
+        if (claimedBy == null)
+        {
+            claimedBy = monster;
+            return true;
+        }
+        return claimedBy == monster;
     }
 }

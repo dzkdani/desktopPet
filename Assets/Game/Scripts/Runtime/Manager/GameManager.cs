@@ -50,8 +50,8 @@ public class GameManager : MonoBehaviour
     {
         if (isInPlacementMode)
         {
-            UpdateFoodPlacement();
-            HandleFoodPlacementInput();
+            IndicatorPlacementHandler();
+            FoodPlacementHandler();
         }
     }
 
@@ -309,16 +309,45 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void UpdateFoodPlacement()
+    private Vector2 ScreenToGameAreaPosition()
     {
-        var indicatorPos = ScreenToCanvasPosition(mainCanvas);
-        foodPlacementIndicator.GetComponent<RectTransform>().anchoredPosition = indicatorPos;
+        var cam = mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCanvas.worldCamera;
+        
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            gameArea, Input.mousePosition, cam, out Vector2 localPoint);
+        
+        return localPoint;
+    }
 
-        bool isValid = gameArea.rect.Contains(indicatorPos);
+    private Vector2 ScreenToCanvasPosition()
+    {
+        var canvasRect = mainCanvas.GetComponent<RectTransform>();
+        var cam = mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCanvas.worldCamera;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect, Input.mousePosition, cam, out Vector2 localPoint);
+
+        return localPoint;
+    }
+
+    private void IndicatorPlacementHandler()
+    {
+        var indicatorPos = ScreenToGameAreaPosition();
+        var indicatorRT = foodPlacementIndicator.GetComponent<RectTransform>();
+        
+        // Ensure indicator is child of game area for consistent positioning
+        if (indicatorRT.parent != gameArea)
+        {
+            indicatorRT.SetParent(gameArea, false);
+        }
+        
+        indicatorRT.anchoredPosition = indicatorPos;
+
+        bool isValid = IsPositionInGameArea(indicatorPos);
         foodPlacementIndicator.GetComponent<Image>().color = isValid ? validPositionColor : invalidPositionColor;
     }
 
-    private void HandleFoodPlacementInput()
+    private void FoodPlacementHandler()
     {
         if (Input.GetMouseButtonDown(0)) TryPlaceFood();
         else if (Input.GetMouseButtonDown(1)) CancelPlacement();
@@ -326,9 +355,10 @@ public class GameManager : MonoBehaviour
 
     private void TryPlaceFood()
     {
-        var position = ScreenToCanvasPosition(mainCanvas);
-        
-        if (gameArea.rect.Contains(position))
+        // Use the same coordinate conversion as the indicator
+        Vector2 position = ScreenToGameAreaPosition();
+
+        if (IsPositionInGameArea(position))
         {
             if (SpentCoin(pendingFoodCost))
             {
@@ -341,18 +371,7 @@ public class GameManager : MonoBehaviour
             ServiceLocator.Get<UIManager>().ShowMessage("Can't place here!", 1f);
         }
     }
-
-    private void SpawnFoodAtPosition(Vector2 position)
-    {
-        var food = GetPooledObject(_foodPool, foodPrefab);
-        SetupPooledObject(food, gameArea, position);
-
-        var foodController = food.GetComponent<FoodController>();
-        if (foodController != null && !activeFoods.Contains(foodController))
-        {
-            activeFoods.Add(foodController);
-        }
-    }
+    
 
     private void CancelPlacement()
     {
@@ -367,19 +386,25 @@ public class GameManager : MonoBehaviour
         foodPlacementIndicator.SetActive(false);
     }
 
-    public void SpawnFood()
-    {
-        var food = GetPooledObject(_foodPool, foodPrefab);
-        SetupPooledObject(food, gameArea, GetRandomPositionInGameArea());
-    }
     #endregion
 
     #region Object Spawning
+       private void SpawnFoodAtPosition(Vector2 position)
+    {
+        var food = GetPooledObject(_foodPool, foodPrefab);
+        SetupPooledObject(food, gameArea, position);
+
+        var foodController = food.GetComponent<FoodController>();
+        if (foodController != null && !activeFoods.Contains(foodController))
+        {
+            activeFoods.Add(foodController);
+        }
+    }
     public GameObject SpawnCoinAt(Vector2 anchoredPos, CoinType type)
     {
         var coin = GetPooledObject(_coinPool, coinPrefab);
         SetupPooledObject(coin, gameArea, anchoredPos);
-        
+
         coin.GetComponent<CoinController>().Initialize(type);
         return coin;
     }
@@ -400,6 +425,17 @@ public class GameManager : MonoBehaviour
     {
         var rt = obj.GetComponent<RectTransform>();
         rt.SetParent(parent, false);
+        
+        // Reset all transform properties to ensure consistent behavior
+        rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
+        
+        // Match the indicator's anchor and pivot settings exactly
+        var indicatorRT = foodPlacementIndicator.GetComponent<RectTransform>();
+        rt.anchorMin = indicatorRT.anchorMin;
+        rt.anchorMax = indicatorRT.anchorMax;
+        rt.pivot = indicatorRT.pivot;
+        
         rt.anchoredPosition = position;
         obj.SetActive(true);
     }
@@ -426,16 +462,12 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    public Vector2 GetRandomPositionInGameArea()
+    public bool IsPositionInGameArea(Vector2 localPosition)
     {
-        var bounds = gameArea.rect;
-        return new Vector2(
-            UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
-            UnityEngine.Random.Range(bounds.min.y + 5, bounds.max.y - 5)
-        );
+        var rect = gameArea.rect;
+        return localPosition.x >= rect.xMin && localPosition.x <= rect.xMax &&
+               localPosition.y >= rect.yMin && localPosition.y <= rect.yMax;
     }
-
-    public bool IsPositionInGameArea(Vector2 position) => gameArea.rect.Contains(position);
 
     public static Vector2 ScreenToCanvasPosition(Canvas canvas)
     {
@@ -466,7 +498,7 @@ public class GameManager : MonoBehaviour
         if (gameArea != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(gameArea.position, 
+            Gizmos.DrawWireCube(gameArea.anchoredPosition, 
                 new Vector3(gameArea.rect.width, gameArea.rect.height, 0));
         }
     }

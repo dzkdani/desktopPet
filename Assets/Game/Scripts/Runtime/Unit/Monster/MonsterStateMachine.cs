@@ -151,59 +151,45 @@ public class MonsterStateMachine : MonoBehaviour
             }
             catch
             {
-                // Silent fail if even idle doesn't work
+                Debug.LogWarning("Failed to set animation for state: " + state);
             }
         }
     }
 
     private float GetStateDuration(MonsterState state)
     {
-        if (behaviorConfig == null)
-        {
-            return state switch
-            {
-                MonsterState.Idle => Random.Range(2f, 4f),
-                MonsterState.Walking => Random.Range(3f, 5f),
-                MonsterState.Running => Random.Range(3f, 5f),
-                MonsterState.Jumping => 1f,
-                MonsterState.Itching => Random.Range(1f, 2f),
-                MonsterState.Eating => Random.Range(1f, 2f),
-                _ => 2f
-            };
-        }
-
         return state switch
         {
-            MonsterState.Idle => Random.Range(
-                behaviorConfig.minIdleDuration > 0 ? behaviorConfig.minIdleDuration : 2f,
-                behaviorConfig.maxIdleDuration > 0 ? behaviorConfig.maxIdleDuration : 4f),
+            // Movement states: 3-5 seconds
+            MonsterState.Walking => GetRandomDuration(
+                behaviorConfig?.minWalkDuration, behaviorConfig?.maxWalkDuration, 3f, 5f),
+            MonsterState.Running => GetRandomDuration(
+                behaviorConfig?.minRunDuration, behaviorConfig?.maxRunDuration, 3f, 5f),
             
-            MonsterState.Walking => Random.Range(
-                behaviorConfig.minWalkDuration > 0 ? behaviorConfig.minWalkDuration : 3f,
-                behaviorConfig.maxWalkDuration > 0 ? behaviorConfig.maxWalkDuration : 5f),
+            // Non-movement states: 1-3 seconds
+            MonsterState.Idle => GetRandomDuration(
+                behaviorConfig?.minIdleDuration, behaviorConfig?.maxIdleDuration, 1f, 3f),
+            MonsterState.Jumping => GetRandomDuration(
+                null, null, 1f, 3f),
+            MonsterState.Itching => GetRandomDuration(
+                null, null, 1f, 3f),
+            MonsterState.Eating => GetRandomDuration(
+                null, null, 1f, 3f),
             
-            MonsterState.Running => Random.Range(
-                behaviorConfig.minRunDuration > 0 ? behaviorConfig.minRunDuration : 3f,
-                behaviorConfig.maxRunDuration > 0 ? behaviorConfig.maxRunDuration : 5f),
-            
-            MonsterState.Jumping => behaviorConfig.jumpDuration > 0 ? behaviorConfig.jumpDuration : 1f,
-            MonsterState.Itching => Random.Range(2f, 4f),
-            MonsterState.Eating => Random.Range(1.5f, 3f),
             _ => 2f
         };
+    }
+
+    private float GetRandomDuration(float? configMin, float? configMax, float defaultMin, float defaultMax)
+    {
+        float min = configMin > 0 ? configMin.Value : defaultMin;
+        float max = configMax > 0 ? configMax.Value : defaultMax;
+        return Random.Range(min, max);
     }
 
     public void ForceState(MonsterState newState)
     {
         ChangeState(newState);
         _currentStateDuration = GetStateDuration(newState);
-    }
-
-    public void TriggerEating()
-    {
-        if (_controller.nearestFood != null)
-        {
-            ForceState(MonsterState.Eating);
-        }
     }
 }
