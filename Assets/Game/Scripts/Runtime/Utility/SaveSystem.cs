@@ -19,6 +19,10 @@ public static class SaveSystem
         string key = $"Pet{data.monsterId}";
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString(key, json);
+        
+        // Save the ID to the master list
+        SaveMonsterIDToList(data.monsterId);
+        PlayerPrefs.Save();
     }
 
     public static bool LoadMon(string petID, out MonsterSaveData data)
@@ -33,6 +37,33 @@ public static class SaveSystem
         data = null;
         return false;
     }
+    
+    public static void DeleteMon(string monsterID)
+    {
+        // Delete the monster data
+        string key = $"Pet{monsterID}";
+        PlayerPrefs.DeleteKey(key);
+        
+        // Remove from master list
+        List<string> existingIDs = LoadSavedMonIDs();
+        if (existingIDs.Contains(monsterID))
+        {
+            existingIDs.Remove(monsterID);
+            SaveMonIDs(existingIDs);
+        }
+        
+        PlayerPrefs.Save();
+    }
+
+    private static void SaveMonsterIDToList(string monsterID)
+    {
+        List<string> existingIDs = LoadSavedMonIDs();
+        if (!existingIDs.Contains(monsterID))
+        {
+            existingIDs.Add(monsterID);
+            SaveMonIDs(existingIDs);
+        }
+    }
 
     public static void SaveMonIDs(List<string> ids)
     {
@@ -46,6 +77,7 @@ public static class SaveSystem
             ? new List<string>()
             : new List<string>(csv.Split(','));
     }
+    
     public static void Flush() => PlayerPrefs.Save();
 
     public static void ClearSaveData()
@@ -63,6 +95,5 @@ public static class SaveSystem
         }
 
         PlayerPrefs.Save();
-    }         
-}                                                                                                                                                                                       
-       
+    }
+}

@@ -1,5 +1,6 @@
 using UnityEngine;
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using Spine.Unity;
 
 public class MonsterStateMachine : MonoBehaviour
 {
@@ -11,10 +12,7 @@ public class MonsterStateMachine : MonoBehaviour
     private float _stateTimer;
     private float _currentStateDuration;
     private MonsterController _controller;
-
-    // Cooldown for poke animations
-    private float _pokeCooldownTimer = 0f;
-    private const float POKE_COOLDOWN_DURATION = 5f; // 5 seconds cooldown after poke
+    private SkeletonGraphic _skeletonGraphic;
 
     public MonsterState CurrentState => _currentState;
     public MonsterState PreviousState => _previousState;
@@ -23,17 +21,18 @@ public class MonsterStateMachine : MonoBehaviour
     private void Start()
     {
         _controller = GetComponent<MonsterController>();
+        _skeletonGraphic = GetComponentInChildren<SkeletonGraphic>();
         ChangeState(MonsterState.Idle);
     }
 
     private void Update()
     {
         _stateTimer += Time.deltaTime;
-        
-        // Update poke cooldown timer
-        if (_pokeCooldownTimer > 0f)
+
+        if (_currentState == MonsterState.Eating && _controller.nearestFood == null)
         {
-            _pokeCooldownTimer -= Time.deltaTime;
+            ChangeState(MonsterState.Idle);
+            return;
         }
 
         if (_stateTimer >= _currentStateDuration)
@@ -44,11 +43,21 @@ public class MonsterStateMachine : MonoBehaviour
 
     private void SelectNextState()
     {
+        if (_currentState == MonsterState.Eating)
+        {
+            MonsterState nextState = Random.Range(0, 2) == 0 ? MonsterState.Idle : MonsterState.Walking;
+            ChangeState(nextState);
+            return;
+        }
+
         var possibleTransitions = GetValidTransitions();
         
-        if (possibleTransitions.Count == 0) return;
+        if (possibleTransitions.Count == 0) 
+        {
+            ChangeState(MonsterState.Idle);
+            return;
+        }
 
-        // Weighted random selection
         float totalWeight = 0f;
         foreach (var transition in possibleTransitions)
             totalWeight += transition.probability;
@@ -76,15 +85,9 @@ public class MonsterStateMachine : MonoBehaviour
         foreach (var transition in behaviorConfig.transitions)
         {
             if (transition.fromState != _currentState) continue;
-
-            // Prevent re-entry into poke animations while cooldown is active
-            if (_pokeCooldownTimer > 0f && 
-                (transition.toState == MonsterState.Jumping || transition.toState == MonsterState.Itching))
-                continue;
-
             if (transition.requiresFood && _controller.nearestFood == null) continue;
             if (_controller.currentHunger < transition.hungerThreshold) continue;
-            if (_controller.currentHappiness < transition.happinessThreshold) continue; // Add happiness check
+            if (_controller.currentHappiness < transition.happinessThreshold) continue;
 
             valid.Add(transition);
         }
@@ -98,11 +101,59 @@ public class MonsterStateMachine : MonoBehaviour
         _currentState = newState;
         _stateTimer = 0f;
         
-        // Trigger state change event
+        PlayStateAnimation(newState);
         OnStateChanged?.Invoke(_currentState);
-        
-        // Set the duration based on the new state
         _currentStateDuration = GetStateDuration(newState);
+    }
+
+    private void PlayStateAnimation(MonsterState state)
+    {
+        if (_skeletonGraphic == null) return;
+        
+        if (_skeletonGraphic.AnimationState == null)
+        {
+            if (_skeletonGraphic.skeletonDataAsset != null)
+            {
+                _skeletonGraphic.Initialize(true);
+            }
+            
+            if (_skeletonGraphic.AnimationState == null)
+                return;
+        }
+
+        string animationName = state switch
+        {
+            MonsterState.Idle => "idle",
+            MonsterState.Walking => "walking",
+            MonsterState.Running => "running", 
+            MonsterState.Jumping => "jumping",
+            MonsterState.Itching => "itching",
+            MonsterState.Eating => "eating",
+            _ => "idle"
+        };
+
+        bool loop = state switch
+        {
+            MonsterState.Idle or MonsterState.Walking or MonsterState.Running => true,
+            _ => false
+        };
+
+        try
+        {
+            _skeletonGraphic.AnimationState.SetAnimation(0, animationName, loop);
+        }
+        catch
+        {
+            // Fallback to idle animation
+            try
+            {
+                _skeletonGraphic.AnimationState.SetAnimation(0, "idle", true);
+            }
+            catch
+            {
+                // Silent fail if even idle doesn't work
+            }
+        }
     }
 
     private float GetStateDuration(MonsterState state)
@@ -115,8 +166,8 @@ public class MonsterStateMachine : MonoBehaviour
                 MonsterState.Walking => Random.Range(3f, 5f),
                 MonsterState.Running => Random.Range(3f, 5f),
                 MonsterState.Jumping => 1f,
-                MonsterState.Itching => Random.Range(2f, 4f),
-                MonsterState.Eating => Random.Range(2f, 4f),
+                MonsterState.Itching => Random.Range(1f, 2f),
+                MonsterState.Eating => Random.Range(1f, 2f),
                 _ => 2f
             };
         }
@@ -136,32 +187,23 @@ public class MonsterStateMachine : MonoBehaviour
                 behaviorConfig.maxRunDuration > 0 ? behaviorConfig.maxRunDuration : 5f),
             
             MonsterState.Jumping => behaviorConfig.jumpDuration > 0 ? behaviorConfig.jumpDuration : 1f,
-            
             MonsterState.Itching => Random.Range(2f, 4f),
-            MonsterState.Eating => Random.Range(2f, 4f),
-            
+            MonsterState.Eating => Random.Range(1.5f, 3f),
             _ => 2f
         };
     }
 
     public void ForceState(MonsterState newState)
     {
-        if (newState == MonsterState.Jumping || newState == MonsterState.Itching)
-        {
-            // Start poke cooldown to prevent rapid state changes
-            _pokeCooldownTimer = POKE_COOLDOWN_DURATION;
-        }
-        
         ChangeState(newState);
-        
-        // Set a fixed short duration for poke animations
-        if (newState == MonsterState.Jumping || newState == MonsterState.Itching)
+        _currentStateDuration = GetStateDuration(newState);
+    }
+
+    public void TriggerEating()
+    {
+        if (_controller.nearestFood != null)
         {
-            _currentStateDuration = Random.Range(1f, 3f); // Short duration for poke animations
-        }
-        else
-        {
-            _currentStateDuration = GetStateDuration(newState);
+            ForceState(MonsterState.Eating);
         }
     }
 }

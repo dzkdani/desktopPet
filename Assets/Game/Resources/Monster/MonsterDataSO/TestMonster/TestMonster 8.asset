@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40fe17d270458e3458d497300221f78c, type: 3}
-  m_Name: TestMonster 6
+  m_Name: TestMonster 8
   m_EditorClassIdentifier: 
   monName: Daoons
   monID: 
   monPrice: 10
-  monType: 0
+  monType: 1
   moveSpd: 100
   hungerDepleteRate: 0.1
   poopRate: 20
+  baseHunger: 50
+  baseHappiness: 0
   pokeHappinessValue: 2
   areaHappinessRate: 0.1
   clickToCollectPoop: 1
@@ -27,7 +29,7 @@ MonoBehaviour:
   isFinalEvol: 0
   evolutionLevel: 0
   monsterSpine:
-  - {fileID: 11400000, guid: 844e7ddc6f21e0a408193025ff42062a, type: 2}
+  - {fileID: 11400000, guid: 2849b090bc78ec149b91dec4e919ce91, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   monsImgs: []

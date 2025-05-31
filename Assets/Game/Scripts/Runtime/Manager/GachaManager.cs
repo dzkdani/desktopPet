@@ -73,7 +73,7 @@ public class GachaManager : MonoBehaviour
         Debug.Log($"Chosen rarity: {chosenRarity}");
         
         MonsterDataSO selectedMonster = SelectRandomMonster(chosenRarity);
-        Debug.Log($"Selected monster: {(selectedMonster != null ? selectedMonster.monName : "NULL")}");
+        Debug.Log($"Selected monster: {(selectedMonster != null ? selectedMonster.monsterName : "NULL")}");
         
         if (selectedMonster == null)
         {
@@ -134,7 +134,7 @@ public class GachaManager : MonoBehaviour
     private void ShowGachaResult(MonsterDataSO monster)
     {
         ServiceLocator.Get<UIManager>().ShowMessage(
-            $"You got: {monster.monName} ({monster.monType})", 2f);
+            $"You got: {monster.monsterName} ({monster.monType})", 2f);
     }
 
     // Public method to add new allowed rarities at runtime if needed

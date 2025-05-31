@@ -49,13 +49,13 @@ public class PlayAreaAdjusterUI : MonoBehaviour
     // Cache frequently accessed components
     private Vector2 cachedPosition;
     private Vector2 cachedSize;
-    private bool isDirty = false;
+    // private bool isDirty = false;
     #endregion
 
     #region Configuration
     [Header("Configuration")]
-    [SerializeField] private bool updateInRealTime = true;
-    [SerializeField] private float updateThreshold = 0.1f;
+    // [SerializeField] private bool updateInRealTime = true;
+    // [SerializeField] private float updateThreshold = 0.1f;
     #endregion
 
     #region Events

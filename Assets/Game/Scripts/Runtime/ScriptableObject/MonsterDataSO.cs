@@ -6,8 +6,8 @@ using Spine.Unity;
 public class MonsterDataSO : ScriptableObject
 {
     [Header("Basic Info")]
-    public string monName;              // Display name
-    public string monID;               // Unique ID (for save/load)
+    public string monsterName;              // Display name
+    public string id;               // Unique ID (for save/load)
     public int monPrice = 10;      // Price to buy this monster
 
     [Header("Classification")]
@@ -15,8 +15,10 @@ public class MonsterDataSO : ScriptableObject
 
     [Header("Stats")]
     public float moveSpd = 100f;       // Move speed
-    public float hungerDepleteRate = 0.1f;  // How fast hunger depletes
+    public float hungerDepleteRate = 0.05f;  // How fast hunger depletes
     public float poopRate = 20f;     // Default: 20 minutes
+    public float baseHunger = 50f;     // Add base hunger
+    public float baseHappiness = 0f;   // Add base happiness
     
     [Header("Happiness System")] 
     public float pokeHappinessValue = 2f; // Customizable poke happiness increase - changed from 15f to 2f
@@ -26,7 +28,7 @@ public class MonsterDataSO : ScriptableObject
     public bool clickToCollectPoop = true;
     
     [Header("Evolution")]
-    public bool canEvolve = false;
+    public bool canEvolve = true; // Can this monster evolve?
     public bool isEvolved = false; // Is this evolved?
     public bool isFinalEvol = false; // Is this the final form of the ?
     public int evolutionLevel = 0; // Current evolution level
@@ -36,14 +38,4 @@ public class MonsterDataSO : ScriptableObject
 
     [Header("Images")]
     public Sprite[] monsImgs;           // [0] base, [1+] evolved forms
-
-    public Sprite GetCurrentSprite()
-    {
-        // Return the sprite based on evolution level
-        if (evolutionLevel < monsImgs.Length)
-        {
-            return monsImgs[evolutionLevel];
-        } 
-        return monsImgs[0]; // Fallback to base sprite if out of bounds
-    }
 }
