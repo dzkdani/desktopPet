@@ -116,7 +116,7 @@ public class MonsterStateMachine : MonoBehaviour
                 MonsterState.Running => Random.Range(3f, 5f),
                 MonsterState.Jumping => 1f,
                 MonsterState.Itching => Random.Range(2f, 4f),
-                MonsterState.Eating => Random.Range(2f, 4f),
+                MonsterState.Eating => Random.Range(1f, 2f),
                 _ => 2f
             };
         }
@@ -138,7 +138,7 @@ public class MonsterStateMachine : MonoBehaviour
             MonsterState.Jumping => behaviorConfig.jumpDuration > 0 ? behaviorConfig.jumpDuration : 1f,
             
             MonsterState.Itching => Random.Range(2f, 4f),
-            MonsterState.Eating => Random.Range(2f, 4f),
+            MonsterState.Eating => Random.Range(1f, 2f),
             
             _ => 2f
         };

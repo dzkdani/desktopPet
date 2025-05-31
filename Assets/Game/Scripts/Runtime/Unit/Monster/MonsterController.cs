@@ -10,7 +10,8 @@ using Spine.Unity;
 [System.Serializable]
 public class MonsterSaveData
 {
-    public string monsterId;
+    public string monsterId;        // Instance ID (e.g., "Cat_Lv0_001")
+    public string monsterDataID;    // MonsterDataSO ID (e.g., "basic_cat")
     public float lastHunger;
     public float lastHappiness;
     public bool isEvolved;
@@ -346,8 +347,24 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     #region Initialization
     private void InitializeID()
     {
+        // Don't auto-generate GUID anymore - ID will be set by GameManager
         if (string.IsNullOrEmpty(monsterID))
-            monsterID = System.Guid.NewGuid().ToString();
+        {
+            monsterID = "temp_" + System.Guid.NewGuid().ToString().Substring(0, 8);
+        }
+    }
+
+    // Add method to generate proper ID based on monster data
+    public void SetMonsterID(string baseID, int count)
+    {
+        if (monsterData != null)
+        {
+            monsterID = $"{monsterData.monName}_Lv{evolutionLevel}_{count:D3}";
+        }
+        else
+        {
+            monsterID = baseID;
+        }
     }
 
     private void InitializeComponents()
@@ -437,15 +454,30 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
         if (_isNearFood)
         {
-            Feed(nearestFood.nutritionValue);
-            ServiceLocator.Get<GameManager>().DespawnPools(nearestFood.gameObject);
+            // Trigger eating animation/state
+            _stateMachine?.ForceState(MonsterState.Eating);
+            
+            // Start eating coroutine instead of instant eating
+            StartCoroutine(EatFoodCoroutine(nearestFood));
             nearestFood = null;
-            SetRandomTarget();
         }
         else
         {
             _targetPosition = nearestFood.GetComponent<RectTransform>().anchoredPosition;
         }
+    }
+
+    private IEnumerator EatFoodCoroutine(FoodController food)
+    {
+        // Play eating animation for a duration
+        yield return new WaitForSeconds(1f); // Eating duration
+        
+        // Actually consume the food
+        Feed(food.nutritionValue);
+        ServiceLocator.Get<GameManager>().DespawnPools(food.gameObject);
+        
+        // Return to normal behavior
+        SetRandomTarget();
     }
 
     private bool CanMoveToFood()
@@ -640,7 +672,8 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         var data = new MonsterSaveData
         {
-            monsterId = monsterID,
+            monsterId = monsterID,                    // Instance ID
+            monsterDataID = monsterData?.monID,       // MonsterDataSO ID
             lastHunger = currentHunger,
             lastHappiness = currentHappiness,
             isEvolved = isEvolved,
@@ -652,63 +685,54 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void LoadMonData()
     {
-        if (monsterData == null)
-        {
-            InitializeAsNewMonster();
-            return;
-        }
-
         if (SaveSystem.LoadMon(monsterID, out MonsterSaveData savedData))
+        {
+            // Load MonsterDataSO using the saved data ID
+            if (!string.IsNullOrEmpty(savedData.monsterDataID))
+            {
+                monsterData = ServiceLocator.Get<MonsterDatabaseSO>().GetMonsterByID(savedData.monsterDataID);
+            }
+            
             LoadFromSaveData(savedData);
+        }
         else
-            InitializeAsNewMonster();
+        {
+            InitializeNewMonster();
+        }
 
         ApplyMonsterDataStats();
     }
 
-    private void LoadFromSaveData(MonsterSaveData savedData)
+    private void LoadFromSaveData(MonsterSaveData data)
     {
-        currentHunger = savedData.lastHunger;
-        currentHappiness = savedData.lastHappiness;
-        monsterID = savedData.monsterId;
-        
-        // Set evolution state from saved data
-        isEvolved = savedData.isEvolved;
-        isFinalForm = savedData.isFinalForm;
-        evolutionLevel = savedData.evolutionLevel;
-        
-        if (monsterData != null)
-        {
-            monsterData.isEvolved = savedData.isEvolved;
-            monsterData.isFinalEvol = savedData.isFinalForm;
-            monsterData.evolutionLevel = savedData.evolutionLevel;
-            
-            // Update visuals based on loaded evolution state
-            ApplyMonsterVisuals();
-        }
+        currentHunger = data.lastHunger;
+        currentHappiness = data.lastHappiness;
+        isEvolved = data.isEvolved;
+        isFinalForm = data.isFinalForm;
+        evolutionLevel = data.evolutionLevel;
     }
 
-    private void InitializeAsNewMonster()
+    private void InitializeNewMonster()
     {
-        currentHunger = 100f;
-        currentHappiness = 0f;
-        if (monsterData != null)
-        {
-            monsterData.isEvolved = false;
-            monsterData.isFinalEvol = false;
-            monsterData.evolutionLevel = 0;
-        }
+        currentHunger = monsterData != null ? monsterData.baseHunger : 50f;
+        currentHappiness = monsterData != null ? monsterData.baseHappiness : 0f;
+        isEvolved = false;
+        isFinalForm = false;
+        evolutionLevel = 0;
     }
 
     private void ApplyMonsterDataStats()
     {
-        if (monsterData == null) return;
-
-        stats.moveSpeed = monsterData.moveSpd;
-        stats.hungerDepletionRate = monsterData.hungerDepleteRate;
-        stats.poopInterval = monsterData.poopRate;
-        stats.pokeHappinessIncrease = monsterData.pokeHappinessValue;
-        stats.areaHappinessRate = monsterData.areaHappinessRate;
+        if (monsterData != null)
+        {
+            // Apply stats from MonsterDataSO to MonsterStats
+            stats.hungerDepletionRate = monsterData.hungerDepleteRate;
+            stats.moveSpeed = monsterData.moveSpd;
+            stats.pokeHappinessIncrease = monsterData.pokeHappinessValue;
+            stats.areaHappinessRate = monsterData.areaHappinessRate;
+            
+            ApplyMonsterVisuals();
+        }
     }
     #endregion
 
@@ -719,14 +743,12 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         
         monsterData = newMonsterData;
         ApplyMonsterVisuals();
-        ApplyMonsterDataStats();
     }
 
     private void ApplyMonsterVisuals()
     {
         if (monsterData == null || _monsterSpineGraphic == null) return;
         
-        // Apply the appropriate Spine data based on evolution level
         SkeletonDataAsset targetSkeletonData = GetCurrentSkeletonData();
         
         if (targetSkeletonData != null)
@@ -751,6 +773,39 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         // Call this when evolution state changes
         ApplyMonsterVisuals();
+    }
+    #endregion
+
+    #region Evolution
+    public void EvolveMonster()
+    {
+        if (!monsterData.canEvolve || isFinalForm) return;
+        
+        // Update evolution state
+        evolutionLevel++;
+        isEvolved = true;
+        
+        if (evolutionLevel >= monsterData.monsterSpine.Length - 1)
+        {
+            isFinalForm = true;
+        }
+        
+        // Generate new ID with updated evolution level
+        var gameManager = ServiceLocator.Get<GameManager>();
+        int monsterCount = gameManager.activeMonsters.Count + 1;
+        string newID = $"{monsterData.monName}_Lv{evolutionLevel}_{monsterCount:D3}";
+        
+        // Remove old save data
+        SaveSystem.DeleteMon(monsterID);
+        
+        // Update to new ID
+        monsterID = newID;
+        
+        // Save with new ID
+        SaveMonData();
+        
+        // Update visuals
+        UpdateMonsterVisuals();
     }
     #endregion
 }
