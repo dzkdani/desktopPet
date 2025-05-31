@@ -88,4 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2673d92470a58a48b58d6736e9b5e43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nutritionValue: 25
+  nutritionValue: 30
+  isRotten: 0
+  foodImages: {fileID: 0}
+  claimedBy: {fileID: 0}

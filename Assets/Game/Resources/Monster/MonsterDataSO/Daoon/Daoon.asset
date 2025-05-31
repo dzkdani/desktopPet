@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40fe17d270458e3458d497300221f78c, type: 3}
-  m_Name: Maple Dragoon
+  m_Name: Daoon
   m_EditorClassIdentifier: 
-  monName: Maple Dragoon
+<<<<<<<< HEAD:Assets/Game/Resources/Monster/MonsterDataSO/Daoons/Daoon.asset
+  monName: Daoon
   monID: 
   monPrice: 10
   monType: 0
@@ -21,6 +22,17 @@ MonoBehaviour:
   baseHunger: 50
   baseHappiness: 0
   poopRate: 1200
+========
+  monsterName: Daoon
+  id: 001
+  monPrice: 10
+  monType: 0
+  moveSpd: 100
+  hungerDepleteRate: 0.05
+  poopRate: 20
+  baseHunger: 50
+  baseHappiness: 0
+>>>>>>>> update/Bugfix:Assets/Game/Resources/Monster/MonsterDataSO/Daoon/Daoon.asset
   pokeHappinessValue: 2
   areaHappinessRate: 0.2
   clickToCollectPoop: 1
@@ -29,7 +41,11 @@ MonoBehaviour:
   isFinalEvol: 0
   evolutionLevel: 0
   monsterSpine:
-  - {fileID: 11400000, guid: 844e7ddc6f21e0a408193025ff42062a, type: 2}
-  - {fileID: 11400000, guid: f3e97bc450fb3e348a29276e071b4eaf, type: 2}
+<<<<<<<< HEAD:Assets/Game/Resources/Monster/MonsterDataSO/Daoons/Daoon.asset
+  - {fileID: 11400000, guid: 7eed6e2db317e91458eece0ac71ffedf, type: 2}
+========
+  - {fileID: 11400000, guid: 2849b090bc78ec149b91dec4e919ce91, type: 2}
+>>>>>>>> update/Bugfix:Assets/Game/Resources/Monster/MonsterDataSO/Daoon/Daoon.asset
+  - {fileID: 0}
   - {fileID: 0}
   monsImgs: []

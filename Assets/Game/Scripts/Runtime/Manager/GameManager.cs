@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     [Header("Prefabs & Pool Settings")]
-    public GameObject monPrefab;
+    public GameObject monsterPrefab;
     public GameObject foodPrefab;
     public GameObject poopPrefab;
     public GameObject coinPrefab;
@@ -50,8 +50,8 @@ public class GameManager : MonoBehaviour
     {
         if (isInPlacementMode)
         {
-            UpdateFoodPlacement();
-            HandleFoodPlacementInput();
+            IndicatorPlacementHandler();
+            FoodPlacementHandler();
         }
     }
 
@@ -131,9 +131,22 @@ public class GameManager : MonoBehaviour
         var monster = CreateMonster();
         var monsterController = monster.GetComponent<MonsterController>();
         
-        monsterController.monsterID = System.Guid.NewGuid().ToString();
-        monsterController.LoadMonData();
+        // Generate save ID format
+        var monsterData = monsterController.MonsterData;
+        if (monsterData != null)
+        {
+            monsterController.monsterID = $"{monsterData.id}_Lv{monsterController.evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";
+            
+            // Rename GameObject with monster name + save ID
+            monster.name = $"{monsterData.monsterName}_{monsterController.monsterID}";
+        }
+        else
+        {
+            monsterController.monsterID = System.Guid.NewGuid().ToString();
+            monster.name = $"Monster_{monsterController.monsterID}";
+        }
         
+        monsterController.LoadMonData();
         RegisterMonster(monsterController);
     }
 
@@ -143,8 +156,20 @@ public class GameManager : MonoBehaviour
         var monsterController = monster.GetComponent<MonsterController>();
         
         monsterController.monsterID = monID;
+        
+        // Rename GameObject with monster name + save ID
+        var monsterData = monsterController.MonsterData;
+        if (monsterData != null)
+        {
+            monster.name = $"{monsterData.monsterName}_{monID}";
+        }
+        else
+        {
+            monster.name = $"Monster_{monID}";
+        }
+        
         monsterController.LoadMonData();
-        RegisterToActiveMons(monsterController);
+        RegisterActiveMonster(monsterController);
     }
 
     public void SpawnLoadedMonsViaGacha(string monID)
@@ -154,12 +179,31 @@ public class GameManager : MonoBehaviour
         
         if (string.IsNullOrEmpty(monID))
         {
-            monID = System.Guid.NewGuid().ToString();
+            var monsterData = monsterController.MonsterData;
+            if (monsterData != null)
+            {
+                monID = $"{monsterData.id}_Lv{monsterController.evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";
+            }
+            else
+            {
+                monID = System.Guid.NewGuid().ToString();
+            }
         }
         
         monsterController.monsterID = monID;
-        monsterController.LoadMonData();
         
+        // Rename GameObject with monster name + save ID
+        var data = monsterController.MonsterData;
+        if (data != null)
+        {
+            monster.name = $"{data.monsterName}_{monID}";
+        }
+        else
+        {
+            monster.name = $"Monster_{monID}";
+        }
+        
+        monsterController.LoadMonData();
         RegisterMonster(monsterController);
     }
 
@@ -168,15 +212,19 @@ public class GameManager : MonoBehaviour
         var monster = CreateMonsterByData(monsterData);
         var monsterController = monster.GetComponent<MonsterController>();
         
-        monsterController.monsterID = System.Guid.NewGuid().ToString();
-        monsterController.LoadMonData();
+        // Generate save ID format with monster data
+        monsterController.monsterID = $"{monsterData.id}_Lv{monsterController.evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";
         
+        // Rename GameObject with monster name + save ID
+        monster.name = $"{monsterData.monsterName}_{monsterController.monsterID}";
+        
+        monsterController.LoadMonData();
         RegisterMonster(monsterController);
     }
 
     private GameObject CreateMonster()
     {
-        var monster = Instantiate(monPrefab, gameArea);
+        var monster = Instantiate(monsterPrefab, gameArea);
         var bounds = gameArea.rect;
         
         monster.transform.localPosition = new Vector2(
@@ -184,15 +232,19 @@ public class GameManager : MonoBehaviour
             bounds.min.y + 20f
         );
         
-        // Randomly select a monster type from the database
-        if (monsterDatabase != null && monsterDatabase.monsters.Count > 0)
+        var monsterController = monster.GetComponent<MonsterController>();
+        if (monsterController != null && monsterDatabase != null && monsterDatabase.monsters.Count > 0)
         {
             var randomMonsterData = monsterDatabase.monsters[UnityEngine.Random.Range(0, monsterDatabase.monsters.Count)];
-            var monsterController = monster.GetComponent<MonsterController>();
-            if (monsterController != null)
-            {
-                monsterController.SetMonsterType(randomMonsterData);
-            }
+            // Set monster data BEFORE other initialization
+            monsterController.SetMonsterData(randomMonsterData);
+            
+            // Set initial name (will be updated with proper ID later)
+            monster.name = $"{randomMonsterData.monsterName}_Temp";
+        }
+        else
+        {
+            monster.name = "Monster_Temp";
         }
         
         return monster;
@@ -200,7 +252,7 @@ public class GameManager : MonoBehaviour
 
     private GameObject CreateMonsterByData(MonsterDataSO monsterData)
     {
-        var monster = Instantiate(monPrefab, gameArea);
+        var monster = Instantiate(monsterPrefab, gameArea);
         var bounds = gameArea.rect;
         
         monster.transform.localPosition = new Vector2(
@@ -208,11 +260,18 @@ public class GameManager : MonoBehaviour
             bounds.min.y + 20f
         );
         
-        // Set the specific monster type from gacha
         var monsterController = monster.GetComponent<MonsterController>();
         if (monsterController != null)
         {
-            monsterController.SetMonsterType(monsterData);
+            // Set monster data IMMEDIATELY after instantiation
+            monsterController.SetMonsterData(monsterData);
+            
+            // Set initial name (will be updated with proper ID later)
+            monster.name = $"{monsterData.monsterName}_Temp";
+        }
+        else
+        {
+            monster.name = "Monster_Temp";
         }
         
         return monster;
@@ -222,10 +281,10 @@ public class GameManager : MonoBehaviour
     {
         savedMonIDs.Add(monsterController.monsterID);
         SaveSystem.SaveMonIDs(savedMonIDs);
-        RegisterToActiveMons(monsterController);
+        RegisterActiveMonster(monsterController);
     }
 
-    public void RegisterToActiveMons(MonsterController monster)
+    public void RegisterActiveMonster(MonsterController monster)
     {
         if (!activeMonsters.Contains(monster))
         {
@@ -250,16 +309,45 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void UpdateFoodPlacement()
+    private Vector2 ScreenToGameAreaPosition()
     {
-        var indicatorPos = ScreenToCanvasPosition(mainCanvas);
-        foodPlacementIndicator.GetComponent<RectTransform>().anchoredPosition = indicatorPos;
+        var cam = mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCanvas.worldCamera;
+        
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            gameArea, Input.mousePosition, cam, out Vector2 localPoint);
+        
+        return localPoint;
+    }
 
-        bool isValid = gameArea.rect.Contains(indicatorPos);
+    private Vector2 ScreenToCanvasPosition()
+    {
+        var canvasRect = mainCanvas.GetComponent<RectTransform>();
+        var cam = mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCanvas.worldCamera;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect, Input.mousePosition, cam, out Vector2 localPoint);
+
+        return localPoint;
+    }
+
+    private void IndicatorPlacementHandler()
+    {
+        var indicatorPos = ScreenToGameAreaPosition();
+        var indicatorRT = foodPlacementIndicator.GetComponent<RectTransform>();
+        
+        // Ensure indicator is child of game area for consistent positioning
+        if (indicatorRT.parent != gameArea)
+        {
+            indicatorRT.SetParent(gameArea, false);
+        }
+        
+        indicatorRT.anchoredPosition = indicatorPos;
+
+        bool isValid = IsPositionInGameArea(indicatorPos);
         foodPlacementIndicator.GetComponent<Image>().color = isValid ? validPositionColor : invalidPositionColor;
     }
 
-    private void HandleFoodPlacementInput()
+    private void FoodPlacementHandler()
     {
         if (Input.GetMouseButtonDown(0)) TryPlaceFood();
         else if (Input.GetMouseButtonDown(1)) CancelPlacement();
@@ -267,9 +355,10 @@ public class GameManager : MonoBehaviour
 
     private void TryPlaceFood()
     {
-        var position = ScreenToCanvasPosition(mainCanvas);
-        
-        if (gameArea.rect.Contains(position))
+        // Use the same coordinate conversion as the indicator
+        Vector2 position = ScreenToGameAreaPosition();
+
+        if (IsPositionInGameArea(position))
         {
             if (SpentCoin(pendingFoodCost))
             {
@@ -282,18 +371,7 @@ public class GameManager : MonoBehaviour
             ServiceLocator.Get<UIManager>().ShowMessage("Can't place here!", 1f);
         }
     }
-
-    private void SpawnFoodAtPosition(Vector2 position)
-    {
-        var food = GetPooledObject(_foodPool, foodPrefab);
-        SetupPooledObject(food, gameArea, position);
-
-        var foodController = food.GetComponent<FoodController>();
-        if (foodController != null && !activeFoods.Contains(foodController))
-        {
-            activeFoods.Add(foodController);
-        }
-    }
+    
 
     private void CancelPlacement()
     {
@@ -308,19 +386,25 @@ public class GameManager : MonoBehaviour
         foodPlacementIndicator.SetActive(false);
     }
 
-    public void SpawnFood()
-    {
-        var food = GetPooledObject(_foodPool, foodPrefab);
-        SetupPooledObject(food, gameArea, GetRandomPositionInGameArea());
-    }
     #endregion
 
     #region Object Spawning
+       private void SpawnFoodAtPosition(Vector2 position)
+    {
+        var food = GetPooledObject(_foodPool, foodPrefab);
+        SetupPooledObject(food, gameArea, position);
+
+        var foodController = food.GetComponent<FoodController>();
+        if (foodController != null && !activeFoods.Contains(foodController))
+        {
+            activeFoods.Add(foodController);
+        }
+    }
     public GameObject SpawnCoinAt(Vector2 anchoredPos, CoinType type)
     {
         var coin = GetPooledObject(_coinPool, coinPrefab);
         SetupPooledObject(coin, gameArea, anchoredPos);
-        
+
         coin.GetComponent<CoinController>().Initialize(type);
         return coin;
     }
@@ -341,6 +425,17 @@ public class GameManager : MonoBehaviour
     {
         var rt = obj.GetComponent<RectTransform>();
         rt.SetParent(parent, false);
+        
+        // Reset all transform properties to ensure consistent behavior
+        rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
+        
+        // Match the indicator's anchor and pivot settings exactly
+        var indicatorRT = foodPlacementIndicator.GetComponent<RectTransform>();
+        rt.anchorMin = indicatorRT.anchorMin;
+        rt.anchorMax = indicatorRT.anchorMax;
+        rt.pivot = indicatorRT.pivot;
+        
         rt.anchoredPosition = position;
         obj.SetActive(true);
     }
@@ -367,16 +462,12 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    public Vector2 GetRandomPositionInGameArea()
+    public bool IsPositionInGameArea(Vector2 localPosition)
     {
-        var bounds = gameArea.rect;
-        return new Vector2(
-            UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
-            UnityEngine.Random.Range(bounds.min.y + 5, bounds.max.y - 5)
-        );
+        var rect = gameArea.rect;
+        return localPosition.x >= rect.xMin && localPosition.x <= rect.xMax &&
+               localPosition.y >= rect.yMin && localPosition.y <= rect.yMax;
     }
-
-    public bool IsPositionInGameArea(Vector2 position) => gameArea.rect.Contains(position);
 
     public static Vector2 ScreenToCanvasPosition(Canvas canvas)
     {
@@ -407,7 +498,7 @@ public class GameManager : MonoBehaviour
         if (gameArea != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(gameArea.position, 
+            Gizmos.DrawWireCube(gameArea.anchoredPosition, 
                 new Vector3(gameArea.rect.width, gameArea.rect.height, 0));
         }
     }
