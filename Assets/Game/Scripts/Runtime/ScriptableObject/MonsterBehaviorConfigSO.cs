@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class StateTransition
+public class StateTransition 
 {
     public MonsterState fromState;
     public MonsterState toState;

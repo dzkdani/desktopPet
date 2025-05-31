@@ -49,7 +49,7 @@ public class GachaManager : MonoBehaviour
         // Check if we have monsters for each allowed rarity
         foreach (var rarity in allowedRarities)
         {
-            var monstersOfRarity = monsterDatabase.allMonsters.Where(m => m.monType == rarity).Count();
+            var monstersOfRarity = monsterDatabase.monsters.Where(m => m.monType == rarity).Count();
             if (monstersOfRarity == 0)
             {
                 Debug.LogWarning($"No monsters found for rarity: {rarity}");
@@ -59,33 +59,40 @@ public class GachaManager : MonoBehaviour
 
     public void RollGacha()
     {
-        if (!CanAffordGacha())
+        Debug.Log("Starting gacha roll...");
+        
+        // Check if we have enough coins WITHOUT spending them yet
+        if (ServiceLocator.Get<GameManager>().coinCollected < gachaCost)
         {
             Debug.Log("Not enough coins for gacha!");
+            ServiceLocator.Get<UIManager>().ShowMessage("Not enough coins for gacha!", 1f);
             return;
         }
 
         MonsterType chosenRarity = GetRandomRarity();
+        Debug.Log($"Chosen rarity: {chosenRarity}");
+        
         MonsterDataSO selectedMonster = SelectRandomMonster(chosenRarity);
+        Debug.Log($"Selected monster: {(selectedMonster != null ? selectedMonster.monName : "NULL")}");
         
         if (selectedMonster == null)
         {
             Debug.LogWarning($"No monsters available for rarity: {chosenRarity}");
+            ServiceLocator.Get<UIManager>().ShowMessage("No monsters available!", 1f);
             return;
         }
 
-        SpawnMonster(selectedMonster.monID);
-        ShowGachaResult(selectedMonster);
-    }
-
-    private bool CanAffordGacha()
-    {
-        return ServiceLocator.Get<GameManager>().SpentCoin(gachaCost);
+        // Only spend coins AFTER we confirm we can spawn a monster
+        if (ServiceLocator.Get<GameManager>().SpentCoin(gachaCost))
+        {
+            SpawnMonster(selectedMonster);
+            ShowGachaResult(selectedMonster);
+        }
     }
 
     private MonsterDataSO SelectRandomMonster(MonsterType rarity)
     {
-        List<MonsterDataSO> candidates = monsterDatabase.allMonsters
+        List<MonsterDataSO> candidates = monsterDatabase.monsters
             .Where(m => allowedRarities.Contains(m.monType))
             .Where(m => m.monType == rarity)
             .ToList();
@@ -118,9 +125,10 @@ public class GachaManager : MonoBehaviour
         return validWeights[0].type; // fallback
     }
 
-    private void SpawnMonster(string monsterID)
+    private void SpawnMonster(MonsterDataSO monsterData)
     {
-        ServiceLocator.Get<GameManager>().SpawnLoadedMonsViaGacha(monsterID);
+        // Pass the monster data instead of just ID
+        ServiceLocator.Get<GameManager>().SpawnMonsterFromGacha(monsterData);
     }
 
     private void ShowGachaResult(MonsterDataSO monster)

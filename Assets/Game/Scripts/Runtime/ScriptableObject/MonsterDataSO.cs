@@ -18,7 +18,7 @@ public class MonsterDataSO : ScriptableObject
     public float hungerDepleteRate = 0.1f;  // How fast hunger depletes
     public float poopRate = 20f;     // Default: 20 minutes
     
-    [Header("Happiness System")]
+    [Header("Happiness System")] 
     public float pokeHappinessValue = 2f; // Customizable poke happiness increase - changed from 15f to 2f
     public float areaHappinessRate = 0.2f; // Rate of happiness change based on area - changed from 0.1f to 0.2f
 
@@ -35,7 +35,6 @@ public class MonsterDataSO : ScriptableObject
     public SkeletonDataAsset[] monsterSpine;
 
     [Header("Images")]
-    [Tooltip("Sprites: 0 = base, 1+ = evolved versions")]
     public Sprite[] monsImgs;           // [0] base, [1+] evolved forms
 
     public Sprite GetCurrentSprite()

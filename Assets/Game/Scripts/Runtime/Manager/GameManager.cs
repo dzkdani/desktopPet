@@ -163,6 +163,17 @@ public class GameManager : MonoBehaviour
         RegisterMonster(monsterController);
     }
 
+    public void SpawnMonsterFromGacha(MonsterDataSO monsterData)
+    {
+        var monster = CreateMonsterByData(monsterData);
+        var monsterController = monster.GetComponent<MonsterController>();
+        
+        monsterController.monsterID = System.Guid.NewGuid().ToString();
+        monsterController.LoadMonData();
+        
+        RegisterMonster(monsterController);
+    }
+
     private GameObject CreateMonster()
     {
         var monster = Instantiate(monPrefab, gameArea);
@@ -172,6 +183,37 @@ public class GameManager : MonoBehaviour
             UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
             bounds.min.y + 20f
         );
+        
+        // Randomly select a monster type from the database
+        if (monsterDatabase != null && monsterDatabase.monsters.Count > 0)
+        {
+            var randomMonsterData = monsterDatabase.monsters[UnityEngine.Random.Range(0, monsterDatabase.monsters.Count)];
+            var monsterController = monster.GetComponent<MonsterController>();
+            if (monsterController != null)
+            {
+                monsterController.SetMonsterType(randomMonsterData);
+            }
+        }
+        
+        return monster;
+    }
+
+    private GameObject CreateMonsterByData(MonsterDataSO monsterData)
+    {
+        var monster = Instantiate(monPrefab, gameArea);
+        var bounds = gameArea.rect;
+        
+        monster.transform.localPosition = new Vector2(
+            UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
+            bounds.min.y + 20f
+        );
+        
+        // Set the specific monster type from gacha
+        var monsterController = monster.GetComponent<MonsterController>();
+        if (monsterController != null)
+        {
+            monsterController.SetMonsterType(monsterData);
+        }
         
         return monster;
     }
@@ -360,7 +402,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Debug
-    void OnDrawGizmosSelected()
+    void OnDrawGizmosSelected() 
     {
         if (gameArea != null)
         {
