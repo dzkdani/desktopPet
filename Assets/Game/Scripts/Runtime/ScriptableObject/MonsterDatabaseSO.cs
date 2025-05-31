@@ -28,7 +28,7 @@ public class MonsterDatabaseSO : ScriptableObject
 
         for (int i = 0; i < monsters.Count; i++)
         {
-            if (monsters[i] != null && string.IsNullOrEmpty(monsters[i].monID))
+            if (monsters[i] != null && string.IsNullOrEmpty(monsters[i].id))
             {
                 Debug.LogWarning($"Monster at index {i} has empty ID!", this);
             }
