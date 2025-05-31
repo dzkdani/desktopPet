@@ -22,19 +22,16 @@ public class GameManager : MonoBehaviour
     public Color validPositionColor = Color.green;
     public Color invalidPositionColor = Color.red;
     
-    // Object Pools
     private Queue<GameObject> _foodPool = new Queue<GameObject>();
     private Queue<GameObject> _poopPool = new Queue<GameObject>();
     private Queue<GameObject> _coinPool = new Queue<GameObject>();
     
-    // Game State
     [HideInInspector] public int poopCollected;
     [HideInInspector] public int coinCollected;
     [HideInInspector] public List<MonsterController> activeMonsters = new List<MonsterController>();
     public List<FoodController> activeFoods = new List<FoodController>();
     private List<string> savedMonIDs = new List<string>();
     
-    // Food Placement
     private bool isInPlacementMode = false;
     private int pendingFoodCost = 0;
     
@@ -55,7 +52,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    #region Initialization
     private void InitializePools()
     {
         for (int i = 0; i < initialPoolSize; i++)
@@ -72,9 +68,7 @@ public class GameManager : MonoBehaviour
         obj.SetActive(false);
         pool.Enqueue(obj);
     }
-    #endregion
 
-    #region Save/Load System
     private void LoadGame()
     {
         coinCollected = SaveSystem.LoadCoin();
@@ -98,7 +92,7 @@ public class GameManager : MonoBehaviour
             {
                 monsterId = monster.monsterID,
                 lastHunger = monster.currentHunger,
-                lastHappiness = monster.currentHappiness, // Save happiness
+                lastHappiness = monster.currentHappiness,
                 isEvolved = monster.isEvolved,
             };
             SaveSystem.SaveMon(saveData);
@@ -115,111 +109,81 @@ public class GameManager : MonoBehaviour
         SaveSystem.SaveCoin(coinCollected);
         SaveSystem.Flush();
     }
-    #endregion
 
-    #region Monster Management
-    public void BuyMons(int cost = 10)
+    private void SpawnMonster(MonsterDataSO monsterData = null, string existingID = null)
     {
-        if (SpentCoin(cost))
+        GameObject monster;
+        
+        if (monsterData != null)
+            monster = CreateMonsterByData(monsterData);
+        else
+            monster = CreateMonster();
+        
+        var controller = monster.GetComponent<MonsterController>();
+        
+        if (!string.IsNullOrEmpty(existingID))
         {
-            SpawnMonFromShop();
+            controller.monsterID = existingID;
+            var (_, evolutionLevel) = GetMonsterDataAndLevelFromID(existingID);
+            if (evolutionLevel > 0) controller.evolutionLevel = evolutionLevel;
         }
+        else
+        {
+            var data = controller.MonsterData;
+            controller.monsterID = $"{data.id}_Lv{controller.evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";
+        }
+        
+        controller.LoadMonData();
+        
+        var finalData = controller.MonsterData;
+        monster.name = $"{finalData.monsterName}_{controller.monsterID}";
+        
+        if (string.IsNullOrEmpty(existingID))
+            RegisterMonster(controller);
+        else
+            RegisterActiveMonster(controller);
     }
 
-    private void SpawnMonFromShop()
+    public void BuyMons(int cost = 10) 
     {
-        var monster = CreateMonster();
-        var monsterController = monster.GetComponent<MonsterController>();
-        
-        // Generate save ID format
-        var monsterData = monsterController.MonsterData;
-        if (monsterData != null)
+        if (SpentCoin(cost)) SpawnMonster();
+    }
+
+    public void SpawnMonsterFromGacha(MonsterDataSO monsterData) 
+    {
+        SpawnMonster(monsterData);
+    }
+
+    private void SpawnLoadedMons(string monID) 
+    {
+        var (monsterData, _) = GetMonsterDataAndLevelFromID(monID);
+        SpawnMonster(monsterData, monID);
+    }
+
+    private (MonsterDataSO, int) GetMonsterDataAndLevelFromID(string monsterID)
+    {
+        var parts = monsterID.Split('_');
+        if (parts.Length >= 2)
         {
-            monsterController.monsterID = $"{monsterData.id}_Lv{monsterController.evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";
+            string monsterTypeId = parts[0];
             
-            // Rename GameObject with monster name + save ID
-            monster.name = $"{monsterData.monsterName}_{monsterController.monsterID}";
-        }
-        else
-        {
-            monsterController.monsterID = System.Guid.NewGuid().ToString();
-            monster.name = $"Monster_{monsterController.monsterID}";
-        }
-        
-        monsterController.LoadMonData();
-        RegisterMonster(monsterController);
-    }
-
-    private void SpawnLoadedMons(string monID)
-    {
-        var monster = CreateMonster();
-        var monsterController = monster.GetComponent<MonsterController>();
-        
-        monsterController.monsterID = monID;
-        
-        // Rename GameObject with monster name + save ID
-        var monsterData = monsterController.MonsterData;
-        if (monsterData != null)
-        {
-            monster.name = $"{monsterData.monsterName}_{monID}";
-        }
-        else
-        {
-            monster.name = $"Monster_{monID}";
-        }
-        
-        monsterController.LoadMonData();
-        RegisterActiveMonster(monsterController);
-    }
-
-    public void SpawnLoadedMonsViaGacha(string monID)
-    {
-        var monster = CreateMonster();
-        var monsterController = monster.GetComponent<MonsterController>();
-        
-        if (string.IsNullOrEmpty(monID))
-        {
-            var monsterData = monsterController.MonsterData;
-            if (monsterData != null)
+            string levelPart = parts[1];
+            int evolutionLevel = 0;
+            if (levelPart.StartsWith("Lv"))
             {
-                monID = $"{monsterData.id}_Lv{monsterController.evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";
+                int.TryParse(levelPart.Substring(2), out evolutionLevel);
             }
-            else
+            
+            foreach (var data in monsterDatabase.monsters)
             {
-                monID = System.Guid.NewGuid().ToString();
+                if (data.id == monsterTypeId)
+                {
+                    return (data, evolutionLevel);
+                }
             }
         }
         
-        monsterController.monsterID = monID;
-        
-        // Rename GameObject with monster name + save ID
-        var data = monsterController.MonsterData;
-        if (data != null)
-        {
-            monster.name = $"{data.monsterName}_{monID}";
-        }
-        else
-        {
-            monster.name = $"Monster_{monID}";
-        }
-        
-        monsterController.LoadMonData();
-        RegisterMonster(monsterController);
-    }
-
-    public void SpawnMonsterFromGacha(MonsterDataSO monsterData)
-    {
-        var monster = CreateMonsterByData(monsterData);
-        var monsterController = monster.GetComponent<MonsterController>();
-        
-        // Generate save ID format with monster data
-        monsterController.monsterID = $"{monsterData.id}_Lv{monsterController.evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";
-        
-        // Rename GameObject with monster name + save ID
-        monster.name = $"{monsterData.monsterName}_{monsterController.monsterID}";
-        
-        monsterController.LoadMonData();
-        RegisterMonster(monsterController);
+        return (null, 0);
     }
 
     private GameObject CreateMonster()
@@ -236,10 +200,7 @@ public class GameManager : MonoBehaviour
         if (monsterController != null && monsterDatabase != null && monsterDatabase.monsters.Count > 0)
         {
             var randomMonsterData = monsterDatabase.monsters[UnityEngine.Random.Range(0, monsterDatabase.monsters.Count)];
-            // Set monster data BEFORE other initialization
             monsterController.SetMonsterData(randomMonsterData);
-            
-            // Set initial name (will be updated with proper ID later)
             monster.name = $"{randomMonsterData.monsterName}_Temp";
         }
         else
@@ -263,10 +224,7 @@ public class GameManager : MonoBehaviour
         var monsterController = monster.GetComponent<MonsterController>();
         if (monsterController != null)
         {
-            // Set monster data IMMEDIATELY after instantiation
             monsterController.SetMonsterData(monsterData);
-            
-            // Set initial name (will be updated with proper ID later)
             monster.name = $"{monsterData.monsterName}_Temp";
         }
         else
@@ -291,9 +249,7 @@ public class GameManager : MonoBehaviour
             activeMonsters.Add(monster);
         }
     }
-    #endregion
 
-    #region Food System
     public void StartFoodPurchase(int cost)
     {
         if (coinCollected >= cost)
@@ -335,7 +291,6 @@ public class GameManager : MonoBehaviour
         var indicatorPos = ScreenToGameAreaPosition();
         var indicatorRT = foodPlacementIndicator.GetComponent<RectTransform>();
         
-        // Ensure indicator is child of game area for consistent positioning
         if (indicatorRT.parent != gameArea)
         {
             indicatorRT.SetParent(gameArea, false);
@@ -355,7 +310,6 @@ public class GameManager : MonoBehaviour
 
     private void TryPlaceFood()
     {
-        // Use the same coordinate conversion as the indicator
         Vector2 position = ScreenToGameAreaPosition();
 
         if (IsPositionInGameArea(position))
@@ -371,7 +325,6 @@ public class GameManager : MonoBehaviour
             ServiceLocator.Get<UIManager>().ShowMessage("Can't place here!", 1f);
         }
     }
-    
 
     private void CancelPlacement()
     {
@@ -386,10 +339,7 @@ public class GameManager : MonoBehaviour
         foodPlacementIndicator.SetActive(false);
     }
 
-    #endregion
-
-    #region Object Spawning
-       private void SpawnFoodAtPosition(Vector2 position)
+    private void SpawnFoodAtPosition(Vector2 position)
     {
         var food = GetPooledObject(_foodPool, foodPrefab);
         SetupPooledObject(food, gameArea, position);
@@ -400,6 +350,7 @@ public class GameManager : MonoBehaviour
             activeFoods.Add(foodController);
         }
     }
+
     public GameObject SpawnCoinAt(Vector2 anchoredPos, CoinType type)
     {
         var coin = GetPooledObject(_coinPool, coinPrefab);
@@ -426,11 +377,9 @@ public class GameManager : MonoBehaviour
         var rt = obj.GetComponent<RectTransform>();
         rt.SetParent(parent, false);
         
-        // Reset all transform properties to ensure consistent behavior
         rt.localScale = Vector3.one;
         rt.localRotation = Quaternion.identity;
         
-        // Match the indicator's anchor and pivot settings exactly
         var indicatorRT = foodPlacementIndicator.GetComponent<RectTransform>();
         rt.anchorMin = indicatorRT.anchorMin;
         rt.anchorMax = indicatorRT.anchorMax;
@@ -449,9 +398,7 @@ public class GameManager : MonoBehaviour
         else if (obj.name.Contains("Coin")) _coinPool.Enqueue(obj);
         else if (obj.name.Contains("Food")) _foodPool.Enqueue(obj);
     }
-    #endregion
 
-    #region Utility
     public bool SpentCoin(int amount)
     {
         if (coinCollected < amount) return false;
@@ -479,9 +426,7 @@ public class GameManager : MonoBehaviour
 
         return localPoint;
     }
-    #endregion
 
-    #region Application Lifecycle
     void OnApplicationQuit() => SaveGameData();
     void OnApplicationPause(bool pauseStatus) { if (pauseStatus) SaveGameData(); }
 
@@ -490,9 +435,7 @@ public class GameManager : MonoBehaviour
 #endif
 
     void OnDestroy() => ServiceLocator.Unregister<GameManager>();
-    #endregion
 
-    #region Debug
     void OnDrawGizmosSelected() 
     {
         if (gameArea != null)
@@ -502,5 +445,4 @@ public class GameManager : MonoBehaviour
                 new Vector3(gameArea.rect.width, gameArea.rect.height, 0));
         }
     }
-    #endregion
 }
