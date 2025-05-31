@@ -27,7 +27,7 @@ MonoBehaviour:
   isFinalEvol: 0
   evolutionLevel: 0
   monsterSpine:
-  - {fileID: 11400000, guid: 844e7ddc6f21e0a408193025ff42062a, type: 2}
+  - {fileID: 11400000, guid: 2849b090bc78ec149b91dec4e919ce91, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   monsImgs: []

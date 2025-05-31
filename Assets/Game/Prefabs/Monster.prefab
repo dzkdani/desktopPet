@@ -373,8 +373,6 @@ GameObject:
   - component: {fileID: 2611839368111208961}
   - component: {fileID: 4083149466542281854}
   - component: {fileID: 3640949446737527384}
-  - component: {fileID: 4039664816187130400}
-  - component: {fileID: 5346012171593655670}
   - component: {fileID: 2952763862151204150}
   m_Layer: 0
   m_Name: SkeletonGraphic
@@ -430,7 +428,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  skeletonDataAsset: {fileID: 11400000, guid: 2849b090bc78ec149b91dec4e919ce91, type: 2}
+  skeletonDataAsset: {fileID: 0}
   additiveMaterial: {fileID: 2100000, guid: 2e8245019faeb8c43b75f9ca3ac8ee34, type: 2}
   multiplyMaterial: {fileID: 2100000, guid: e74a1f8978a7da348a721508d0d58834, type: 2}
   screenMaterial: {fileID: 2100000, guid: bab24c479f34eec45be6ea8595891569, type: 2}
@@ -438,7 +436,7 @@ MonoBehaviour:
   initialSkinName: default
   initialFlipX: 1
   initialFlipY: 0
-  startingAnimation: idle
+  startingAnimation: 
   startingLoop: 1
   timeScale: 1
   freeze: 0
@@ -473,48 +471,6 @@ MonoBehaviour:
       immutableTriangles: 0
   updateTiming: 1
   unscaledTime: 0
---- !u!114 &4039664816187130400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2703813871208253836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f726fb798ad621458c431cb9966d91d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boneRoot: {fileID: 2611839368111208961}
-  flipBy180DegreeRotation: 1
-  skeletonRenderer: {fileID: 0}
-  skeletonGraphic: {fileID: 3640949446737527384}
---- !u!114 &5346012171593655670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2703813871208253836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f21c9538588898a45a3da22bf4779ab3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rootMotionBoneName: DaoonMons
-  transformPositionX: 1
-  transformPositionY: 1
-  transformRotation: 0
-  rootMotionScaleX: 1
-  rootMotionScaleY: 1
-  rootMotionScaleRotation: 1
-  rootMotionTranslateXPerY: 0
-  rootMotionTranslateYPerX: 0
-  rigidBody2D: {fileID: 0}
-  applyRigidbody2DGravity: 0
-  rigidBody: {fileID: 0}
-  disableOnOverride: 1
-  animationTrackFlags: -1
 --- !u!114 &2952763862151204150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,7 +498,7 @@ GameObject:
   - component: {fileID: 8188706650687888262}
   - component: {fileID: 2708909758104116800}
   m_Layer: 5
-  m_Name: Mons
+  m_Name: Monster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

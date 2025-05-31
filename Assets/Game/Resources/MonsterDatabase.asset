@@ -12,13 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51669f04b05d9a04f80bae8bfb345972, type: 3}
   m_Name: MonsterDatabase
   m_EditorClassIdentifier: 
-  allMonsters:
-  - {fileID: 11400000, guid: ed882d905e3a49d418ecc48aa4abd771, type: 2}
-  - {fileID: 11400000, guid: a36cf9f1903938a43b635658704ebd37, type: 2}
-  - {fileID: 11400000, guid: 8316f80be3fae6f40b3c518f2c6b2931, type: 2}
-  - {fileID: 11400000, guid: db0a31bb442cd824da6a6064dbffc060, type: 2}
-  - {fileID: 11400000, guid: 84ba886e90f09be43ac8c768c7e7ac79, type: 2}
-  - {fileID: 11400000, guid: c9c03c90861e7ae449d1860712dc12da, type: 2}
-  - {fileID: 11400000, guid: 43876d17c9927de4c9186fb4178a510a, type: 2}
-  - {fileID: 11400000, guid: c1cd5c9de1189844095d351445a9e5ee, type: 2}
-  - {fileID: 11400000, guid: 0b38ed93d2bb0994e845870f9d7eef38, type: 2}
+  monsters:
+  - {fileID: 11400000, guid: 068929c51282bd647b46953f74bb39db, type: 2}
+  - {fileID: 11400000, guid: 949c0068bfc6fc242abcdfeb20ebf095, type: 2}
