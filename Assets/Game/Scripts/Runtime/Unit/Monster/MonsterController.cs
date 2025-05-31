@@ -34,6 +34,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private MonsterFoodHandler _foodHandler;
     private MonsterInteractionHandler _interactionHandler;
     private MonsterMovementBounds _movementBounds;
+    private MonsterEvolutionHandler _evolutionHandler; // Add this
 
     // Core components
     private SkeletonGraphic _monsterSpineGraphic;
@@ -92,6 +93,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         if (!_isLoaded) return;
 
         _interactionHandler?.UpdateTimers(Time.deltaTime);
+        _evolutionHandler?.UpdateEvolutionTracking(Time.deltaTime); // Add this
         HandleMovement();
     }
 
@@ -100,6 +102,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _saveHandler = new MonsterSaveHandler(this);
         _visualHandler = new MonsterVisualHandler(this, _monsterSpineGraphic);
         _interactionHandler = new MonsterInteractionHandler(this, _stateMachine);
+        _evolutionHandler = new MonsterEvolutionHandler(this); // Add this
     }
 
     private void InitializeID()
@@ -263,6 +266,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         float oldHunger = currentHunger;
         SetHunger(Mathf.Clamp(currentHunger + amount, 0f, 100f));
         IncreaseHappiness(amount);
+        _evolutionHandler?.OnFoodConsumed(); // Add this
     }
 
     public void IncreaseHappiness(float amount)
@@ -290,7 +294,11 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void OnPointerEnter(PointerEventData e) => _interactionHandler?.OnPointerEnter(e);
     public void OnPointerExit(PointerEventData e) => _interactionHandler?.OnPointerExit(e);
-    public void OnPointerClick(PointerEventData eventData) => _interactionHandler?.OnPointerClick(eventData);
+    public void OnPointerClick(PointerEventData eventData) 
+    {
+        _interactionHandler?.OnPointerClick(eventData);
+        _evolutionHandler?.OnInteraction(); // Add this
+    }
 
     public void SaveMonData() => _saveHandler?.SaveData();
     public void LoadMonData() => _saveHandler?.LoadData();
@@ -318,6 +326,23 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void ForceResetEating()
     {
         _foodHandler?.ForceResetEating();
+    }
+
+    // Add public methods to access evolution handler
+    public float GetEvolutionProgress() => _evolutionHandler?.GetEvolutionProgress() ?? 0f;
+    public void ForceEvolution() => _evolutionHandler?.ForceEvolution();
+
+    // Add these getter methods for save handler to access evolution data
+    public float GetEvolutionTimeSinceCreation() => _evolutionHandler?.TimeSinceCreation ?? 0f;
+    public float GetEvolutionTotalHappiness() => _evolutionHandler?.TotalHappinessAccumulated ?? 0f;
+    public float GetEvolutionTotalHunger() => _evolutionHandler?.TotalHungerSatisfied ?? 0f;
+    public int GetEvolutionFoodConsumed() => _evolutionHandler?.FoodConsumed ?? 0;
+    public int GetEvolutionInteractionCount() => _evolutionHandler?.InteractionCount ?? 0;
+
+    // Add this method for save handler to load evolution data
+    public void LoadEvolutionData(float timeSinceCreation, float totalHappiness, float totalHunger, int foodConsumed, int interactionCount)
+    {
+        _evolutionHandler?.LoadEvolutionData(timeSinceCreation, totalHappiness, totalHunger, foodConsumed, interactionCount);
     }
 
     private IEnumerator HungerRoutine(float interval)

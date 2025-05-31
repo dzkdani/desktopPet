@@ -1,6 +1,6 @@
 using System;
 
-[System.Serializable]
+[Serializable]
 public class MonsterSaveData
 {
     public string monsterId;
@@ -9,4 +9,11 @@ public class MonsterSaveData
     public bool isEvolved;
     public bool isFinalForm;
     public int evolutionLevel;
+    
+    // Evolution tracking data
+    public float timeSinceCreation;
+    public float totalHappinessAccumulated;
+    public float totalHungerSatisfied;
+    public int foodConsumed;
+    public int interactionCount;
 }

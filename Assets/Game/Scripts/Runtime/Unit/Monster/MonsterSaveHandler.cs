@@ -18,45 +18,37 @@ public class MonsterSaveHandler
             lastHappiness = _controller.currentHappiness,
             isEvolved = _controller.isEvolved,
             isFinalForm = _controller.isFinalForm,
-            evolutionLevel = _controller.evolutionLevel
+            evolutionLevel = _controller.evolutionLevel,
+            
+            // Evolution data - get directly from evolution handler
+            timeSinceCreation = _controller.GetEvolutionTimeSinceCreation(),
+            totalHappinessAccumulated = _controller.GetEvolutionTotalHappiness(),
+            totalHungerSatisfied = _controller.GetEvolutionTotalHunger(),
+            foodConsumed = _controller.GetEvolutionFoodConsumed(),
+            interactionCount = _controller.GetEvolutionInteractionCount()
         };
+        
         SaveSystem.SaveMon(data);
     }
     
     public void LoadData()
     {
-        if (_controller.MonsterData == null)
+        if (SaveSystem.LoadMon(_controller.monsterID, out var data))
         {
-            InitNewMonster();
-            return;
-        }
-
-        if (SaveSystem.LoadMon(_controller.monsterID, out MonsterSaveData savedData))
-            LoadFromSaveData(savedData);
-        else
-            InitNewMonster();
-
-        ApplyMonsterDataStats();
-    }
-    
-    private void LoadFromSaveData(MonsterSaveData savedData)
-    {
-        _controller.SetHunger(savedData.lastHunger);
-        _controller.SetHappiness(savedData.lastHappiness);
-        _controller.monsterID = savedData.monsterId;
-        
-        _controller.isEvolved = savedData.isEvolved;
-        _controller.isFinalForm = savedData.isFinalForm;
-        _controller.evolutionLevel = savedData.evolutionLevel;
-        
-        if (_controller.MonsterData != null)
-        {
-            var loadedData = _controller.MonsterData;
-            loadedData.isEvolved = savedData.isEvolved;
-            loadedData.isFinalEvol = savedData.isFinalForm;
-            loadedData.evolutionLevel = savedData.evolutionLevel;
+            _controller.SetHunger(data.lastHunger);
+            _controller.SetHappiness(data.lastHappiness);
+            _controller.isEvolved = data.isEvolved;
+            _controller.isFinalForm = data.isFinalForm;
+            _controller.evolutionLevel = data.evolutionLevel;
             
-            _controller.UpdateVisuals();
+            // Load evolution data directly
+            _controller.LoadEvolutionData(
+                data.timeSinceCreation,
+                data.totalHappinessAccumulated,
+                data.totalHungerSatisfied,
+                data.foodConsumed,
+                data.interactionCount
+            );
         }
     }
     

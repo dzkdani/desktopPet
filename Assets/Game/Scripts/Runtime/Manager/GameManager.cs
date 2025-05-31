@@ -121,6 +121,12 @@ public class GameManager : MonoBehaviour
         
         var controller = monster.GetComponent<MonsterController>();
         
+        // Add evolution handler if not present
+        if (monster.GetComponent<MonsterEvolutionHandler>() == null)
+        {
+            monster.AddComponent<MonsterEvolutionHandler>();
+        }
+        
         if (!string.IsNullOrEmpty(existingID))
         {
             controller.monsterID = existingID;
