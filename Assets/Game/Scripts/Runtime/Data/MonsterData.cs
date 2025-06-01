@@ -17,4 +17,9 @@ public class MonsterData
     
     [Header("Interaction")]
     public float pokeCooldownDuration = 5f;
+
+    [Header("Separation Behavior")]
+    public float separationRadius = 100f;
+    public float separationForce = 2f;
+    public bool enableSeparation = true;
 }

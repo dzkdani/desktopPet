@@ -35,6 +35,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private MonsterInteractionHandler _interactionHandler;
     private MonsterMovementBounds _movementBounds;
     private MonsterEvolutionHandler _evolutionHandler; // Add this
+    private MonsterSeparationBehavior _separationBehavior;
 
     // Core components
     private SkeletonGraphic _monsterSpineGraphic;
@@ -106,6 +107,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _visualHandler = new MonsterVisualHandler(this, _monsterSpineGraphic);
         _interactionHandler = new MonsterInteractionHandler(this, _stateMachine);
         _evolutionHandler = new MonsterEvolutionHandler(this); // Add this
+        _separationBehavior = new MonsterSeparationBehavior(this, _gameManager, _rectTransform); // Add this
     }
 
     private void InitializeID()
@@ -146,6 +148,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         
         _movementBounds = new MonsterMovementBounds(_rectTransform, _gameManager);
         _movementHandler = new MonsterMovement(_rectTransform, _stateMachine, _gameManager, _monsterSpineGraphic);
+        _separationBehavior = new MonsterSeparationBehavior(this, _gameManager, _rectTransform); // Add this
     }
 
     private void SubscribeToEvents()
@@ -217,6 +220,12 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         if (isMovementState && _foodHandler?.NearestFood != null)
         {
             _foodHandler?.HandleFoodLogic(ref _targetPosition);
+        }
+        
+        // Apply separation behavior to target position
+        if (isMovementState)
+        {
+            _targetPosition = _separationBehavior.ApplySeparationToTarget(_targetPosition);
         }
 
         Vector2 oldPosition = _rectTransform.anchoredPosition;
