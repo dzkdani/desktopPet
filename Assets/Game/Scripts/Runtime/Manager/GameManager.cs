@@ -22,6 +22,11 @@ public class GameManager : MonoBehaviour
     public Color validPositionColor = Color.green;
     public Color invalidPositionColor = Color.red;
     
+    [Header("Rendering Settings")]
+    public bool enableDepthSorting = true;
+    private float lastSortTime = 0f;
+    private float sortInterval = 0.1f; // Sort every 0.1 seconds to avoid performance issues
+
     private Queue<GameObject> _foodPool = new Queue<GameObject>();
     private Queue<GameObject> _poopPool = new Queue<GameObject>();
     private Queue<GameObject> _coinPool = new Queue<GameObject>();
@@ -49,6 +54,13 @@ public class GameManager : MonoBehaviour
         {
             IndicatorPlacementHandler();
             FoodPlacementHandler();
+        }
+        
+        // Add depth sorting for monsters
+        if (enableDepthSorting && Time.time - lastSortTime >= sortInterval)
+        {
+            SortMonstersByDepth();
+            lastSortTime = Time.time;
         }
     }
 
@@ -451,6 +463,39 @@ public class GameManager : MonoBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(gameArea.anchoredPosition, 
                 new Vector3(gameArea.rect.width, gameArea.rect.height, 0));
+        }
+    }
+
+    public void SortMonstersByDepth()
+    {
+        if (activeMonsters.Count <= 1) return;
+
+        // Create a list of monsters with their Y positions for sorting
+        var monstersWithY = new List<(MonsterController monster, float yPos)>();
+        
+        foreach (var monster in activeMonsters)
+        {
+            if (monster != null && monster.gameObject.activeInHierarchy)
+            {
+                var rectTransform = monster.GetComponent<RectTransform>();
+                if (rectTransform != null)
+                {
+                    monstersWithY.Add((monster, rectTransform.anchoredPosition.y));
+                }
+            }
+        }
+
+        // Sort by Y position (higher Y should be behind = lower sibling index)
+        monstersWithY.Sort((a, b) => b.yPos.CompareTo(a.yPos));
+
+        // Update sibling indices
+        for (int i = 0; i < monstersWithY.Count; i++)
+        {
+            var monster = monstersWithY[i].monster;
+            if (monster != null)
+            {
+                monster.transform.SetSiblingIndex(i);
+            }
         }
     }
 }

@@ -57,6 +57,9 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private float _currentHappiness = 100f;
     private bool _isHovered;
 
+    private Vector2 _lastSortPosition;
+    private float _depthSortThreshold = 20f; // Minimum movement before triggering sort
+
     private void Awake()
     {
         InitializeID();
@@ -216,7 +219,15 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             _foodHandler?.HandleFoodLogic(ref _targetPosition);
         }
 
+        Vector2 oldPosition = _rectTransform.anchoredPosition;
         _movementHandler.UpdateMovement(ref _targetPosition, stats);
+
+        // Check if monster moved significantly and request immediate depth sort
+        Vector2 newPosition = _rectTransform.anchoredPosition;
+        if (Vector2.Distance(newPosition, _lastSortPosition) >= _depthSortThreshold)
+        {
+            _lastSortPosition = newPosition;
+        }
 
         bool isPursuingFood = _foodHandler?.NearestFood != null;
         float distanceToTarget = Vector2.Distance(_rectTransform.anchoredPosition, _targetPosition);
