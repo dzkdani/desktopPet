@@ -35,13 +35,13 @@ public class MonsterSaveHandler
     {
         if (SaveSystem.LoadMon(_controller.monsterID, out var data))
         {
+            // Existing monster - load saved data
             _controller.SetHunger(data.lastHunger);
             _controller.SetHappiness(data.lastHappiness);
             _controller.isEvolved = data.isEvolved;
             _controller.isFinalForm = data.isFinalForm;
             _controller.evolutionLevel = data.evolutionLevel;
             
-            // Load evolution data directly
             _controller.LoadEvolutionData(
                 data.timeSinceCreation,
                 data.totalHappinessAccumulated,
@@ -50,6 +50,14 @@ public class MonsterSaveHandler
                 data.interactionCount
             );
         }
+        else
+        {
+            // New monster - initialize with base values from MonsterDataSO
+            InitNewMonster();
+        }
+        
+        // Always apply monster data stats
+        ApplyMonsterDataStats();
     }
     
     private void InitNewMonster()
