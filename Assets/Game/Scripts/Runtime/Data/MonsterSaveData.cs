@@ -10,10 +10,8 @@ public class MonsterSaveData
     public bool isFinalForm;
     public int evolutionLevel;
     
-    // Evolution tracking data
+    // Evolution tracking data - CLEANED UP
     public float timeSinceCreation;
-    public float totalHappinessAccumulated;
-    public float totalHungerSatisfied;
     public int foodConsumed;
     public int interactionCount;
 }

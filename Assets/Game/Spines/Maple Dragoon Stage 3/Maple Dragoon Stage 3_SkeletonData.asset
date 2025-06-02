@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
-  m_Name: Maple Dragoon Stage 1_SkeletonData
+  m_Name: Maple Dragoon Stage 3_SkeletonData
   m_EditorClassIdentifier: 
   atlasAssets:
-  - {fileID: 11400000, guid: 759b7b68e2ec46a448375d8671411d4d, type: 2}
+  - {fileID: 11400000, guid: c7c1a7fd2de07d149b440489bf424ac6, type: 2}
   scale: 0.01
-  skeletonJSON: {fileID: 4900000, guid: 73f76f74c13baee4f9263a81d3def4c5, type: 3}
+  skeletonJSON: {fileID: 4900000, guid: fd41d22ad5661d64c9ed82257a6a023f, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
     requiresBlendModeMaterials: 0

@@ -1,139 +1,97 @@
 using UnityEngine;
 using System;
+using System.Linq;
 
 [Serializable]
 public class MonsterEvolutionSaveData
 {
     public string monsterId;
-    public float timeSinceCreation;
-    public float totalHappinessAccumulated;
-    public float totalHungerSatisfied;
-    public int foodConsumed;
-    public int interactionCount;
-}
-
-[Serializable]
-public class EvolutionRequirement
-{
-    [Header("Target Evolution")]
-    public int targetEvolutionLevel = 1;
+    public float timeSinceCreation;        // ✅ Keep
+    public int foodConsumed;               // ✅ Keep
+    public int interactionCount;           // ✅ Keep
     
-    [Header("Time Requirements")]
-    public float minTimeAlive = 300f; // 5 minutes
-    
-    [Header("Happiness Requirements")]
-    public float minHappinessAccumulated = 500f;
-    public float minCurrentHappiness = 80f;
-    
-    [Header("Hunger Requirements")]
-    public float minHungerSatisfied = 300f;
-    public float minCurrentHunger = 70f;
-    
-    [Header("Activity Requirements")]
-    public int minFoodConsumed = 10;
-    public int minInteractions = 20;
-    
-    [Header("Custom Conditions")]
-    public Func<MonsterController, bool> customCondition;
-    
-    [Header("Evolution Info")]
-    public string evolutionName = "Evolution";
-    public string description = "Evolution requirements";
+    // ❌ REMOVE these - they don't make sense:
+    // public float totalHappinessAccumulated;
+    // public float totalHungerSatisfied;
 }
 
 public class MonsterEvolutionHandler
 {
-    private EvolutionRequirement[] evolutionRequirements;
+    private EvolutionRequirementsSO _evolutionConfig;
     
     private MonsterController _controller;
-    private float _timeSinceCreation;
-    private float _totalHappinessAccumulated;
-    private float _totalHungerSatisfied;
-    private int _foodConsumed;
-    private int _interactionCount;
     
     // Evolution tracking
-    private bool _hasEvolvedThisSession;
-    private float _lastHappinessCheck;
-    private float _lastHungerCheck;
     private float _lastUpdateTime;
+    private float _lastEvolutionTime = -1f;
+    private float _evolutionCooldown = 3600f; // 1 hour cooldown
 
-    public bool CanEvolve => _controller.MonsterData.canEvolve && !_controller.MonsterData.isFinalEvol;
+    // ✅ ONLY track these accumulated values:
+    private float _timeSinceCreation;
+    private int _foodConsumed;
+    private int _interactionCount;
+
+    public bool CanEvolve => _controller?.MonsterData != null && _controller.MonsterData.canEvolve && !_controller.MonsterData.isFinalEvol;
     public float TimeSinceCreation => _timeSinceCreation;
-    public float TotalHappinessAccumulated => _totalHappinessAccumulated;
-    public float TotalHungerSatisfied => _totalHungerSatisfied;
     public int FoodConsumed => _foodConsumed;
     public int InteractionCount => _interactionCount;
 
     public MonsterEvolutionHandler(MonsterController controller)
     {
         _controller = controller;
-        _lastUpdateTime = Time.time;
         InitializeEvolutionRequirements();
     }
 
     private void InitializeEvolutionRequirements()
     {
-        evolutionRequirements = new EvolutionRequirement[]
+        // Check if controller and MonsterData are valid
+        if (_controller == null)
         {
-            new EvolutionRequirement
-            {
-                targetEvolutionLevel = 1,
-                minTimeAlive = 300f, // 5 minutes
-                minHappinessAccumulated = 500f,
-                minHungerSatisfied = 300f,
-                minFoodConsumed = 10,
-                minInteractions = 20,
-                minCurrentHappiness = 80f,
-                minCurrentHunger = 70f
-            },
-            new EvolutionRequirement
-            {
-                targetEvolutionLevel = 2,
-                minTimeAlive = 900f, // 15 minutes
-                minHappinessAccumulated = 1500f,
-                minHungerSatisfied = 1000f,
-                minFoodConsumed = 30,
-                minInteractions = 50,
-                minCurrentHappiness = 90f,
-                minCurrentHunger = 80f
-            }
-        };
+            Debug.LogError("MonsterEvolutionHandler: Controller is null!");
+            return;
+        }
+        
+        if (_controller.MonsterData == null)
+        {
+            Debug.LogWarning($"MonsterEvolutionHandler: MonsterData is null for controller. Deferring initialization.");
+            return; 
+        }
+        
+        // Every monster MUST have evolution requirements
+        if (_controller.MonsterData.evolutionRequirements == null)
+        {
+            Debug.LogError($"Monster '{_controller.MonsterData.monsterName}' is missing evolution requirements! Please assign EvolutionRequirementsSO.");
+            return;
+        }
+        
+        _evolutionConfig = _controller.MonsterData.evolutionRequirements;
+    }
+    
+    private EvolutionRequirement[] GetAvailableEvolutions()
+    {
+        if (_evolutionConfig == null || _evolutionConfig.requirements == null)
+            return new EvolutionRequirement[0];
+        
+        return _evolutionConfig.requirements
+            .Where(req => req.targetEvolutionLevel == _controller.evolutionLevel + 1)
+            .ToArray();
     }
 
-    public void LoadEvolutionData(float timeSinceCreation, float totalHappiness, float totalHunger, int foodConsumed, int interactionCount)
+    public void LoadEvolutionData(float timeSinceCreation, int foodConsumed, int interactionCount)
     {
         _timeSinceCreation = timeSinceCreation;
-        _totalHappinessAccumulated = totalHappiness;
-        _totalHungerSatisfied = totalHunger;
         _foodConsumed = foodConsumed;
         _interactionCount = interactionCount;
-        
-        _lastHappinessCheck = _controller.currentHappiness;
-        _lastHungerCheck = _controller.currentHunger;
     }
 
     public void UpdateEvolutionTracking(float deltaTime)
     {
-        if (!CanEvolve) return;
+        if (!CanEvolve || _controller?.MonsterData == null) return;
         
+        // ✅ Only track time
         _timeSinceCreation += deltaTime;
         
-        float currentHappiness = _controller.currentHappiness;
-        if (currentHappiness > _lastHappinessCheck)
-        {
-            _totalHappinessAccumulated += (currentHappiness - _lastHappinessCheck);
-        }
-        _lastHappinessCheck = currentHappiness;
-        
-        float currentHunger = _controller.currentHunger;
-        if (currentHunger > _lastHungerCheck)
-        {
-            _totalHungerSatisfied += (currentHunger - _lastHungerCheck);
-        }
-        _lastHungerCheck = currentHunger;
-        
-        if (Time.time - _lastUpdateTime >= 5f && !_hasEvolvedThisSession)
+        if (Time.time - _lastUpdateTime >= 5f)
         {
             CheckEvolutionConditions();
             _lastUpdateTime = Time.time;
@@ -142,19 +100,22 @@ public class MonsterEvolutionHandler
 
     public void OnFoodConsumed()
     {
-        _foodConsumed++;
+        _foodConsumed++;  // ✅ Track total food eaten
         CheckEvolutionConditions();
     }
 
     public void OnInteraction()
     {
-        _interactionCount++;
+        _interactionCount++;  // ✅ Track total interactions
         CheckEvolutionConditions();
     }
 
     private void CheckEvolutionConditions()
     {
-        if (!CanEvolve || _hasEvolvedThisSession) return;
+        // Check cooldown
+        if (Time.time - _lastEvolutionTime < _evolutionCooldown) return;
+
+        if (!CanEvolve) return;
 
         var nextEvolution = GetNextEvolutionRequirement();
         if (nextEvolution == null) return;
@@ -169,7 +130,7 @@ public class MonsterEvolutionHandler
     {
         int currentLevel = _controller.evolutionLevel;
 
-        foreach (var requirement in evolutionRequirements)
+        foreach (var requirement in GetAvailableEvolutions())
         {
             if (requirement.targetEvolutionLevel == currentLevel + 1)
             {
@@ -182,16 +143,19 @@ public class MonsterEvolutionHandler
 
     private bool MeetsEvolutionRequirements(EvolutionRequirement requirement)
     {
-        // Check all conditions
+        // ✅ Check accumulated progress
         if (_timeSinceCreation < requirement.minTimeAlive) return false;
-        if (_totalHappinessAccumulated < requirement.minHappinessAccumulated) return false;
-        if (_totalHungerSatisfied < requirement.minHungerSatisfied) return false;
         if (_foodConsumed < requirement.minFoodConsumed) return false;
         if (_interactionCount < requirement.minInteractions) return false;
+        
+        // ✅ Check current dynamic status
         if (_controller.currentHappiness < requirement.minCurrentHappiness) return false;
         if (_controller.currentHunger < requirement.minCurrentHunger) return false;
 
-        // Check custom conditions
+        // ❌ REMOVE these nonsensical checks:
+        // if (_totalHappinessAccumulated < requirement.minHappinessAccumulated) return false;
+        // if (_totalHungerSatisfied < requirement.minHungerSatisfied) return false;
+
         return requirement.customCondition?.Invoke(_controller) ?? true;
     }
 
@@ -202,27 +166,21 @@ public class MonsterEvolutionHandler
         var oldLevel = _controller.evolutionLevel;
         var newLevel = oldLevel + 1;
 
-        // Update evolution level
-        _controller.evolutionLevel = newLevel;
-        _controller.isEvolved = true;
+        // Start simple evolution effect
+        StartSimpleEvolutionEffect(oldLevel, newLevel);
+    }
 
-        // Check if this is final evolution
-        if (newLevel >= evolutionRequirements.Length ||
-            _controller.MonsterData.monsterSpine.Length <= newLevel + 1)
-        {
-            _controller.isFinalForm = true;
-        }
-
-        // Update monster ID to reflect new evolution level
-        UpdateMonsterID(newLevel);
-
-        // Apply visual changes
-        _controller.UpdateVisuals();
-
-        // Trigger evolution events
-        OnEvolutionComplete(oldLevel, newLevel);
-
-        _hasEvolvedThisSession = true;
+    private void StartSimpleEvolutionEffect(int oldLevel, int newLevel)
+    {
+        // Get MonsterController to handle the visual animation
+        _controller.PlayEvolutionEffect(() => {
+            // Apply evolution changes in callback
+            _controller.evolutionLevel = newLevel;
+            _controller.isEvolved = true;
+            UpdateMonsterID(newLevel);
+            _controller.UpdateVisuals();
+            OnEvolutionComplete(oldLevel, newLevel);
+        });
     }
 
     private void UpdateMonsterID(int newLevel)
@@ -236,15 +194,14 @@ public class MonsterEvolutionHandler
 
     private void OnEvolutionComplete(int oldLevel, int newLevel)
     {
-        // Notify UI/Effects
         ServiceLocator.Get<UIManager>()?.ShowMessage($"{_controller.MonsterData.monsterName} evolved to level {newLevel}!", 3f);
 
-        // Reset some tracking values for next evolution
-        _totalHappinessAccumulated = 0;
-        _totalHungerSatisfied = 0;
-        _foodConsumed = 0;
-        _interactionCount = 0;
-        _timeSinceCreation = 0;
+        // ✅ Reset only what makes sense to reset
+        _foodConsumed = 0;        // Reset food count for next evolution
+        _interactionCount = 0;    // Reset interaction count for next evolution
+        // _timeSinceCreation continues accumulating (monster gets older)
+        
+        // ❌ No need to reset happiness/hunger accumulation since we don't track it
     }
 
     // Manual evolution for testing/admin
@@ -260,36 +217,51 @@ public class MonsterEvolutionHandler
     public float GetEvolutionProgress()
     {
         var nextRequirement = GetNextEvolutionRequirement();
-        if (nextRequirement == null) return 1f; // Already at max level
+        if (nextRequirement == null) return 1f;
 
         float progress = 0f;
         int conditions = 0;
 
-        // Calculate progress based on multiple factors
+        // ✅ Accumulated conditions
         if (nextRequirement.minTimeAlive > 0)
         {
             progress += Mathf.Clamp01(_timeSinceCreation / nextRequirement.minTimeAlive);
             conditions++;
         }
-
-        if (nextRequirement.minHappinessAccumulated > 0)
-        {
-            progress += Mathf.Clamp01(_totalHappinessAccumulated / nextRequirement.minHappinessAccumulated);
-            conditions++;
-        }
-
-        if (nextRequirement.minHungerSatisfied > 0)
-        {
-            progress += Mathf.Clamp01(_totalHungerSatisfied / nextRequirement.minHungerSatisfied);
-            conditions++;
-        }
-
+        
         if (nextRequirement.minFoodConsumed > 0)
         {
             progress += Mathf.Clamp01((float)_foodConsumed / nextRequirement.minFoodConsumed);
             conditions++;
         }
+        
+        if (nextRequirement.minInteractions > 0)
+        {
+            progress += Mathf.Clamp01((float)_interactionCount / nextRequirement.minInteractions);
+            conditions++;
+        }
 
-        return conditions > 0 ? progress / conditions : 0f;
+        // ✅ Current status conditions
+        if (nextRequirement.minCurrentHappiness > 0)
+        {
+            progress += Mathf.Clamp01(_controller.currentHappiness / nextRequirement.minCurrentHappiness);
+            conditions++;
+        }
+        
+        if (nextRequirement.minCurrentHunger > 0)
+        {
+            progress += Mathf.Clamp01(_controller.currentHunger / nextRequirement.minCurrentHunger);
+            conditions++;
+        }
+
+        return conditions > 0 ? progress / conditions : 1f;
+    }
+
+    public void InitializeWithMonsterData()
+    {
+        if (_evolutionConfig == null)
+        {
+            InitializeEvolutionRequirements();
+        }
     }
 }

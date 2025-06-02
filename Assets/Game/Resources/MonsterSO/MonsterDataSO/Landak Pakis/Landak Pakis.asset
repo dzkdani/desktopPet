@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40fe17d270458e3458d497300221f78c, type: 3}
-  m_Name: Daoon
+  m_Name: Landak Pakis
   m_EditorClassIdentifier: 
-  monsterName: Daoon
-  id: 001
+  monsterName: Landak Pakis
+  id: 003
   monPrice: 10
   monType: 0
   moveSpd: 100
@@ -30,7 +30,7 @@ MonoBehaviour:
   evolutionLevel: 0
   evolutionRequirements: {fileID: 11400000, guid: d3e14830d29dbef47bab7b4a75a30888, type: 2}
   monsterSpine:
-  - {fileID: 11400000, guid: 2849b090bc78ec149b91dec4e919ce91, type: 2}
+  - {fileID: 11400000, guid: a71d729d6ee21fe4cba328438715435a, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   monsImgs: []

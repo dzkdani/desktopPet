@@ -106,14 +106,11 @@ public class GameManager : MonoBehaviour
                 lastHunger = monster.currentHunger,
                 lastHappiness = monster.currentHappiness,
                 isEvolved = monster.isEvolved,
-                // Missing fields that might be needed:
-                // isFinalForm = monster.isFinalForm,
-                // evolutionLevel = monster.evolutionLevel,
-                // timeSinceCreation = monster.timeSinceCreation,
-                // totalHappinessAccumulated = monster.totalHappinessAccumulated,
-                // totalHungerSatisfied = monster.totalHungerSatisfied,
-                // foodConsumed = monster.foodConsumed,
-                // interactionCount = monster.interactionCount,
+                isFinalForm = monster.isFinalForm,
+                evolutionLevel = monster.evolutionLevel,
+                timeSinceCreation = monster.GetEvolutionTimeSinceCreation(),
+                foodConsumed = monster.GetEvolutionFoodConsumed(),
+                interactionCount = monster.GetEvolutionInteractionCount()
             };
             SaveSystem.SaveMon(saveData);
         }

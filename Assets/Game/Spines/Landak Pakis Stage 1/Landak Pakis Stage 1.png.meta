@@ -1,64 +1,79 @@
 fileFormatVersion: 2
-guid: b5c53d8d2494ccc4babca492410bfed1
+guid: ba3a97cd104739944bd3d01f0ca7cb1a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4951736588933139535
-    second: DaoonMons_0
+      213: -7837965303698856707
+    second: Landak Pakis Stage 1_0
   - first:
-      213: 1446968315761847497
-    second: DaoonMons_1
+      213: -7012062441677375386
+    second: Landak Pakis Stage 1_1
   - first:
-      213: 5548655893672869270
-    second: DaoonMons_2
+      213: 628823865250746307
+    second: Landak Pakis Stage 1_2
   - first:
-      213: 6863716785479658188
-    second: DaoonMons_3
+      213: 2801750034989543862
+    second: Landak Pakis Stage 1_3
   - first:
-      213: -2070476469748380659
-    second: DaoonMons_4
+      213: -5122905173923856031
+    second: Landak Pakis Stage 1_4
   - first:
-      213: 3411195764986027052
-    second: DaoonMons_5
+      213: -2988045015866418308
+    second: Landak Pakis Stage 1_5
   - first:
-      213: -257997929256213056
-    second: DaoonMons_6
+      213: 7222032639469895055
+    second: Landak Pakis Stage 1_6
   - first:
-      213: -2803268902238255744
-    second: DaoonMons_7
+      213: -4087891378976586318
+    second: Landak Pakis Stage 1_7
   - first:
-      213: -7787766786371340852
-    second: DaoonMons_8
+      213: -3458334306737974430
+    second: Landak Pakis Stage 1_8
   - first:
-      213: -1970266352402631946
-    second: DaoonMons_9
+      213: -7252505299158264733
+    second: Landak Pakis Stage 1_9
   - first:
-      213: 1008364193245717653
-    second: DaoonMons_10
+      213: -3832528412015661872
+    second: Landak Pakis Stage 1_10
   - first:
-      213: 2070133141700906207
-    second: DaoonMons_11
+      213: 8820291335599037843
+    second: Landak Pakis Stage 1_11
   - first:
-      213: -1155774869133814659
-    second: DaoonMons_12
+      213: -3736973121155659115
+    second: Landak Pakis Stage 1_12
   - first:
-      213: -6722962363547809838
-    second: DaoonMons_13
+      213: -8030857593960028099
+    second: Landak Pakis Stage 1_13
   - first:
-      213: 4724653581663609278
-    second: DaoonMons_14
+      213: 4180140487387866623
+    second: Landak Pakis Stage 1_14
   - first:
-      213: -8924808346401302374
-    second: DaoonMons_15
+      213: -4145799988905453820
+    second: Landak Pakis Stage 1_15
   - first:
-      213: 269395219541266992
-    second: DaoonMons_16
+      213: 8772643562963244852
+    second: Landak Pakis Stage 1_16
   - first:
-      213: 7496898265905835474
-    second: DaoonMons_17
+      213: 5211222459518119865
+    second: Landak Pakis Stage 1_17
   - first:
-      213: 2754438427860024914
-    second: DaoonMons_18
+      213: -4339244543880672119
+    second: Landak Pakis Stage 1_18
+  - first:
+      213: -7242314851344176868
+    second: Landak Pakis Stage 1_19
+  - first:
+      213: 6831565960607306275
+    second: Landak Pakis Stage 1_20
+  - first:
+      213: 8200880102148528652
+    second: Landak Pakis Stage 1_21
+  - first:
+      213: -3556915626617155860
+    second: Landak Pakis Stage 1_22
+  - first:
+      213: -1039843722830875586
+    second: Landak Pakis Stage 1_23
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -167,13 +182,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: DaoonMons_0
+      name: Landak Pakis Stage 1_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 172
-        width: 167
-        height: 239
+        x: 35
+        y: 437
+        width: 272
+        height: 229
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -182,20 +197,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1b3f55bcec5e74bb0800000000000000
-      internalID: -4951736588933139535
+      spriteID: df461376514f93390800000000000000
+      internalID: -7837965303698856707
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_1
+      name: Landak Pakis Stage 1_1
       rect:
         serializedVersion: 2
-        x: 170
-        y: 172
-        width: 154
-        height: 192
+        x: 293
+        y: 527
+        width: 221
+        height: 217
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -204,20 +219,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9ccea3e440aa41410800000000000000
-      internalID: 1446968315761847497
+      spriteID: 66836fc5c5620be90800000000000000
+      internalID: -7012062441677375386
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_2
+      name: Landak Pakis Stage 1_2
       rect:
         serializedVersion: 2
-        x: 326
-        y: 172
-        width: 152
-        height: 192
+        x: 446
+        y: 512
+        width: 269
+        height: 222
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -226,20 +241,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 69dbf332329c00d40800000000000000
-      internalID: 5548655893672869270
+      spriteID: 3cf0f8a49f70ab800800000000000000
+      internalID: 628823865250746307
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_3
+      name: Landak Pakis Stage 1_3
       rect:
         serializedVersion: 2
-        x: 474
-        y: 177
-        width: 186
-        height: 164
+        x: 717
+        y: 326
+        width: 262
+        height: 306
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -248,20 +263,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ccaa6650d02d04f50800000000000000
-      internalID: 6863716785479658188
+      spriteID: 6b17df000d0d1e620800000000000000
+      internalID: 2801750034989543862
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_4
+      name: Landak Pakis Stage 1_4
       rect:
         serializedVersion: 2
-        x: 607
-        y: 171
-        width: 71
-        height: 58
+        x: 884
+        y: 584
+        width: 192
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -270,39 +285,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d0cc7d0ee903443e0800000000000000
-      internalID: -2070476469748380659
+      spriteID: 161024af2e8c7e8b0800000000000000
+      internalID: -5122905173923856031
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_5
+      name: Landak Pakis Stage 1_5
       rect:
         serializedVersion: 2
-        x: 740
-        y: 83
-        width: 191
-        height: 267
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c2c1f479970075f20800000000000000
-      internalID: 3411195764986027052
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DaoonMons_6
-      rect:
-        serializedVersion: 2
-        x: 921
+        x: 981
         y: 2
         width: 644
         height: 636
@@ -314,20 +307,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0c5a5e110486b6cf0800000000000000
-      internalID: -257997929256213056
+      spriteID: c7bd760b3e45886d0800000000000000
+      internalID: -2988045015866418308
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_7
+      name: Landak Pakis Stage 1_6
       rect:
         serializedVersion: 2
-        x: 1533
-        y: 2
-        width: 229
-        height: 286
+        x: 1077
+        y: 630
+        width: 161
+        height: 127
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -336,20 +329,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 085803829c9c819d0800000000000000
-      internalID: -2803268902238255744
+      spriteID: f8d31efeb60d93460800000000000000
+      internalID: 7222032639469895055
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_8
+      name: Landak Pakis Stage 1_7
       rect:
         serializedVersion: 2
-        x: 1763
-        y: 2
-        width: 229
-        height: 273
+        x: 1522
+        y: 566
+        width: 192
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -358,20 +351,152 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cc530c08e5b4ce390800000000000000
-      internalID: -7787766786371340852
+      spriteID: 2b508bb0374e447c0800000000000000
+      internalID: -4087891378976586318
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_9
+      name: Landak Pakis Stage 1_8
+      rect:
+        serializedVersion: 2
+        x: 1774
+        y: 483
+        width: 272
+        height: 229
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 263165465478100d0800000000000000
+      internalID: -3458334306737974430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Landak Pakis Stage 1_9
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 176
+        width: 504
+        height: 264
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36498081bdce95b90800000000000000
+      internalID: -7252505299158264733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Landak Pakis Stage 1_10
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 214
+        width: 393
+        height: 300
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0dce63207bf10dac0800000000000000
+      internalID: -3832528412015661872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Landak Pakis Stage 1_11
+      rect:
+        serializedVersion: 2
+        x: 662
+        y: 103
+        width: 450
+        height: 361
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39d16d1ec38f76a70800000000000000
+      internalID: 8820291335599037843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Landak Pakis Stage 1_12
+      rect:
+        serializedVersion: 2
+        x: 1600
+        y: 390
+        width: 161
+        height: 175
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59a8552eeba932cc0800000000000000
+      internalID: -3736973121155659115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Landak Pakis Stage 1_13
+      rect:
+        serializedVersion: 2
+        x: 1770
+        y: 99
+        width: 276
+        height: 407
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d38a34e4199ac8090800000000000000
+      internalID: -8030857593960028099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Landak Pakis Stage 1_14
       rect:
         serializedVersion: 2
         x: 1
         y: 1
-        width: 738
-        height: 170
+        width: 814
+        height: 174
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -380,86 +505,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6f2f220013538a4e0800000000000000
-      internalID: -1970266352402631946
+      spriteID: ff56bfd30a7d20a30800000000000000
+      internalID: 4180140487387866623
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_10
+      name: Landak Pakis Stage 1_15
       rect:
         serializedVersion: 2
-        x: 875
-        y: 82
-        width: 45
-        height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 59462a624ed6efd00800000000000000
-      internalID: 1008364193245717653
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DaoonMons_11
-      rect:
-        serializedVersion: 2
-        x: 1995
-        y: 88
-        width: 47
-        height: 57
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fdc88d4df179abc10800000000000000
-      internalID: 2070133141700906207
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DaoonMons_12
-      rect:
-        serializedVersion: 2
-        x: 739
-        y: 7
-        width: 82
-        height: 75
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d7494fc41ecd5ffe0800000000000000
-      internalID: -1155774869133814659
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DaoonMons_13
-      rect:
-        serializedVersion: 2
-        x: 1004
+        x: 815
         y: 1
-        width: 100
-        height: 81
+        width: 73
+        height: 84
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -468,19 +527,41 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2d78962a95d33b2a0800000000000000
-      internalID: -6722962363547809838
+      spriteID: 407d87f10e82776c0800000000000000
+      internalID: -4145799988905453820
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_14
+      name: Landak Pakis Stage 1_16
       rect:
         serializedVersion: 2
-        x: 1104
+        x: 1070
         y: 1
-        width: 62
+        width: 92
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4379a8f47d0beb970800000000000000
+      internalID: 8772643562963244852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Landak Pakis Stage 1_17
+      rect:
+        serializedVersion: 2
+        x: 1552
+        y: 48
+        width: 88
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -490,20 +571,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eb126d57667519140800000000000000
-      internalID: 4724653581663609278
+      spriteID: 9bf6d19773bf15840800000000000000
+      internalID: 5211222459518119865
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_15
+      name: Landak Pakis Stage 1_18
       rect:
         serializedVersion: 2
-        x: 1483
-        y: 1
-        width: 47
-        height: 68
+        x: 1627
+        y: 2
+        width: 259
+        height: 387
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -512,20 +593,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a981f483816b42480800000000000000
-      internalID: -8924808346401302374
+      spriteID: 98cc070e318e7c3c0800000000000000
+      internalID: -4339244543880672119
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_16
+      name: Landak Pakis Stage 1_19
       rect:
         serializedVersion: 2
-        x: 1708
-        y: 1
+        x: 1888
+        y: 2
         width: 50
-        height: 44
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -534,19 +615,63 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 03212fc56851db300800000000000000
-      internalID: 269395219541266992
+      spriteID: c19281e93012e7b90800000000000000
+      internalID: -7242314851344176868
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_17
+      name: Landak Pakis Stage 1_20
       rect:
         serializedVersion: 2
-        x: 1914
+        x: 1940
+        y: 2
+        width: 45
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32216a5cb099ece50800000000000000
+      internalID: 6831565960607306275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Landak Pakis Stage 1_21
+      rect:
+        serializedVersion: 2
+        x: 1162
         y: 1
-        width: 52
+        width: 61
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0ad126b0016fc170800000000000000
+      internalID: 8200880102148528652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Landak Pakis Stage 1_22
+      rect:
+        serializedVersion: 2
+        x: 1614
+        y: 1
+        width: 46
         height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -556,20 +681,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2dd2f88a0455a0860800000000000000
-      internalID: 7496898265905835474
+      spriteID: ceec27b351c43aec0800000000000000
+      internalID: -3556915626617155860
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DaoonMons_18
+      name: Landak Pakis Stage 1_23
       rect:
         serializedVersion: 2
-        x: 1979
+        x: 1986
         y: 1
-        width: 53
-        height: 86
+        width: 39
+        height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -578,8 +703,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 25e3840182bb93620800000000000000
-      internalID: 2754438427860024914
+      spriteID: e34feb6b4abb191f0800000000000000
+      internalID: -1039843722830875586
       vertices: []
       indices: 
       edges: []
@@ -598,25 +723,30 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      DaoonMons_0: -4951736588933139535
-      DaoonMons_1: 1446968315761847497
-      DaoonMons_10: 1008364193245717653
-      DaoonMons_11: 2070133141700906207
-      DaoonMons_12: -1155774869133814659
-      DaoonMons_13: -6722962363547809838
-      DaoonMons_14: 4724653581663609278
-      DaoonMons_15: -8924808346401302374
-      DaoonMons_16: 269395219541266992
-      DaoonMons_17: 7496898265905835474
-      DaoonMons_18: 2754438427860024914
-      DaoonMons_2: 5548655893672869270
-      DaoonMons_3: 6863716785479658188
-      DaoonMons_4: -2070476469748380659
-      DaoonMons_5: 3411195764986027052
-      DaoonMons_6: -257997929256213056
-      DaoonMons_7: -2803268902238255744
-      DaoonMons_8: -7787766786371340852
-      DaoonMons_9: -1970266352402631946
+      Landak Pakis Stage 1_0: -7837965303698856707
+      Landak Pakis Stage 1_1: -7012062441677375386
+      Landak Pakis Stage 1_10: -3832528412015661872
+      Landak Pakis Stage 1_11: 8820291335599037843
+      Landak Pakis Stage 1_12: -3736973121155659115
+      Landak Pakis Stage 1_13: -8030857593960028099
+      Landak Pakis Stage 1_14: 4180140487387866623
+      Landak Pakis Stage 1_15: -4145799988905453820
+      Landak Pakis Stage 1_16: 8772643562963244852
+      Landak Pakis Stage 1_17: 5211222459518119865
+      Landak Pakis Stage 1_18: -4339244543880672119
+      Landak Pakis Stage 1_19: -7242314851344176868
+      Landak Pakis Stage 1_2: 628823865250746307
+      Landak Pakis Stage 1_20: 6831565960607306275
+      Landak Pakis Stage 1_21: 8200880102148528652
+      Landak Pakis Stage 1_22: -3556915626617155860
+      Landak Pakis Stage 1_23: -1039843722830875586
+      Landak Pakis Stage 1_3: 2801750034989543862
+      Landak Pakis Stage 1_4: -5122905173923856031
+      Landak Pakis Stage 1_5: -2988045015866418308
+      Landak Pakis Stage 1_6: 7222032639469895055
+      Landak Pakis Stage 1_7: -4087891378976586318
+      Landak Pakis Stage 1_8: -3458334306737974430
+      Landak Pakis Stage 1_9: -7252505299158264733
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
