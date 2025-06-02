@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40fe17d270458e3458d497300221f78c, type: 3}
+  m_Name: Maple Dragoon
+  m_EditorClassIdentifier: 
+  monsterName: Maple Dragoon
+  id: 002
+  monPrice: 10
+  monType: 0
+  moveSpd: 100
+  hungerDepleteRate: 0.05
+  poopRate: 20
+  baseHunger: 50
+  baseHappiness: 0
+  pokeHappinessValue: 2
+  areaHappinessRate: 0.2
+  clickToCollectPoop: 1
+  canEvolve: 1
+  isEvolved: 0
+  isFinalEvol: 0
+  evolutionLevel: 0
+  monsterSpine:
+  - {fileID: 11400000, guid: 844e7ddc6f21e0a408193025ff42062a, type: 2}
+  - {fileID: 11400000, guid: f3e97bc450fb3e348a29276e071b4eaf, type: 2}
+  - {fileID: 0}
+  monsImgs: []

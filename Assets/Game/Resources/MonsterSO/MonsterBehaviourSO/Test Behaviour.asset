@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d13ea62b0bc2c842be03fee1a76eafc, type: 3}
+  m_Name: Test Behaviour
+  m_EditorClassIdentifier: 
+  transitions:
+  - fromState: 0
+    toState: 3
+    probability: 0.3
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 0
+    toState: 1
+    probability: 0.7
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 0
+    toState: 2
+    probability: 0.5
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 3
+    toState: 0
+    probability: 0.8
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 1
+    toState: 0
+    probability: 0.4
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 1
+    toState: 2
+    probability: 0.6
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 2
+    toState: 0
+    probability: 0.6
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 2
+    toState: 1
+    probability: 0.6
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 5
+    toState: 0
+    probability: 1
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 4
+    toState: 0
+    probability: 1
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  minIdleDuration: 2
+  maxIdleDuration: 5
+  minWalkDuration: 3
+  maxWalkDuration: 8
+  minRunDuration: 1
+  maxRunDuration: 3
+  jumpDuration: 1
+  walkSpeed: 100
+  runSpeed: 200
+  jumpHeight: 50
