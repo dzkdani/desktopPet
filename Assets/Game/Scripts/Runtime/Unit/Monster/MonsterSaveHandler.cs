@@ -16,7 +16,6 @@ public class MonsterSaveHandler
             monsterId = _controller.monsterID,
             lastHunger = _controller.currentHunger,
             lastHappiness = _controller.currentHappiness,
-            isEvolved = _controller.isEvolved,
             isFinalForm = _controller.isFinalForm,
             evolutionLevel = _controller.evolutionLevel,
             
@@ -27,16 +26,18 @@ public class MonsterSaveHandler
         };
         
         SaveSystem.SaveMon(data);
+        Debug.Log($"[Evolution] Saving monster data for {_controller.monsterID}: Level={data.evolutionLevel}, Time={data.timeSinceCreation:F1}s, Food={data.foodConsumed}, Interactions={data.interactionCount}");
     }
     
     public void LoadData()
     {
         if (SaveSystem.LoadMon(_controller.monsterID, out var data))
         {
+            Debug.Log($"[Evolution] Loading existing monster data for {_controller.monsterID}: Level={data.evolutionLevel}, Time={data.timeSinceCreation:F1}s, Food={data.foodConsumed}, Interactions={data.interactionCount}");
+            
             // Existing monster - load saved data
             _controller.SetHunger(data.lastHunger);
             _controller.SetHappiness(data.lastHappiness);
-            _controller.isEvolved = data.isEvolved;
             _controller.isFinalForm = data.isFinalForm;
             _controller.evolutionLevel = data.evolutionLevel;
             
@@ -45,9 +46,13 @@ public class MonsterSaveHandler
                 data.foodConsumed,
                 data.interactionCount
             );
+            
+            // IMPORTANT: Update visuals after loading evolution level
+            _controller.UpdateVisuals();
         }
         else
         {
+            Debug.Log($"[Evolution] No existing save data found for {_controller.monsterID}, initializing as new monster");
             // New monster - initialize with base values from MonsterDataSO
             InitNewMonster();
         }
@@ -62,6 +67,8 @@ public class MonsterSaveHandler
         float baseHunger = monsterData != null ? monsterData.baseHunger : 50f;
         float baseHappiness = monsterData != null ? monsterData.baseHappiness : 0f;
         
+        Debug.Log($"[Evolution] Initializing new monster {_controller.monsterID} with base values: Hunger={baseHunger}, Happiness={baseHappiness}");
+        
         _controller.SetHunger(baseHunger);
         _controller.SetHappiness(baseHappiness);
         
@@ -70,6 +77,7 @@ public class MonsterSaveHandler
             monsterData.isEvolved = false;
             monsterData.isFinalEvol = false;
             monsterData.evolutionLevel = 0;
+            Debug.Log($"[Evolution] Set monster data evolution state: Level=0, IsEvolved=false, IsFinal=false");
         }
     }
     

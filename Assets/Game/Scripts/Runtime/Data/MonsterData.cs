@@ -16,7 +16,7 @@ public class MonsterData
     public float areaHappinessRate;
     
     [Header("Interaction")]
-    public float pokeCooldownDuration = 5f;
+    public float pokeCooldownDuration = 10f;
 
     [Header("Separation Behavior")]
     public float separationRadius = 100f;

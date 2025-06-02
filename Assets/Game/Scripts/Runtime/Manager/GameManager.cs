@@ -105,7 +105,6 @@ public class GameManager : MonoBehaviour
                 monsterId = monster.monsterID,
                 lastHunger = monster.currentHunger,
                 lastHappiness = monster.currentHappiness,
-                isEvolved = monster.isEvolved,
                 isFinalForm = monster.isFinalForm,
                 evolutionLevel = monster.evolutionLevel,
                 timeSinceCreation = monster.GetEvolutionTimeSinceCreation(),
@@ -184,22 +183,32 @@ public class GameManager : MonoBehaviour
         {
             string monsterTypeId = parts[0];
             
+            // Parse evolution level from the second part
             string levelPart = parts[1];
             int evolutionLevel = 0;
             if (levelPart.StartsWith("Lv"))
             {
-                int.TryParse(levelPart.Substring(2), out evolutionLevel);
+                if (!int.TryParse(levelPart.Substring(2), out evolutionLevel))
+                {
+                    evolutionLevel = 0;
+                }
             }
+            
+            Debug.Log($"[GameManager] Parsing ID '{monsterID}': Type='{monsterTypeId}', Level={evolutionLevel}");
             
             foreach (var data in monsterDatabase.monsters)
             {
                 if (data.id == monsterTypeId)
                 {
+                    Debug.Log($"[GameManager] Found monster data for ID '{monsterTypeId}' with evolution level {evolutionLevel}");
                     return (data, evolutionLevel);
                 }
             }
+            
+            Debug.LogWarning($"[GameManager] No monster data found for type ID '{monsterTypeId}'");
         }
         
+        Debug.LogWarning($"[GameManager] Could not parse monster ID '{monsterID}'");
         return (null, 0);
     }
 
@@ -264,6 +273,21 @@ public class GameManager : MonoBehaviour
         if (!activeMonsters.Contains(monster))
         {
             activeMonsters.Add(monster);
+        }
+    }
+
+    public void RemoveSavedMonsterID(string monsterID)
+    {
+        savedMonIDs.Remove(monsterID);
+        SaveSystem.SaveMonIDs(savedMonIDs);
+    }
+
+    public void AddSavedMonsterID(string monsterID)
+    {
+        if (!savedMonIDs.Contains(monsterID))
+        {
+            savedMonIDs.Add(monsterID);
+            SaveSystem.SaveMonIDs(savedMonIDs);
         }
     }
 

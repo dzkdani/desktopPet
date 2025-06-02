@@ -94,14 +94,16 @@ public class MonsterStateMachine : MonoBehaviour
         }
 
         return valid;
-    }    private void ChangeState(MonsterState newState)
+    }
+
+    private void ChangeState(MonsterState newState)
     {
         _previousState = _currentState;
         _currentState = newState;
         _stateTimer = 0f;
-        
+
         PlayStateAnimation(newState);
-        OnStateChanged?.Invoke(_currentState);        _currentStateDuration = GetStateDuration(newState);
+        OnStateChanged?.Invoke(_currentState); _currentStateDuration = GetStateDuration(newState);
     }
 
     private void PlayStateAnimation(MonsterState state)
@@ -119,20 +121,11 @@ public class MonsterStateMachine : MonoBehaviour
                 return;
         }
 
-        string animationName = state switch
-        {
-            MonsterState.Idle => "idle",
-            MonsterState.Walking => "walking",
-            MonsterState.Running => "running", 
-            MonsterState.Jumping => "jumping",
-            MonsterState.Itching => "itching",
-            MonsterState.Eating => "eating",
-            _ => "idle"
-        };
+        string animationName = GetAvailableAnimation(state);
 
         bool loop = state switch
         {
-            MonsterState.Idle or MonsterState.Walking or MonsterState.Running => true,
+            MonsterState.Idle or MonsterState.Walking or MonsterState.Running or MonsterState.Flying => true,
             _ => false
         };
 
@@ -146,10 +139,51 @@ public class MonsterStateMachine : MonoBehaviour
             try
             {
                 _skeletonGraphic.AnimationState.SetAnimation(0, "idle", true);
-            }            catch
+            }
+            catch
             {
+                Debug.LogWarning("Failed to set animation for state: " + state);
             }
         }
+    }
+
+    private string GetAvailableAnimation(MonsterState state)
+    {
+        string[] preferredAnimations = state switch
+        {
+            MonsterState.Idle => new[] { "idle" },
+            MonsterState.Walking => new[] { "walking", "walk" },
+            MonsterState.Running => new[] { "running", "run", "flying", "fly", "walking", "walk" },
+            MonsterState.Flying => new[] { "flying", "fly", "running", "run", "walking", "walk" },
+            MonsterState.Jumping => new[] { "jumping", "jump" },
+            MonsterState.Itching => new[] { "itching", "itch" },
+            MonsterState.Eating => new[] { "eating", "eat" },
+            _ => new[] { "idle" }
+        };
+
+        // Check if any of the preferred animations exist
+        foreach (string animName in preferredAnimations)
+        {
+            if (HasAnimation(animName))
+            {
+                return animName;
+            }
+        }
+
+        // Fallback to idle if nothing else works
+        return "idle";
+    }
+
+    private bool HasAnimation(string animationName)
+    {
+        if (_skeletonGraphic == null || _skeletonGraphic.skeletonDataAsset == null)
+            return false;
+            
+        var skeletonData = _skeletonGraphic.skeletonDataAsset.GetSkeletonData(false);
+        if (skeletonData == null) return false;
+        
+        var animation = skeletonData.FindAnimation(animationName);
+        return animation != null;
     }
 
     private float GetStateDuration(MonsterState state)
@@ -161,12 +195,14 @@ public class MonsterStateMachine : MonoBehaviour
                 behaviorConfig?.minWalkDuration, behaviorConfig?.maxWalkDuration, 3f, 5f),
             MonsterState.Running => GetRandomDuration(
                 behaviorConfig?.minRunDuration, behaviorConfig?.maxRunDuration, 3f, 5f),
+            MonsterState.Flying => GetRandomDuration(
+                behaviorConfig?.minFlyDuration, behaviorConfig?.maxFlyDuration, 3f, 5f),
             
             // Non-movement states: Use animation duration from Spine
             MonsterState.Idle => GetAnimationDuration("idle"),
-            MonsterState.Jumping => GetAnimationDuration("jumping"),
-            MonsterState.Itching => GetAnimationDuration("itching"),
-            MonsterState.Eating => GetAnimationDuration("eating"),
+            MonsterState.Jumping => GetAnimationDuration(GetAvailableAnimation(MonsterState.Jumping)),
+            MonsterState.Itching => GetAnimationDuration(GetAvailableAnimation(MonsterState.Itching)),
+            MonsterState.Eating => GetAnimationDuration(GetAvailableAnimation(MonsterState.Eating)),
             
             _ => 1f
         };

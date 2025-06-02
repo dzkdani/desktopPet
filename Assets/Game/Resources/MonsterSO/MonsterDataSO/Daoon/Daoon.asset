@@ -24,7 +24,7 @@ MonoBehaviour:
   pokeHappinessValue: 2
   areaHappinessRate: 0.2
   clickToCollectPoop: 1
-  canEvolve: 1
+  canEvolve: 0
   isEvolved: 0
   isFinalEvol: 0
   evolutionLevel: 0

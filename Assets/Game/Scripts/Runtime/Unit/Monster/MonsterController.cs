@@ -13,7 +13,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private MonsterDataSO monsterData;
 
     [Header("Evolution")]
-    public bool isEvolved;
     public bool isFinalForm;
     public int evolutionLevel;
     public MonsterDataSO MonsterData => monsterData;
@@ -53,7 +52,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private Vector2 _targetPosition;
     private bool _isLoaded = false;
-    private bool _shouldDropCoinAfterPoke = false;
     private float _currentHunger = 100f;
     private float _currentHappiness = 100f;
     private bool _isHovered;
@@ -275,7 +273,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         OnHoverChanged?.Invoke(_isHovered);
     }
 
-    public void SetShouldDropCoinAfterPoke(bool value) => _shouldDropCoinAfterPoke = value;
+    public void DropCoinAfterPoke() => DropCoin(CoinType.Silver);
 
     public void UpdateVisuals() => _visualHandler?.UpdateMonsterVisuals();
 
@@ -284,7 +282,8 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         float oldHunger = currentHunger;
         SetHunger(Mathf.Clamp(currentHunger + amount, 0f, 100f));
         IncreaseHappiness(amount);
-        _evolutionHandler?.OnFoodConsumed(); // Add this
+        Debug.Log($"[Evolution] Monster {monsterID} fed. Hunger: {oldHunger:F1} -> {currentHunger:F1}");
+        _evolutionHandler?.OnFoodConsumed();
     }
 
     public void IncreaseHappiness(float amount)
@@ -315,7 +314,8 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void OnPointerClick(PointerEventData eventData) 
     {
         _interactionHandler?.OnPointerClick(eventData);
-        _evolutionHandler?.OnInteraction(); // Add this
+        Debug.Log($"[Evolution] Monster {monsterID} clicked/interacted with");
+        _evolutionHandler?.OnInteraction();
     }
 
     public void SaveMonData() => _saveHandler?.SaveData();
@@ -327,17 +327,23 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         
         monsterData = newMonsterData;
         
+        Debug.Log($"[Evolution] Setting monster data for {monsterID}: {monsterData.monsterName}, EvolutionLevel: {evolutionLevel}");
+        
         if (monsterID.StartsWith("temp_") || string.IsNullOrEmpty(monsterID))
         {
-            monsterID = $"{monsterData.id}_Lv{evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";        gameObject.name = $"{monsterData.monsterName}_{monsterID}";
+            monsterID = $"{monsterData.id}_Lv{evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";
+            gameObject.name = $"{monsterData.monsterName}_{monsterID}";
+            Debug.Log($"[Evolution] Generated new monster ID: {monsterID}");
         }
         
         if (_evolutionHandler == null)
         {
+            Debug.Log($"[Evolution] Creating new evolution handler for {monsterID}");
             _evolutionHandler = new MonsterEvolutionHandler(this);
         }
         else
         {
+            Debug.Log($"[Evolution] Reinitializing existing evolution handler for {monsterID}");
             _evolutionHandler.InitializeWithMonsterData();
         }
         
@@ -359,13 +365,30 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void ForceEvolution() => _evolutionHandler?.ForceEvolution();
 
     // Add these getter methods for save handler to access evolution data
-    public float GetEvolutionTimeSinceCreation() => _evolutionHandler?.TimeSinceCreation ?? 0f;
-    public int GetEvolutionFoodConsumed() => _evolutionHandler?.FoodConsumed ?? 0;
-    public int GetEvolutionInteractionCount() => _evolutionHandler?.InteractionCount ?? 0;
+    public float GetEvolutionTimeSinceCreation() 
+    {
+        float time = _evolutionHandler?.TimeSinceCreation ?? 0f;
+        Debug.Log($"[Evolution] Getting time since creation for {monsterID}: {time:F1}s");
+        return time;
+    }
+    
+    public int GetEvolutionFoodConsumed() 
+    {
+        int food = _evolutionHandler?.FoodConsumed ?? 0;
+        Debug.Log($"[Evolution] Getting food consumed for {monsterID}: {food}");
+        return food;
+    }
+    
+    public int GetEvolutionInteractionCount() 
+    {
+        int interactions = _evolutionHandler?.InteractionCount ?? 0;
+        Debug.Log($"[Evolution] Getting interaction count for {monsterID}: {interactions}");
+        return interactions;
+    }
 
-    // Add this method for save handler to load evolution data
     public void LoadEvolutionData(float timeSinceCreation, int foodConsumed, int interactionCount)
     {
+        Debug.Log($"[Evolution] Loading evolution data for {monsterID}: Time={timeSinceCreation:F1}s, Food={foodConsumed}, Interactions={interactionCount}");
         _evolutionHandler?.LoadEvolutionData(timeSinceCreation, foodConsumed, interactionCount);
     }
 
@@ -406,4 +429,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             yield return new WaitForSeconds(delay);
         }
     }
+
+
 }

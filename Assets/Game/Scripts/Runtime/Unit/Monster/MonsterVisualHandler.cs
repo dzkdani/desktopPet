@@ -61,11 +61,26 @@ public class MonsterVisualHandler
             _controller.MonsterData.monsterSpine == null || 
             _controller.MonsterData.monsterSpine.Length == 0) 
         {
+            Debug.LogWarning($"[Visual] No spine data available for monster {_controller.monsterID}");
             return null;
         }
 
-        int index = Mathf.Clamp(_controller.evolutionLevel, 0, _controller.MonsterData.monsterSpine.Length - 1);
-        return _controller.MonsterData.monsterSpine[index];
+        // Clamp to valid array bounds
+        int arrayIndex = Mathf.Clamp(_controller.evolutionLevel, 0, _controller.MonsterData.monsterSpine.Length - 1);
+        
+        // Log if we're clamping (indicates a configuration issue)
+        if (arrayIndex != _controller.evolutionLevel)
+        {
+            Debug.LogWarning($"[Visual] Evolution level {_controller.evolutionLevel} out of bounds for monster {_controller.monsterID}. Using index {arrayIndex} instead.");
+        }
+        
+        var spineAsset = _controller.MonsterData.monsterSpine[arrayIndex];
+        if (spineAsset == null)
+        {
+            Debug.LogError($"[Visual] Spine asset at index {arrayIndex} is null for monster {_controller.monsterID}");
+        }
+        
+        return spineAsset;
     }
     
     public void UpdateMonsterVisuals()
