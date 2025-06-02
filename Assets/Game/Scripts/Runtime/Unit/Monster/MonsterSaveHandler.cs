@@ -22,8 +22,6 @@ public class MonsterSaveHandler
             
             // Evolution data - get directly from evolution handler
             timeSinceCreation = _controller.GetEvolutionTimeSinceCreation(),
-            totalHappinessAccumulated = _controller.GetEvolutionTotalHappiness(),
-            totalHungerSatisfied = _controller.GetEvolutionTotalHunger(),
             foodConsumed = _controller.GetEvolutionFoodConsumed(),
             interactionCount = _controller.GetEvolutionInteractionCount()
         };
@@ -44,8 +42,6 @@ public class MonsterSaveHandler
             
             _controller.LoadEvolutionData(
                 data.timeSinceCreation,
-                data.totalHappinessAccumulated,
-                data.totalHungerSatisfied,
                 data.foodConsumed,
                 data.interactionCount
             );

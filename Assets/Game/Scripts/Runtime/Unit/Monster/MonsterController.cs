@@ -354,15 +354,13 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     // Add these getter methods for save handler to access evolution data
     public float GetEvolutionTimeSinceCreation() => _evolutionHandler?.TimeSinceCreation ?? 0f;
-    public float GetEvolutionTotalHappiness() => _evolutionHandler?.TotalHappinessAccumulated ?? 0f;
-    public float GetEvolutionTotalHunger() => _evolutionHandler?.TotalHungerSatisfied ?? 0f;
     public int GetEvolutionFoodConsumed() => _evolutionHandler?.FoodConsumed ?? 0;
     public int GetEvolutionInteractionCount() => _evolutionHandler?.InteractionCount ?? 0;
 
     // Add this method for save handler to load evolution data
-    public void LoadEvolutionData(float timeSinceCreation, float totalHappiness, float totalHunger, int foodConsumed, int interactionCount)
+    public void LoadEvolutionData(float timeSinceCreation, int foodConsumed, int interactionCount)
     {
-        _evolutionHandler?.LoadEvolutionData(timeSinceCreation, totalHappiness, totalHunger, foodConsumed, interactionCount);
+        _evolutionHandler?.LoadEvolutionData(timeSinceCreation, foodConsumed, interactionCount);
     }
 
     private IEnumerator HungerRoutine(float interval)

@@ -172,15 +172,12 @@ public class MonsterEvolutionHandler
 
     private void StartSimpleEvolutionEffect(int oldLevel, int newLevel)
     {
-        // Get MonsterController to handle the visual animation
-        _controller.PlayEvolutionEffect(() => {
-            // Apply evolution changes in callback
-            _controller.evolutionLevel = newLevel;
-            _controller.isEvolved = true;
-            UpdateMonsterID(newLevel);
-            _controller.UpdateVisuals();
-            OnEvolutionComplete(oldLevel, newLevel);
-        });
+        // Apply evolution changes directly
+        _controller.evolutionLevel = newLevel;
+        _controller.isEvolved = true;
+        UpdateMonsterID(newLevel);
+        _controller.UpdateVisuals();
+        OnEvolutionComplete(oldLevel, newLevel);
     }
 
     private void UpdateMonsterID(int newLevel)
