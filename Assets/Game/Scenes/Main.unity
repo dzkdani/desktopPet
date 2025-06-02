@@ -2930,6 +2930,7 @@ MonoBehaviour:
   foodPlacementIndicator: {fileID: 230084415}
   validPositionColor: {r: 0, g: 1, b: 0, a: 1}
   invalidPositionColor: {r: 1, g: 0, b: 0, a: 1}
+  enableDepthSorting: 1
   poopCollected: 0
   coinCollected: 0
   activeMonsters: []
