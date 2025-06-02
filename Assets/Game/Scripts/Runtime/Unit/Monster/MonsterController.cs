@@ -102,12 +102,10 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     }
 
     private void InitializeModules()
-    {
-        _saveHandler = new MonsterSaveHandler(this);
+    {        _saveHandler = new MonsterSaveHandler(this);
         _visualHandler = new MonsterVisualHandler(this, _monsterSpineGraphic);
         _interactionHandler = new MonsterInteractionHandler(this, _stateMachine);
-        _evolutionHandler = new MonsterEvolutionHandler(this); // Add this
-        _separationBehavior = new MonsterSeparationBehavior(this, _gameManager, _rectTransform); // Add this
+        _separationBehavior = new MonsterSeparationBehavior(this, _gameManager, _rectTransform);
     }
 
     private void InitializeID()
@@ -331,8 +329,16 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         
         if (monsterID.StartsWith("temp_") || string.IsNullOrEmpty(monsterID))
         {
-            monsterID = $"{monsterData.id}_Lv{evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";
-            gameObject.name = $"{monsterData.monsterName}_{monsterID}";
+            monsterID = $"{monsterData.id}_Lv{evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";        gameObject.name = $"{monsterData.monsterName}_{monsterID}";
+        }
+        
+        if (_evolutionHandler == null)
+        {
+            _evolutionHandler = new MonsterEvolutionHandler(this);
+        }
+        else
+        {
+            _evolutionHandler.InitializeWithMonsterData();
         }
         
         if (_visualHandler != null)

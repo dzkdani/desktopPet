@@ -31,11 +31,9 @@ public class MonsterDataSO : ScriptableObject
     public bool canEvolve = true;
     public bool isEvolved = false;
     public bool isFinalEvol = false;
-    public int evolutionLevel = 0;
-
-    [Header("Evolution Requirements")]
+    public int evolutionLevel = 0;    [Header("Evolution Requirements")]
     [Tooltip("Required: Each monster must have its own evolution requirements")]
-    public EvolutionRequirementsSO evolutionRequirements; // ✅ Always required, no flag needed
+    public EvolutionRequirementsSO evolutionRequirements;
 
     [Header("Spine Data")]
     public SkeletonDataAsset[] monsterSpine;

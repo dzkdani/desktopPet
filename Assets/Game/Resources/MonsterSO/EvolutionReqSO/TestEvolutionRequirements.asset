@@ -17,8 +17,21 @@ MonoBehaviour:
     minTimeAlive: 10
     minCurrentHappiness: 0
     minCurrentHunger: 0
-    minFoodConsumed: 0
-    minInteractions: 0
+    minFoodConsumed: 1
+    minInteractions: 1
+    evolutionName: 
+    description: 
+    resetHappinessProgress: 1
+    resetHungerProgress: 1
+    resetFoodProgress: 1
+    resetInteractionProgress: 1
+    progressRetentionPercentage: 0
+  - targetEvolutionLevel: 2
+    minTimeAlive: 10
+    minCurrentHappiness: 0
+    minCurrentHunger: 0
+    minFoodConsumed: 3
+    minInteractions: 3
     evolutionName: 
     description: 
     resetHappinessProgress: 1

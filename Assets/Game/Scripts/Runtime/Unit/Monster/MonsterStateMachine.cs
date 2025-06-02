@@ -94,19 +94,14 @@ public class MonsterStateMachine : MonoBehaviour
         }
 
         return valid;
-    }
-
-    private void ChangeState(MonsterState newState)
+    }    private void ChangeState(MonsterState newState)
     {
-        Debug.Log($"[STATE DEBUG] {name} - State change: {_currentState} -> {newState}");
         _previousState = _currentState;
         _currentState = newState;
         _stateTimer = 0f;
         
         PlayStateAnimation(newState);
-        OnStateChanged?.Invoke(_currentState);
-        _currentStateDuration = GetStateDuration(newState);
-        Debug.Log($"[STATE DEBUG] {name} - New state duration: {_currentStateDuration:F2}s");
+        OnStateChanged?.Invoke(_currentState);        _currentStateDuration = GetStateDuration(newState);
     }
 
     private void PlayStateAnimation(MonsterState state)
@@ -151,10 +146,8 @@ public class MonsterStateMachine : MonoBehaviour
             try
             {
                 _skeletonGraphic.AnimationState.SetAnimation(0, "idle", true);
-            }
-            catch
+            }            catch
             {
-                Debug.LogWarning("Failed to set animation for state: " + state);
             }
         }
     }
