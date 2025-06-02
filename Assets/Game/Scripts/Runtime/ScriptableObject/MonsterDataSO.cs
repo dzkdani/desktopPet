@@ -28,11 +28,15 @@ public class MonsterDataSO : ScriptableObject
     public bool clickToCollectPoop = true;
     
     [Header("Evolution")]
-    public bool canEvolve = true; // Can this monster evolve?
-    public bool isEvolved = false; // Is this evolved?
-    public bool isFinalEvol = false; // Is this the final form of the ?
-    public int evolutionLevel = 0; // Current evolution level
-    
+    public bool canEvolve = true;
+    public bool isEvolved = false;
+    public bool isFinalEvol = false;
+    public int evolutionLevel = 0;
+    public int startingEvolutionLevel = 1; // Or 0, depending on your indexing
+    [Header("Evolution Requirements")]
+    [Tooltip("Required: Each monster must have its own evolution requirements")]
+    public EvolutionRequirementsSO evolutionRequirements;
+
     [Header("Spine Data")]
     public SkeletonDataAsset[] monsterSpine;
 

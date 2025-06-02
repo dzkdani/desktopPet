@@ -1,0 +1,81 @@
+Maple Dragoon Stage 3.png
+size:2020,2020
+filter:Linear,Linear
+Blush
+bounds:933,1950,328,65
+offsets:4,4,335,73
+Body
+bounds:888,1522,683,493
+rotate:180
+Eyes closed L
+bounds:1452,1999,51,16
+offsets:1,1,53,18
+Eyes closed R
+bounds:1883,1998,36,17
+offsets:1,1,38,19
+Eyes open L
+bounds:1104,1837,55,65
+Eyes open R
+bounds:1543,1888,37,65
+Foot back L
+bounds:405,1202,198,272
+rotate:90
+Foot back R
+bounds:35,1157,184,244
+rotate:90
+Foot front L
+bounds:1717,1259,199,307
+Foot front R
+bounds:1368,1141,182,270
+rotate:90
+Head
+bounds:1573,1567,448,385
+rotate:90
+L Ear 1
+bounds:252,1726,133,115
+offsets:2,1,136,117
+L Ear 2
+bounds:1946,1882,133,69
+offsets:12,1,146,71
+rotate:90
+L Ear 3
+bounds:1524,1955,126,60
+offsets:1,2,128,64
+L Horn
+bounds:1475,1325,240,242
+offsets:5,5,246,248
+Mouth
+bounds:1104,1904,110,44
+offsets:1,1,112,46
+Mouth Open
+bounds:1960,1717,163,51
+rotate:90
+Nose
+bounds:1652,1996,74,19
+offsets:1,1,76,21
+R Ear
+bounds:715,1763,78,151
+rotate:90
+R Ear 2
+bounds:584,1742,99,129
+rotate:90
+R Horn
+bounds:2,1702,139,248
+offsets:1,1,141,250
+rotate:90
+Shadow
+bounds:2,1843,929,172
+offsets:13,8,956,190
+Spine
+bounds:1129,1197,344,334
+offsets:0,0,344,512
+rotate:180
+Tail Leave
+bounds:933,1761,169,187
+offsets:1,1,171,189
+Wing L
+bounds:2,1306,535,615
+rotate:90
+Wing R
+bounds:615,1196,535,520
+rotate:90

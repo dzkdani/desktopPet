@@ -25,13 +25,16 @@ public class MonsterBehaviorConfigSO : ScriptableObject
     public float maxIdleDuration = 4f; 
     public float minWalkDuration = 3f;
     public float maxWalkDuration = 5f;
-     public float minRunDuration = 3f;
+    public float minRunDuration = 3f;
     public float maxRunDuration = 5f;
+    public float minFlyDuration = 3f;
+    public float maxFlyDuration = 5f;
     public float jumpDuration = 1f;
     
     [Header("Movement Speeds")]
     public float walkSpeed = 100f;
     public float runSpeed = 200f;
+    public float flySpeed = 150f;
     public float jumpHeight = 50f;
 }
 
@@ -40,7 +43,8 @@ public enum MonsterState
     Idle,
     Walking,
     Running,
-    Itching,
+    Flying,  // Add this
     Jumping,
+    Itching,
     Eating
 }

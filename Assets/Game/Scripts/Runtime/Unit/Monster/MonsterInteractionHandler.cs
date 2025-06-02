@@ -6,6 +6,7 @@ public class MonsterInteractionHandler
     private MonsterController _controller;
     private MonsterStateMachine _stateMachine;
     private float _pokeCooldownTimer;
+    private bool _pendingSilverCoinDrop;
     
     public MonsterInteractionHandler(MonsterController controller, MonsterStateMachine stateMachine)
     {
@@ -17,6 +18,9 @@ public class MonsterInteractionHandler
     {
         if (_pokeCooldownTimer > 0f)
             _pokeCooldownTimer -= deltaTime;
+            
+        // Check if we need to drop silver coin after poke animation
+        CheckForPendingSilverCoinDrop();
     }
     
     public void HandlePoke()
@@ -25,12 +29,26 @@ public class MonsterInteractionHandler
 
         _pokeCooldownTimer = _controller.stats.pokeCooldownDuration;
         _controller.IncreaseHappiness(_controller.stats.pokeHappinessIncrease);
-        _controller.SetShouldDropCoinAfterPoke(true);
+        
+        // Mark that we should drop a silver coin after animation
+        _pendingSilverCoinDrop = true;
 
         MonsterState pokeState = UnityEngine.Random.Range(0, 2) == 0 ?
             MonsterState.Jumping : MonsterState.Itching;
 
         _stateMachine?.ForceState(pokeState);
+    }
+    
+    private void CheckForPendingSilverCoinDrop()
+    {
+        if (_pendingSilverCoinDrop && 
+            (_stateMachine.CurrentState != MonsterState.Jumping && 
+             _stateMachine.CurrentState != MonsterState.Itching))
+        {
+            // Animation finished, drop the silver coin
+            _controller.DropCoinAfterPoke();
+            _pendingSilverCoinDrop = false;
+        }
     }
     
     public void OnPointerEnter(PointerEventData e) => _controller.SetHovered(true);

@@ -16,12 +16,9 @@ public class CoinController : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] CoinType type;
     [SerializeField] float rate;
-    [SerializeField] int value;
-
-    public void Initialize(CoinType coinType)
+    [SerializeField] int value;    public void Initialize(CoinType coinType)
     {
         type = coinType;
-        // rate = CalculateSpawnRate(coin.InGame);
         value = CalculateValue(type);
         Image image = GetComponent<Image>();
         if (coinType == CoinType.Gold)
@@ -32,11 +29,7 @@ public class CoinController : MonoBehaviour, IPointerDownHandler
         {
             image.color = Color.gray; // Silver color
         }
-    }
-
-    public int CalculateValue(CoinType type) => value = (int)type;
-
-    // public float CalculateSpawnRate(bool isInGame) => rate = isInGame ? coin.onSpawnRate : coin.offSpawnRate;
+    }    public int CalculateValue(CoinType type) => value = (int)type;
 
     public void OnPointerDown(PointerEventData eventData)
     {

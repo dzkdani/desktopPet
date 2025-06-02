@@ -58,16 +58,13 @@ public class PlayAreaAdjusterUI : MonoBehaviour
     }
 
     private bool ValidateReferences()
-    {
-        if (gameArea == null)
+    {        if (gameArea == null)
         {
-            Debug.LogError($"[{nameof(PlayAreaAdjusterUI)}] GameArea reference is missing!");
             return false;
         }
         
         if (canvasScaler == null)
         {
-            Debug.LogWarning($"[{nameof(PlayAreaAdjusterUI)}] CanvasScaler reference is missing!");
         }
         
         return true;
@@ -129,18 +126,7 @@ public class PlayAreaAdjusterUI : MonoBehaviour
 
     private void SetInitialValues()
     {
-        if (gameArea == null) return;
-
-        // // Store current position before changing anchor
-        // Vector2 currentPosition = gameArea.anchoredPosition;
-        // // Set anchor to bottom for vertical positioning
-        // gameArea.anchorMin = new Vector2(gameArea.anchorMin.x, 0f);
-        // gameArea.anchorMax = new Vector2(gameArea.anchorMax.x, 0f);
-        // gameArea.pivot = new Vector2(gameArea.pivot.x, 0f);
-        // // Restore the original position
-        // gameArea.anchoredPosition = currentPosition;
-
-        // Set slider values
+        if (gameArea == null) return;        
         if (widthSlider != null) widthSlider.value = gameArea.sizeDelta.x;
         if (heightSlider != null) heightSlider.value = gameArea.sizeDelta.y;
         if (horizontalPositionSlider != null) horizontalPositionSlider.value = gameArea.anchoredPosition.x;
@@ -172,16 +158,7 @@ public class PlayAreaAdjusterUI : MonoBehaviour
         if (gameArea == null) return;
 
         value = Mathf.Clamp(value, MIN_SIZE, initialGameAreaHeight);
-        
-        // // Store current position before changing anchor (if not already set)
-        // Vector2 currentPosition = gameArea.anchoredPosition;
-        // // Set anchor to bottom
-        // gameArea.anchorMin = new Vector2(gameArea.anchorMin.x, 0f);
-        // gameArea.anchorMax = new Vector2(gameArea.anchorMax.x, 0f);
-        // gameArea.pivot = new Vector2(gameArea.pivot.x, 0f);
-        // // Restore position and set new size
-        // gameArea.anchoredPosition = currentPosition;
-
+          
         Vector2 size = gameArea.sizeDelta;
         size.y = value;
         gameArea.sizeDelta = size;
