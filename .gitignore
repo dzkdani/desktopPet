@@ -67,7 +67,7 @@ Packages/com.unity.collab-proxy/
 
 # --- end ---
 Library
-UserSettings
-*.csproj
-*.sln
 Logs
+*.csproj
+UserSettings
+*.sln
