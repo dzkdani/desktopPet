@@ -57,7 +57,6 @@ public class UIManager : MonoBehaviour
 
     void OnDestroy()
     {
-        // Unregister this instance from the ServiceLocator
         ServiceLocator.Unregister<UIManager>();
     }
 }

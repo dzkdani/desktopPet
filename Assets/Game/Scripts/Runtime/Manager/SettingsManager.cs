@@ -74,10 +74,9 @@ public class SettingsManager : MonoBehaviour
     private void OnDestroy()
     {
         UnregisterAllCallbacks();
-        ServiceLocator.Unregister<SettingsManager>();
-    }
+        ServiceLocator.Unregister<SettingsManager>();    }
 
-    #region Initialization
+
     private void InitializeGameAreaSettings()
     {
         if (!ValidateGameAreaReferences()) return;
@@ -210,10 +209,8 @@ public class SettingsManager : MonoBehaviour
         // Update text displays
         UpdateValueText(widthValueText, gameArea.sizeDelta.x, DECIMAL_FORMAT);
         UpdateValueText(heightValueText, gameArea.sizeDelta.y, DECIMAL_FORMAT);
-        UpdateValueText(horizontalPositionValueText, gameArea.anchoredPosition.x, DECIMAL_FORMAT);
-        UpdateValueText(verticalPositionValueText, gameArea.anchoredPosition.y, DECIMAL_FORMAT);
+        UpdateValueText(horizontalPositionValueText, gameArea.anchoredPosition.x, DECIMAL_FORMAT);        UpdateValueText(verticalPositionValueText, gameArea.anchoredPosition.y, DECIMAL_FORMAT);
     }
-    #endregion
     #region Input Field Handlers
     private void OnWidthInputChanged(string value)
     {

@@ -104,7 +104,7 @@ public class GachaManager : MonoBehaviour
     private void SpawnMonster(MonsterDataSO monsterData)
     {
         // Pass the monster data instead of just ID
-        ServiceLocator.Get<GameManager>().SpawnMonsterFromGacha(monsterData);
+        ServiceLocator.Get<GameManager>().SpawnMonster(monsterData);
     }
 
     private void ShowGachaResult(MonsterDataSO monster)

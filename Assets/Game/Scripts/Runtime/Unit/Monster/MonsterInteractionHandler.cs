@@ -42,17 +42,25 @@ public class MonsterInteractionHandler
     private void CheckForPendingSilverCoinDrop()
     {
         if (_pendingSilverCoinDrop && 
-            (_stateMachine.CurrentState != MonsterState.Jumping && 
-             _stateMachine.CurrentState != MonsterState.Itching))
+            _stateMachine.CurrentState != MonsterState.Jumping && 
+            _stateMachine.CurrentState != MonsterState.Itching)
         {
             // Animation finished, drop the silver coin
             _controller.DropCoinAfterPoke();
             _pendingSilverCoinDrop = false;
         }
     }
-    
-    public void OnPointerEnter(PointerEventData e) => _controller.SetHovered(true);
-    public void OnPointerExit(PointerEventData e) => _controller.SetHovered(false);
+
+    public void OnPointerEnter(PointerEventData e)
+    {
+        _controller.SetHovered(true);
+        ServiceLocator.Get<CursorManager>().Set(CursorType.Monster);
+    }
+    public void OnPointerExit(PointerEventData e)
+    {
+         _controller.SetHovered(false);
+        ServiceLocator.Get<CursorManager>().Reset();
+    }
     public void OnPointerClick(PointerEventData eventData)
     {
         if (_controller.isHovered) HandlePoke();

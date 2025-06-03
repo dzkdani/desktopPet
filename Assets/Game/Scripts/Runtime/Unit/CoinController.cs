@@ -39,7 +39,7 @@ public class CoinController : MonoBehaviour, IPointerDownHandler
         SaveSystem.Flush();
 
         ServiceLocator.Get<UIManager>().UpdateCoinCounter();
-        ServiceLocator.Get<GameManager>().DespawnPools(gameObject);
+        ServiceLocator.Get<GameManager>().DespawnToPool(gameObject);
     }
 }
 

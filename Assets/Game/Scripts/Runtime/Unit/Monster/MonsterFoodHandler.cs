@@ -110,7 +110,7 @@ public class MonsterFoodHandler
         {
             _controller.Feed(NearestFood.nutritionValue);
             ServiceLocator.Get<GameManager>().activeFoods.Remove(NearestFood);
-            ServiceLocator.Get<GameManager>().DespawnPools(NearestFood.gameObject);
+            ServiceLocator.Get<GameManager>().DespawnToPool(NearestFood.gameObject);
             NearestFood = null;
         }
         

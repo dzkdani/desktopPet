@@ -1,70 +1,76 @@
 fileFormatVersion: 2
-guid: bc587939726478c4497abb6fd4237f1f
+guid: 38e225c6aad3fee4c995374718ac25bb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -797061311589649985
-    second: Maple Dragoon_0
+      213: 1897401372331967963
+    second: Maple Dragoon Stage 3_0
   - first:
-      213: -1498321515523711278
-    second: Maple Dragoon_1
+      213: 1550941108056378930
+    second: Maple Dragoon Stage 3_1
   - first:
-      213: -8906727567516148861
-    second: Maple Dragoon_2
+      213: 374796858898483661
+    second: Maple Dragoon Stage 3_2
   - first:
-      213: 1637604216360342674
-    second: Maple Dragoon_3
+      213: -5968580917681273885
+    second: Maple Dragoon Stage 3_3
   - first:
-      213: 3691648464271102617
-    second: Maple Dragoon_4
+      213: 7420810581651092228
+    second: Maple Dragoon Stage 3_4
   - first:
-      213: 105132905042262472
-    second: Maple Dragoon_5
+      213: 487758809221195109
+    second: Maple Dragoon Stage 3_5
   - first:
-      213: -6364890618098662155
-    second: Maple Dragoon_6
+      213: -2302167562819125912
+    second: Maple Dragoon Stage 3_6
   - first:
-      213: -2702088256680376047
-    second: Maple Dragoon_7
+      213: 542031378580640172
+    second: Maple Dragoon Stage 3_7
   - first:
-      213: -8729856625612288591
-    second: Maple Dragoon_8
+      213: -3847465028530277516
+    second: Maple Dragoon Stage 3_8
   - first:
-      213: -6504524138011168618
-    second: Maple Dragoon_9
+      213: -1617087039606065779
+    second: Maple Dragoon Stage 3_9
   - first:
-      213: -8260749197604895855
-    second: Maple Dragoon_10
+      213: 668934535674148844
+    second: Maple Dragoon Stage 3_10
   - first:
-      213: -7999469812565111534
-    second: Maple Dragoon_11
+      213: -4533021147248793732
+    second: Maple Dragoon Stage 3_11
   - first:
-      213: -1176038554140332736
-    second: Maple Dragoon_12
+      213: 1672947115804093238
+    second: Maple Dragoon Stage 3_12
   - first:
-      213: -7056996887612610600
-    second: Maple Dragoon_13
+      213: -849060836610740973
+    second: Maple Dragoon Stage 3_13
   - first:
-      213: -5581749916631969614
-    second: Maple Dragoon_14
+      213: -6861489303180246562
+    second: Maple Dragoon Stage 3_14
   - first:
-      213: -1390368497966149805
-    second: Maple Dragoon_15
+      213: 5451080814971396019
+    second: Maple Dragoon Stage 3_15
   - first:
-      213: 4414592230900412344
-    second: Maple Dragoon_16
+      213: -7391613539466549514
+    second: Maple Dragoon Stage 3_16
   - first:
-      213: -6057052956083485839
-    second: Maple Dragoon_17
+      213: -1591271488099066450
+    second: Maple Dragoon Stage 3_17
   - first:
-      213: -7642620676696945854
-    second: Maple Dragoon_18
+      213: -5567778989213499139
+    second: Maple Dragoon Stage 3_18
   - first:
-      213: -4253048088364486040
-    second: Maple Dragoon_19
+      213: 6095449900287384728
+    second: Maple Dragoon Stage 3_19
   - first:
-      213: -667079077648082770
-    second: Maple Dragoon_20
+      213: -8051882360840358818
+    second: Maple Dragoon Stage 3_20
+  - first:
+      213: -3864029721323147918
+    second: Maple Dragoon Stage 3_21
+  - first:
+      213: -8097458283384963966
+    second: Maple Dragoon Stage 3_22
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -97,7 +103,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 2
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -173,12 +179,34 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Maple Dragoon_0
+      name: Maple Dragoon Stage 3_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 423
-        width: 149
+        x: 2
+        y: 179
+        width: 615
+        height: 535
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd58f2ace7ce45a10800000000000000
+      internalID: 1897401372331967963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon Stage 3_1
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 679
+        width: 244
         height: 184
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -188,20 +216,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fb1fd7ac5f440f4f0800000000000000
-      internalID: -797061311589649985
+      spriteID: 23e404578bc068510800000000000000
+      internalID: 1550941108056378930
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_1
+      name: Maple Dragoon Stage 3_2
       rect:
         serializedVersion: 2
-        x: 2
-        y: 175
-        width: 565
-        height: 447
+        x: 405
+        y: 620
+        width: 272
+        height: 198
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -210,20 +238,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2de52e32584e43be0800000000000000
-      internalID: -1498321515523711278
+      spriteID: dc98395e1cb833500800000000000000
+      internalID: 374796858898483661
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_2
+      name: Maple Dragoon Stage 3_3
       rect:
         serializedVersion: 2
-        x: 559
-        y: 176
-        width: 185
-        height: 255
+        x: 615
+        y: 289
+        width: 520
+        height: 535
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -232,20 +260,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 38b550b9772f46480800000000000000
-      internalID: -8906727567516148861
+      spriteID: 3e3ce6c37475b2da0800000000000000
+      internalID: -5968580917681273885
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_3
+      name: Maple Dragoon Stage 3_4
       rect:
         serializedVersion: 2
-        x: 569
-        y: 427
-        width: 128
-        height: 126
+        x: 1129
+        y: 502
+        width: 344
+        height: 321
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -254,20 +282,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 29417debb50f9b610800000000000000
-      internalID: 1637604216360342674
+      spriteID: 403f5c828e30cf660800000000000000
+      internalID: 7420810581651092228
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_4
+      name: Maple Dragoon Stage 3_5
       rect:
         serializedVersion: 2
-        x: 744
-        y: 342
-        width: 187
-        height: 275
+        x: 1368
+        y: 697
+        width: 270
+        height: 182
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -276,20 +304,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 992de7418be5b3330800000000000000
-      internalID: 3691648464271102617
+      spriteID: 56562bf7d0ed4c600800000000000000
+      internalID: 487758809221195109
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_5
+      name: Maple Dragoon Stage 3_6
       rect:
         serializedVersion: 2
-        x: 848
-        y: 2
-        width: 661
-        height: 476
+        x: 1717
+        y: 454
+        width: 199
+        height: 307
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -298,20 +326,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8c9bf33f1d1857100800000000000000
-      internalID: 105132905042262472
+      spriteID: 86d3dbc8cce0d00e0800000000000000
+      internalID: -2302167562819125912
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_6
+      name: Maple Dragoon Stage 3_7
       rect:
         serializedVersion: 2
-        x: 1456
-        y: 404
-        width: 93
-        height: 191
+        x: 888
+        y: 5
+        width: 683
+        height: 493
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -320,20 +348,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5f4430a94bd5ba7a0800000000000000
-      internalID: -6364890618098662155
+      spriteID: ca11a61caaea58700800000000000000
+      internalID: 542031378580640172
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_7
+      name: Maple Dragoon Stage 3_8
       rect:
         serializedVersion: 2
-        x: 1510
-        y: 2
-        width: 378
-        height: 447
+        x: 1474
+        y: 452
+        width: 242
+        height: 244
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -342,20 +370,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 119cfccfb01408ad0800000000000000
-      internalID: -2702088256680376047
+      spriteID: 473f6b8f0fe0b9ac0800000000000000
+      internalID: -3847465028530277516
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_8
+      name: Maple Dragoon Stage 3_9
       rect:
         serializedVersion: 2
-        x: 1549
-        y: 402
-        width: 314
-        height: 210
+        x: 1573
+        y: 5
+        width: 385
+        height: 448
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -364,42 +392,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1bd0a4ad6a159d680800000000000000
-      internalID: -8729856625612288591
+      spriteID: d857469b7e3fe89e0800000000000000
+      internalID: -1617087039606065779
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_9
-      rect:
-        serializedVersion: 2
-        x: 1862
-        y: 326
-        width: 184
-        height: 247
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 690f3e842c94bb5a0800000000000000
-      internalID: -6504524138011168618
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Maple Dragoon_10
+      name: Maple Dragoon Stage 3_10
       rect:
         serializedVersion: 2
         x: 1
-        y: 188
-        width: 54
-        height: 41
+        y: 178
+        width: 250
+        height: 141
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -408,20 +414,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 193ca224f5ceb5d80800000000000000
-      internalID: -8260749197604895855
+      spriteID: ce739d08a68884900800000000000000
+      internalID: 668934535674148844
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_11
+      name: Maple Dragoon Stage 3_11
       rect:
         serializedVersion: 2
-        x: 107
-        y: 175
-        width: 24
-        height: 18
+        x: 251
+        y: 178
+        width: 135
+        height: 117
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -430,20 +436,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 21d8896a69c2cf090800000000000000
-      internalID: -7999469812565111534
+      spriteID: c77e6e698497711c0800000000000000
+      internalID: -4533021147248793732
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_12
+      name: Maple Dragoon Stage 3_12
       rect:
         serializedVersion: 2
-        x: 747
-        y: 176
-        width: 78
-        height: 151
+        x: 584
+        y: 179
+        width: 129
+        height: 99
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -452,20 +458,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 04d2d4a7a2fddafe0800000000000000
-      internalID: -1176038554140332736
+      spriteID: 63b6485c980873710800000000000000
+      internalID: 1672947115804093238
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_13
+      name: Maple Dragoon Stage 3_13
       rect:
         serializedVersion: 2
-        x: 1859
-        y: 2
-        width: 182
-        height: 274
+        x: 715
+        y: 179
+        width: 151
+        height: 78
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -474,19 +480,41 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8d720d468b2801e90800000000000000
-      internalID: -7056996887612610600
+      spriteID: 31dee19eaa78734f0800000000000000
+      internalID: -849060836610740973
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_14
+      name: Maple Dragoon Stage 3_14
+      rect:
+        serializedVersion: 2
+        x: 1960
+        y: 140
+        width: 51
+        height: 163
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed18ccd15d717c0a0800000000000000
+      internalID: -6861489303180246562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon Stage 3_15
       rect:
         serializedVersion: 2
         x: 1
-        y: 1
-        width: 868
+        y: 4
+        width: 931
         height: 174
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -496,18 +524,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2b0d5123604a982b0800000000000000
-      internalID: -5581749916631969614
+      spriteID: 3bf1152ce1126ab40800000000000000
+      internalID: 5451080814971396019
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_15
+      name: Maple Dragoon Stage 3_16
       rect:
         serializedVersion: 2
-        x: 1107
-        y: 1
+        x: 1170
+        y: 4
         width: 92
         height: 65
       alignment: 0
@@ -518,40 +546,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 35f85d3b73b64bce0800000000000000
-      internalID: -1390368497966149805
+      spriteID: 6f6e027f5a6bb6990800000000000000
+      internalID: -7391613539466549514
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_16
+      name: Maple Dragoon Stage 3_17
       rect:
         serializedVersion: 2
-        x: 1199
-        y: 1
-        width: 17
-        height: 63
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8bfa4079e38c34d30800000000000000
-      internalID: 4414592230900412344
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Maple Dragoon_17
-      rect:
-        serializedVersion: 2
-        x: 1481
-        y: 49
+        x: 1543
+        y: 67
         width: 37
         height: 65
       alignment: 0
@@ -562,20 +568,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1730ae69d6601fba0800000000000000
-      internalID: -6057052956083485839
+      spriteID: eadd5a2330baae9e0800000000000000
+      internalID: -1591271488099066450
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_18
+      name: Maple Dragoon Stage 3_18
       rect:
         serializedVersion: 2
-        x: 1216
-        y: 1
-        width: 43
-        height: 17
+        x: 1945
+        y: 4
+        width: 71
+        height: 135
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -584,20 +590,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 24b4c64acf4ffe590800000000000000
-      internalID: -7642620676696945854
+      spriteID: df0cb0832864bb2b0800000000000000
+      internalID: -5567778989213499139
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_19
+      name: Maple Dragoon Stage 3_19
       rect:
         serializedVersion: 2
-        x: 1437
-        y: 1
-        width: 112
-        height: 47
+        x: 1451
+        y: 4
+        width: 53
+        height: 18
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -606,20 +612,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 86271681c432af4c0800000000000000
-      internalID: -4253048088364486040
+      spriteID: 89cd1d4a363679450800000000000000
+      internalID: 6095449900287384728
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maple Dragoon_20
+      name: Maple Dragoon Stage 3_20
       rect:
         serializedVersion: 2
-        x: 1808
-        y: 1
-        width: 37
-        height: 39
+        x: 1523
+        y: 4
+        width: 128
+        height: 62
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -628,8 +634,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ea8d0bbfc1f0eb6f0800000000000000
-      internalID: -667079077648082770
+      spriteID: e5470ec47a7f14090800000000000000
+      internalID: -8051882360840358818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon Stage 3_21
+      rect:
+        serializedVersion: 2
+        x: 1703
+        y: 4
+        width: 24
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27d6bf2e075306ac0800000000000000
+      internalID: -3864029721323147918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon Stage 3_22
+      rect:
+        serializedVersion: 2
+        x: 1882
+        y: 4
+        width: 38
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28c7b4be79c00af80800000000000000
+      internalID: -8097458283384963966
       vertices: []
       indices: 
       edges: []
@@ -648,27 +698,29 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Maple Dragoon_0: -797061311589649985
-      Maple Dragoon_1: -1498321515523711278
-      Maple Dragoon_10: -8260749197604895855
-      Maple Dragoon_11: -7999469812565111534
-      Maple Dragoon_12: -1176038554140332736
-      Maple Dragoon_13: -7056996887612610600
-      Maple Dragoon_14: -5581749916631969614
-      Maple Dragoon_15: -1390368497966149805
-      Maple Dragoon_16: 4414592230900412344
-      Maple Dragoon_17: -6057052956083485839
-      Maple Dragoon_18: -7642620676696945854
-      Maple Dragoon_19: -4253048088364486040
-      Maple Dragoon_2: -8906727567516148861
-      Maple Dragoon_20: -667079077648082770
-      Maple Dragoon_3: 1637604216360342674
-      Maple Dragoon_4: 3691648464271102617
-      Maple Dragoon_5: 105132905042262472
-      Maple Dragoon_6: -6364890618098662155
-      Maple Dragoon_7: -2702088256680376047
-      Maple Dragoon_8: -8729856625612288591
-      Maple Dragoon_9: -6504524138011168618
+      Maple Dragoon Stage 3_0: 1897401372331967963
+      Maple Dragoon Stage 3_1: 1550941108056378930
+      Maple Dragoon Stage 3_10: 668934535674148844
+      Maple Dragoon Stage 3_11: -4533021147248793732
+      Maple Dragoon Stage 3_12: 1672947115804093238
+      Maple Dragoon Stage 3_13: -849060836610740973
+      Maple Dragoon Stage 3_14: -6861489303180246562
+      Maple Dragoon Stage 3_15: 5451080814971396019
+      Maple Dragoon Stage 3_16: -7391613539466549514
+      Maple Dragoon Stage 3_17: -1591271488099066450
+      Maple Dragoon Stage 3_18: -5567778989213499139
+      Maple Dragoon Stage 3_19: 6095449900287384728
+      Maple Dragoon Stage 3_2: 374796858898483661
+      Maple Dragoon Stage 3_20: -8051882360840358818
+      Maple Dragoon Stage 3_21: -3864029721323147918
+      Maple Dragoon Stage 3_22: -8097458283384963966
+      Maple Dragoon Stage 3_3: -5968580917681273885
+      Maple Dragoon Stage 3_4: 7420810581651092228
+      Maple Dragoon Stage 3_5: 487758809221195109
+      Maple Dragoon Stage 3_6: -2302167562819125912
+      Maple Dragoon Stage 3_7: 542031378580640172
+      Maple Dragoon Stage 3_8: -3847465028530277516
+      Maple Dragoon Stage 3_9: -1617087039606065779
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

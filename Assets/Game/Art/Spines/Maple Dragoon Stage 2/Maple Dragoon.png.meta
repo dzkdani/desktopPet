@@ -1,79 +1,70 @@
 fileFormatVersion: 2
-guid: ba3a97cd104739944bd3d01f0ca7cb1a
+guid: bc587939726478c4497abb6fd4237f1f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7837965303698856707
-    second: Landak Pakis Stage 1_0
+      213: -797061311589649985
+    second: Maple Dragoon_0
   - first:
-      213: -7012062441677375386
-    second: Landak Pakis Stage 1_1
+      213: -1498321515523711278
+    second: Maple Dragoon_1
   - first:
-      213: 628823865250746307
-    second: Landak Pakis Stage 1_2
+      213: -8906727567516148861
+    second: Maple Dragoon_2
   - first:
-      213: 2801750034989543862
-    second: Landak Pakis Stage 1_3
+      213: 1637604216360342674
+    second: Maple Dragoon_3
   - first:
-      213: -5122905173923856031
-    second: Landak Pakis Stage 1_4
+      213: 3691648464271102617
+    second: Maple Dragoon_4
   - first:
-      213: -2988045015866418308
-    second: Landak Pakis Stage 1_5
+      213: 105132905042262472
+    second: Maple Dragoon_5
   - first:
-      213: 7222032639469895055
-    second: Landak Pakis Stage 1_6
+      213: -6364890618098662155
+    second: Maple Dragoon_6
   - first:
-      213: -4087891378976586318
-    second: Landak Pakis Stage 1_7
+      213: -2702088256680376047
+    second: Maple Dragoon_7
   - first:
-      213: -3458334306737974430
-    second: Landak Pakis Stage 1_8
+      213: -8729856625612288591
+    second: Maple Dragoon_8
   - first:
-      213: -7252505299158264733
-    second: Landak Pakis Stage 1_9
+      213: -6504524138011168618
+    second: Maple Dragoon_9
   - first:
-      213: -3832528412015661872
-    second: Landak Pakis Stage 1_10
+      213: -8260749197604895855
+    second: Maple Dragoon_10
   - first:
-      213: 8820291335599037843
-    second: Landak Pakis Stage 1_11
+      213: -7999469812565111534
+    second: Maple Dragoon_11
   - first:
-      213: -3736973121155659115
-    second: Landak Pakis Stage 1_12
+      213: -1176038554140332736
+    second: Maple Dragoon_12
   - first:
-      213: -8030857593960028099
-    second: Landak Pakis Stage 1_13
+      213: -7056996887612610600
+    second: Maple Dragoon_13
   - first:
-      213: 4180140487387866623
-    second: Landak Pakis Stage 1_14
+      213: -5581749916631969614
+    second: Maple Dragoon_14
   - first:
-      213: -4145799988905453820
-    second: Landak Pakis Stage 1_15
+      213: -1390368497966149805
+    second: Maple Dragoon_15
   - first:
-      213: 8772643562963244852
-    second: Landak Pakis Stage 1_16
+      213: 4414592230900412344
+    second: Maple Dragoon_16
   - first:
-      213: 5211222459518119865
-    second: Landak Pakis Stage 1_17
+      213: -6057052956083485839
+    second: Maple Dragoon_17
   - first:
-      213: -4339244543880672119
-    second: Landak Pakis Stage 1_18
+      213: -7642620676696945854
+    second: Maple Dragoon_18
   - first:
-      213: -7242314851344176868
-    second: Landak Pakis Stage 1_19
+      213: -4253048088364486040
+    second: Maple Dragoon_19
   - first:
-      213: 6831565960607306275
-    second: Landak Pakis Stage 1_20
-  - first:
-      213: 8200880102148528652
-    second: Landak Pakis Stage 1_21
-  - first:
-      213: -3556915626617155860
-    second: Landak Pakis Stage 1_22
-  - first:
-      213: -1039843722830875586
-    second: Landak Pakis Stage 1_23
+      213: -667079077648082770
+    second: Maple Dragoon_20
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -106,7 +97,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 2
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -182,13 +173,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_0
+      name: Maple Dragoon_0
       rect:
         serializedVersion: 2
-        x: 35
-        y: 437
-        width: 272
-        height: 229
+        x: 1
+        y: 423
+        width: 149
+        height: 184
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -197,196 +188,42 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: df461376514f93390800000000000000
-      internalID: -7837965303698856707
+      spriteID: fb1fd7ac5f440f4f0800000000000000
+      internalID: -797061311589649985
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_1
-      rect:
-        serializedVersion: 2
-        x: 293
-        y: 527
-        width: 221
-        height: 217
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 66836fc5c5620be90800000000000000
-      internalID: -7012062441677375386
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_2
-      rect:
-        serializedVersion: 2
-        x: 446
-        y: 512
-        width: 269
-        height: 222
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3cf0f8a49f70ab800800000000000000
-      internalID: 628823865250746307
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_3
-      rect:
-        serializedVersion: 2
-        x: 717
-        y: 326
-        width: 262
-        height: 306
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6b17df000d0d1e620800000000000000
-      internalID: 2801750034989543862
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_4
-      rect:
-        serializedVersion: 2
-        x: 884
-        y: 584
-        width: 192
-        height: 152
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 161024af2e8c7e8b0800000000000000
-      internalID: -5122905173923856031
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_5
-      rect:
-        serializedVersion: 2
-        x: 981
-        y: 2
-        width: 644
-        height: 636
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c7bd760b3e45886d0800000000000000
-      internalID: -2988045015866418308
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_6
-      rect:
-        serializedVersion: 2
-        x: 1077
-        y: 630
-        width: 161
-        height: 127
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f8d31efeb60d93460800000000000000
-      internalID: 7222032639469895055
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_7
-      rect:
-        serializedVersion: 2
-        x: 1522
-        y: 566
-        width: 192
-        height: 152
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2b508bb0374e447c0800000000000000
-      internalID: -4087891378976586318
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_8
-      rect:
-        serializedVersion: 2
-        x: 1774
-        y: 483
-        width: 272
-        height: 229
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 263165465478100d0800000000000000
-      internalID: -3458334306737974430
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_9
+      name: Maple Dragoon_1
       rect:
         serializedVersion: 2
         x: 2
+        y: 175
+        width: 565
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2de52e32584e43be0800000000000000
+      internalID: -1498321515523711278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_2
+      rect:
+        serializedVersion: 2
+        x: 559
         y: 176
-        width: 504
-        height: 264
+        width: 185
+        height: 255
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -395,20 +232,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 36498081bdce95b90800000000000000
-      internalID: -7252505299158264733
+      spriteID: 38b550b9772f46480800000000000000
+      internalID: -8906727567516148861
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_10
+      name: Maple Dragoon_3
       rect:
         serializedVersion: 2
-        x: 288
-        y: 214
-        width: 393
-        height: 300
+        x: 569
+        y: 427
+        width: 128
+        height: 126
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -417,20 +254,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0dce63207bf10dac0800000000000000
-      internalID: -3832528412015661872
+      spriteID: 29417debb50f9b610800000000000000
+      internalID: 1637604216360342674
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_11
+      name: Maple Dragoon_4
       rect:
         serializedVersion: 2
-        x: 662
-        y: 103
-        width: 450
-        height: 361
+        x: 744
+        y: 342
+        width: 187
+        height: 275
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -439,20 +276,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 39d16d1ec38f76a70800000000000000
-      internalID: 8820291335599037843
+      spriteID: 992de7418be5b3330800000000000000
+      internalID: 3691648464271102617
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_12
+      name: Maple Dragoon_5
       rect:
         serializedVersion: 2
-        x: 1600
-        y: 390
-        width: 161
-        height: 175
+        x: 848
+        y: 2
+        width: 661
+        height: 476
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -461,20 +298,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 59a8552eeba932cc0800000000000000
-      internalID: -3736973121155659115
+      spriteID: 8c9bf33f1d1857100800000000000000
+      internalID: 105132905042262472
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_13
+      name: Maple Dragoon_6
       rect:
         serializedVersion: 2
-        x: 1770
-        y: 99
-        width: 276
-        height: 407
+        x: 1456
+        y: 404
+        width: 93
+        height: 191
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -483,19 +320,173 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d38a34e4199ac8090800000000000000
-      internalID: -8030857593960028099
+      spriteID: 5f4430a94bd5ba7a0800000000000000
+      internalID: -6364890618098662155
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_14
+      name: Maple Dragoon_7
+      rect:
+        serializedVersion: 2
+        x: 1510
+        y: 2
+        width: 378
+        height: 447
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 119cfccfb01408ad0800000000000000
+      internalID: -2702088256680376047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_8
+      rect:
+        serializedVersion: 2
+        x: 1549
+        y: 402
+        width: 314
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bd0a4ad6a159d680800000000000000
+      internalID: -8729856625612288591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_9
+      rect:
+        serializedVersion: 2
+        x: 1862
+        y: 326
+        width: 184
+        height: 247
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 690f3e842c94bb5a0800000000000000
+      internalID: -6504524138011168618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_10
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 188
+        width: 54
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 193ca224f5ceb5d80800000000000000
+      internalID: -8260749197604895855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_11
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 175
+        width: 24
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21d8896a69c2cf090800000000000000
+      internalID: -7999469812565111534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_12
+      rect:
+        serializedVersion: 2
+        x: 747
+        y: 176
+        width: 78
+        height: 151
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04d2d4a7a2fddafe0800000000000000
+      internalID: -1176038554140332736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_13
+      rect:
+        serializedVersion: 2
+        x: 1859
+        y: 2
+        width: 182
+        height: 274
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d720d468b2801e90800000000000000
+      internalID: -7056996887612610600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_14
       rect:
         serializedVersion: 2
         x: 1
         y: 1
-        width: 814
+        width: 868
         height: 174
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -505,42 +496,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ff56bfd30a7d20a30800000000000000
-      internalID: 4180140487387866623
+      spriteID: 2b0d5123604a982b0800000000000000
+      internalID: -5581749916631969614
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_15
+      name: Maple Dragoon_15
       rect:
         serializedVersion: 2
-        x: 815
-        y: 1
-        width: 73
-        height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 407d87f10e82776c0800000000000000
-      internalID: -4145799988905453820
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_16
-      rect:
-        serializedVersion: 2
-        x: 1070
+        x: 1107
         y: 1
         width: 92
-        height: 84
+        height: 65
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -549,108 +518,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4379a8f47d0beb970800000000000000
-      internalID: 8772643562963244852
+      spriteID: 35f85d3b73b64bce0800000000000000
+      internalID: -1390368497966149805
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_17
+      name: Maple Dragoon_16
       rect:
         serializedVersion: 2
-        x: 1552
-        y: 48
-        width: 88
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9bf6d19773bf15840800000000000000
-      internalID: 5211222459518119865
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_18
-      rect:
-        serializedVersion: 2
-        x: 1627
-        y: 2
-        width: 259
-        height: 387
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 98cc070e318e7c3c0800000000000000
-      internalID: -4339244543880672119
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_19
-      rect:
-        serializedVersion: 2
-        x: 1888
-        y: 2
-        width: 50
-        height: 72
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c19281e93012e7b90800000000000000
-      internalID: -7242314851344176868
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_20
-      rect:
-        serializedVersion: 2
-        x: 1940
-        y: 2
-        width: 45
-        height: 71
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 32216a5cb099ece50800000000000000
-      internalID: 6831565960607306275
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Landak Pakis Stage 1_21
-      rect:
-        serializedVersion: 2
-        x: 1162
+        x: 1199
         y: 1
-        width: 61
-        height: 30
+        width: 17
+        height: 63
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -659,20 +540,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c0ad126b0016fc170800000000000000
-      internalID: 8200880102148528652
+      spriteID: 8bfa4079e38c34d30800000000000000
+      internalID: 4414592230900412344
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_22
+      name: Maple Dragoon_17
       rect:
         serializedVersion: 2
-        x: 1614
-        y: 1
-        width: 46
-        height: 26
+        x: 1481
+        y: 49
+        width: 37
+        height: 65
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -681,20 +562,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ceec27b351c43aec0800000000000000
-      internalID: -3556915626617155860
+      spriteID: 1730ae69d6601fba0800000000000000
+      internalID: -6057052956083485839
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Landak Pakis Stage 1_23
+      name: Maple Dragoon_18
       rect:
         serializedVersion: 2
-        x: 1986
+        x: 1216
         y: 1
-        width: 39
-        height: 26
+        width: 43
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -703,8 +584,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e34feb6b4abb191f0800000000000000
-      internalID: -1039843722830875586
+      spriteID: 24b4c64acf4ffe590800000000000000
+      internalID: -7642620676696945854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_19
+      rect:
+        serializedVersion: 2
+        x: 1437
+        y: 1
+        width: 112
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86271681c432af4c0800000000000000
+      internalID: -4253048088364486040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Maple Dragoon_20
+      rect:
+        serializedVersion: 2
+        x: 1808
+        y: 1
+        width: 37
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea8d0bbfc1f0eb6f0800000000000000
+      internalID: -667079077648082770
       vertices: []
       indices: 
       edges: []
@@ -723,30 +648,27 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Landak Pakis Stage 1_0: -7837965303698856707
-      Landak Pakis Stage 1_1: -7012062441677375386
-      Landak Pakis Stage 1_10: -3832528412015661872
-      Landak Pakis Stage 1_11: 8820291335599037843
-      Landak Pakis Stage 1_12: -3736973121155659115
-      Landak Pakis Stage 1_13: -8030857593960028099
-      Landak Pakis Stage 1_14: 4180140487387866623
-      Landak Pakis Stage 1_15: -4145799988905453820
-      Landak Pakis Stage 1_16: 8772643562963244852
-      Landak Pakis Stage 1_17: 5211222459518119865
-      Landak Pakis Stage 1_18: -4339244543880672119
-      Landak Pakis Stage 1_19: -7242314851344176868
-      Landak Pakis Stage 1_2: 628823865250746307
-      Landak Pakis Stage 1_20: 6831565960607306275
-      Landak Pakis Stage 1_21: 8200880102148528652
-      Landak Pakis Stage 1_22: -3556915626617155860
-      Landak Pakis Stage 1_23: -1039843722830875586
-      Landak Pakis Stage 1_3: 2801750034989543862
-      Landak Pakis Stage 1_4: -5122905173923856031
-      Landak Pakis Stage 1_5: -2988045015866418308
-      Landak Pakis Stage 1_6: 7222032639469895055
-      Landak Pakis Stage 1_7: -4087891378976586318
-      Landak Pakis Stage 1_8: -3458334306737974430
-      Landak Pakis Stage 1_9: -7252505299158264733
+      Maple Dragoon_0: -797061311589649985
+      Maple Dragoon_1: -1498321515523711278
+      Maple Dragoon_10: -8260749197604895855
+      Maple Dragoon_11: -7999469812565111534
+      Maple Dragoon_12: -1176038554140332736
+      Maple Dragoon_13: -7056996887612610600
+      Maple Dragoon_14: -5581749916631969614
+      Maple Dragoon_15: -1390368497966149805
+      Maple Dragoon_16: 4414592230900412344
+      Maple Dragoon_17: -6057052956083485839
+      Maple Dragoon_18: -7642620676696945854
+      Maple Dragoon_19: -4253048088364486040
+      Maple Dragoon_2: -8906727567516148861
+      Maple Dragoon_20: -667079077648082770
+      Maple Dragoon_3: 1637604216360342674
+      Maple Dragoon_4: 3691648464271102617
+      Maple Dragoon_5: 105132905042262472
+      Maple Dragoon_6: -6364890618098662155
+      Maple Dragoon_7: -2702088256680376047
+      Maple Dragoon_8: -8729856625612288591
+      Maple Dragoon_9: -6504524138011168618
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

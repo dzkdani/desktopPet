@@ -3,7 +3,8 @@ using UnityEngine;
 
 public static class ServiceLocator
 {
-    private static readonly Dictionary<System.Type, object> services = new();    public static void Register<T>(T service)
+    private static readonly Dictionary<System.Type, object> services = new();
+    public static void Register<T>(T service)
     {
         var type = typeof(T);
         if (services.ContainsKey(type))
@@ -18,7 +19,9 @@ public static class ServiceLocator
         var type = typeof(T);
         if (services.ContainsKey(type))
             services.Remove(type);
-    }    public static T Get<T>()
+    }
+
+    public static T Get<T>()
     {
         var type = typeof(T);
         if (services.TryGetValue(type, out var service))
