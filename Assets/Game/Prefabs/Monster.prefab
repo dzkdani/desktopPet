@@ -555,6 +555,9 @@ MonoBehaviour:
     pokeHappinessIncrease: 0
     areaHappinessRate: 0
     pokeCooldownDuration: 5
+    separationRadius: 100
+    separationForce: 2
+    enableSeparation: 1
   ui:
     hungerInfo: {fileID: 1890837207535386077}
     happinessInfo: {fileID: 1225282339728586993}

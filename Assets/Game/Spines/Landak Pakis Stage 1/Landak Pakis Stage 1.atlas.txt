@@ -1,0 +1,71 @@
+Landak Pakis Stage 1.png
+size:2048,2048
+filter:Linear,Linear
+Blush
+bounds:816,1964,345,82
+offsets:4,4,352,90
+Body
+bounds:981,1410,644,636
+rotate:180
+Daun Punggung
+bounds:1627,1659,259,387
+Daun head
+bounds:429,1315,286,233
+offsets:0,6,286,257
+rotate:180
+Ear L
+bounds:1601,1484,159,173
+offsets:3,6,163,180
+Ear R
+bounds:1078,1292,125,159
+offsets:1,5,128,165
+rotate:90
+Eyes Closed L
+bounds:1163,2018,59,28
+offsets:2,1,63,30
+Eyes Closed R
+bounds:1615,2022,44,24
+offsets:1,1,46,26
+Eyes Open L
+bounds:1888,1974,50,72
+Eyes Open R
+bounds:1940,1975,45,71
+Foot Back L
+bounds:35,1382,229,272
+rotate:270
+Foot Back R
+bounds:1774,1336,229,272
+rotate:270
+Foot Front L
+bounds:884,1312,152,192
+rotate:90
+Foot Front R
+bounds:1522,1330,152,192
+rotate:90
+Mouth Closed
+bounds:1553,1970,86,29
+offsets:1,2,88,32
+Mouth Open
+bounds:1526,2001,87,45
+Nose
+bounds:1987,2022,37,24
+offsets:1,1,39,32
+Pakis 1
+bounds:288,1533,393,301
+Pakis 2
+bounds:1770,1542,276,407
+Pakis 3
+bounds:2,1608,264,504
+rotate:90
+Pakis 4
+bounds:662,1584,361,450
+rotate:90
+Pakis 5
+bounds:717,1416,306,262
+rotate:270
+Shadw
+bounds:2,1874,812,172
+offsets:12,8,837,190
+Tail
+bounds:293,1304,221,217
+rotate:180

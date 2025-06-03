@@ -19,14 +19,14 @@ public class MonsterDataSO : ScriptableObject
     public float poopRate = 20f;     // Default: 20 minutes
     public float baseHunger = 50f;     // Add base hunger
     public float baseHappiness = 0f;   // Add base happiness
-
-    [Header("Happiness System")]
+    
+    [Header("Happiness System")] 
     public float pokeHappinessValue = 2f; // Customizable poke happiness increase - changed from 15f to 2f
     public float areaHappinessRate = 0.2f; // Rate of happiness change based on area - changed from 0.1f to 0.2f
 
     [Header("Poop Behavior")]
     public bool clickToCollectPoop = true;
-
+    
     [Header("Evolution")]
     public bool canEvolve = true;
     public bool isEvolved = false;
@@ -42,13 +42,4 @@ public class MonsterDataSO : ScriptableObject
 
     [Header("Images")]
     public Sprite[] monsImgs;           // [0] base, [1+] evolved forms
-    [Header("Sound Effects")]
-
-    public AudioClip[] idleSounds;      // Randomly played during idle state
-    public AudioClip happySound;       // Played when happiness increases
-    public AudioClip eatSound;         // Played when eating
-    public AudioClip hurtSound;       // Played when taking damage
-    public AudioClip evolveSound;     // Played during evolution
-    public AudioClip deathSound;     // Played when monster dies
-    public AudioClip interactionSound; // Played when player interacts
 }

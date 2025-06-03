@@ -1,2 +1,0 @@
-# desktopPet
-Desktop Pet

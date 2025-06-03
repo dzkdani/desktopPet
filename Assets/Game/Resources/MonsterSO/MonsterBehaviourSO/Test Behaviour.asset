@@ -93,13 +93,48 @@ MonoBehaviour:
     requiresFood: 0
     hungerThreshold: 0
     happinessThreshold: 0
+  - fromState: 3
+    toState: 0
+    probability: 1
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 3
+    toState: 1
+    probability: 1
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 0
+    toState: 3
+    probability: 1
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
+  - fromState: 0
+    toState: 3
+    probability: 1
+    minDuration: 1
+    maxDuration: 3
+    requiresFood: 0
+    hungerThreshold: 0
+    happinessThreshold: 0
   minIdleDuration: 2
   maxIdleDuration: 5
   minWalkDuration: 3
   maxWalkDuration: 8
   minRunDuration: 1
   maxRunDuration: 3
+  minFlyDuration: 3
+  maxFlyDuration: 5
   jumpDuration: 1
   walkSpeed: 100
   runSpeed: 200
+  flySpeed: 150
   jumpHeight: 50

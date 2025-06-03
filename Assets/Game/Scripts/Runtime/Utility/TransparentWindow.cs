@@ -6,19 +6,15 @@ using UnityEngine.EventSystems;
 
 public class TransparentWindow : MonoBehaviour
 {
-    #region Windows API Constants
     private const int GWL_EXSTYLE = -20;
     private const uint WS_EX_LAYERED = 0x00080000;
     private const uint WS_EX_TRANSPARENT = 0x00000020;
     private const uint SWP_NOSIZE = 0x0001;
     private const uint SWP_NOMOVE = 0x0002;
     private const uint SWP_NOACTIVATE = 0x0010;
-    private const uint SWP_SHOWWINDOW = 0x0040;
-    private const int SW_RESTORE = 9;
+    private const uint SWP_SHOWWINDOW = 0x0040;    private const int SW_RESTORE = 9;
     private static readonly IntPtr HWND_TOPMOST = new(-1);
-    #endregion
 
-    #region Windows API Imports
     [DllImport("user32.dll", SetLastError = true)]
     private static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong);
 
@@ -29,36 +25,25 @@ public class TransparentWindow : MonoBehaviour
     private static extern uint DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS margins);
 
     [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
-
-    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);    [DllImport("user32.dll", SetLastError = true)]
     private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-    #endregion
 
-    #region Structures
     [StructLayout(LayoutKind.Sequential)]
     private struct MARGINS
     {
-        public int cxLeftWidth, cxRightWidth, cyTopHeight, cyBottomHeight;
-    }
-    #endregion
+        public int cxLeftWidth, cxRightWidth, cyTopHeight, cyBottomHeight;    }
 
-    #region Private Fields
     [SerializeField] private bool enableTopMost = true;
     [SerializeField] private bool enableClickThrough = true;
-
+    
     private EventSystem eventSystem;
-    private bool wasOverUI = false;
-    private IntPtr windowHandle = IntPtr.Zero;
+    private bool wasOverUI = false;    private IntPtr windowHandle = IntPtr.Zero;
     private Camera mainCamera;
-    #endregion
 
-    #region Unity Lifecycle
     private void Awake()
     {
         if (!IsWindowsPlatform())
         {
-            Debug.LogWarning("TransparentWindow is only supported on Windows platforms.");
             enabled = false;
             return;
         }
@@ -66,7 +51,6 @@ public class TransparentWindow : MonoBehaviour
         mainCamera = Camera.main;
         if (mainCamera == null)
         {
-            Debug.LogError("No main camera found for TransparentWindow!");
             enabled = false;
             return;
         }
@@ -78,12 +62,7 @@ public class TransparentWindow : MonoBehaviour
 
         InitializeWindow();
         SetupCameraTransparency();
-
-        eventSystem = FindFirstObjectByType<EventSystem>();
-        if (eventSystem == null)
-        {
-            Debug.LogWarning("No EventSystem found. UI interaction detection will not work.");
-        }
+          eventSystem = FindFirstObjectByType<EventSystem>();
     }
 
     private void Update()
@@ -97,26 +76,21 @@ public class TransparentWindow : MonoBehaviour
     {
         if (!hasFocus && enableTopMost)
         {
-            MaintainTopMostState();
-        }
+            MaintainTopMostState();        }
     }
-    #endregion
 
-    #region Private Methods
     private bool IsWindowsPlatform()
     {
-        return Application.platform == RuntimePlatform.WindowsPlayer ||
+        return Application.platform == RuntimePlatform.WindowsPlayer || 
                Application.platform == RuntimePlatform.WindowsEditor;
     }
 
     private void InitializeWindow()
-    {
-        try
+    {        try
         {
             windowHandle = GetActiveWindow();
             if (windowHandle == IntPtr.Zero)
             {
-                Debug.LogError("Failed to get window handle");
                 return;
             }
 
@@ -126,11 +100,9 @@ public class TransparentWindow : MonoBehaviour
             }
 
             SetTransparentWindow();
-            SetTransparentMargins();
-        }
-        catch (Exception ex)
+            SetTransparentMargins();        }
+        catch (Exception)
         {
-            Debug.LogError($"Failed to initialize transparent window: {ex.Message}");
         }
     }
 
@@ -162,7 +134,7 @@ public class TransparentWindow : MonoBehaviour
     private void HandleUIInteraction()
     {
         bool isOverUI = eventSystem.IsPointerOverGameObject();
-
+        
         if (isOverUI != wasOverUI)
         {
             SetClickthrough(!isOverUI);
@@ -177,11 +149,9 @@ public class TransparentWindow : MonoBehaviour
         try
         {
             uint style = clickthrough ? (WS_EX_LAYERED | WS_EX_TRANSPARENT) : WS_EX_LAYERED;
-            SetWindowLong(windowHandle, GWL_EXSTYLE, style);
-        }
-        catch (Exception ex)
+            SetWindowLong(windowHandle, GWL_EXSTYLE, style);        }
+        catch (Exception)
         {
-            Debug.LogError($"Failed to set clickthrough: {ex.Message}");
         }
     }
 
@@ -192,17 +162,12 @@ public class TransparentWindow : MonoBehaviour
         try
         {
             ShowWindow(windowHandle, SW_RESTORE);
-            SetWindowPos(windowHandle, HWND_TOPMOST, 0, 0, 0, 0,
-                        SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Failed to maintain topmost state: {ex.Message}");
+            SetWindowPos(windowHandle, HWND_TOPMOST, 0, 0, 0, 0, 
+                        SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW);        }
+        catch (Exception)        {
         }
     }
-    #endregion
 
-    #region Public Methods
     public void SetTopMostEnabled(bool enabled)
     {
         enableTopMost = enabled;
@@ -220,6 +185,5 @@ public class TransparentWindow : MonoBehaviour
             SetTransparentWindow();
         }
     }
-    #endregion
 }
 #endif
