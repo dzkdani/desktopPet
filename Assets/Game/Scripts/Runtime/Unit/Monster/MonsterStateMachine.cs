@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Spine.Unity;
+using UnityEditorInternal;
 
 public class MonsterStateMachine : MonoBehaviour
 {
@@ -11,8 +12,10 @@ public class MonsterStateMachine : MonoBehaviour
     private MonsterState _previousState = MonsterState.Idle;
     private float _stateTimer;
     private float _currentStateDuration;
+    private const float _defaultEatingStateDuration = 10f;
     private MonsterController _controller;
     private SkeletonGraphic _skeletonGraphic;
+    private List<StateTransition> _transitions = new List<StateTransition>();
 
     public MonsterState CurrentState => _currentState;
     public MonsterState PreviousState => _previousState;
@@ -29,10 +32,9 @@ public class MonsterStateMachine : MonoBehaviour
     {
         _stateTimer += Time.deltaTime;
 
-        if (_currentState == MonsterState.Eating && _stateTimer > 10f)
+        if (_currentState == MonsterState.Eating && _stateTimer > _defaultEatingStateDuration)
         {
-            var monsterController = _controller.GetComponent<MonsterController>();
-            monsterController?.ForceResetEating();
+            _controller?.ForceResetEating();
             return;
         }
 
@@ -79,9 +81,10 @@ public class MonsterStateMachine : MonoBehaviour
 
     private List<StateTransition> GetValidTransitions()
     {
-        var valid = new List<StateTransition>();
+        _transitions.Clear();
         
-        if (behaviorConfig == null || behaviorConfig.transitions == null) return valid;
+        if (behaviorConfig == null || behaviorConfig.transitions == null)
+            return _transitions;
 
         foreach (var transition in behaviorConfig.transitions)
         {
@@ -90,10 +93,10 @@ public class MonsterStateMachine : MonoBehaviour
             if (_controller.currentHunger < transition.hungerThreshold) continue;
             if (_controller.currentHappiness < transition.happinessThreshold) continue;
 
-            valid.Add(transition);
+            _transitions.Add(transition);
         }
 
-        return valid;
+        return _transitions;
     }
 
     private void ChangeState(MonsterState newState)
@@ -133,16 +136,17 @@ public class MonsterStateMachine : MonoBehaviour
         {
             _skeletonGraphic.AnimationState.SetAnimation(0, animationName, loop);
         }
-        catch
+        catch (System.Exception e)
         {
+            Debug.LogWarning($"Failed to set animation '{animationName}' for state {state}: {e.Message}");
             // Fallback to idle animation
             try
             {
                 _skeletonGraphic.AnimationState.SetAnimation(0, "idle", true);
             }
-            catch
+            catch (System.Exception fallbackException)
             {
-                Debug.LogWarning("Failed to set animation for state: " + state);
+                Debug.LogError($"Critical: Cannot set idle animation for {gameObject.name}: {fallbackException.Message}");
             }
         }
     }
