@@ -11,17 +11,17 @@ public class GameManager : MonoBehaviour
     public GameObject coinPrefab;
     public RectTransform poolContainer;
     public int initialPoolSize = 20;
-    
+
     [Header("Game Settings")]
     public RectTransform gameArea;
     public Canvas mainCanvas;
     public MonsterDatabaseSO monsterDatabase;
-    
+
     [Header("Food Placement Settings")]
     public GameObject foodPlacementIndicator;
     public Color validPositionColor = Color.green;
     public Color invalidPositionColor = Color.red;
-    
+
     [Header("Rendering Settings")]
     public bool enableDepthSorting = true;
     private float lastSortTime = 0f;
@@ -35,16 +35,16 @@ public class GameManager : MonoBehaviour
     private Queue<GameObject> _foodPool = new Queue<GameObject>();
     private Queue<GameObject> _poopPool = new Queue<GameObject>();
     private Queue<GameObject> _coinPool = new Queue<GameObject>();
-    
+
     [HideInInspector] public int poopCollected;
     [HideInInspector] public int coinCollected;
     [HideInInspector] public List<MonsterController> activeMonsters = new List<MonsterController>();
     public List<FoodController> activeFoods = new List<FoodController>();
     private List<string> savedMonIDs = new List<string>();
-    
+
     private bool isInPlacementMode = false;
     private int pendingFoodCost = 0;
-    
+
     private void Awake()
     {
         ServiceLocator.Register(this);
@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
             IndicatorPlacementHandler();
             FoodPlacementHandler();
         }
-        
+
         // Add depth sorting for monsters
         if (enableDepthSorting && Time.time - lastSortTime >= sortInterval)
         {
@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
         coinCollected = SaveSystem.LoadCoin();
         poopCollected = SaveSystem.LoadPoop();
         savedMonIDs = SaveSystem.LoadSavedMonIDs();
-        
+
         foreach (var id in savedMonIDs)
         {
             if (SaveSystem.LoadMon(id, out _)) // Don't need the data variable
@@ -128,7 +128,7 @@ public class GameManager : MonoBehaviour
             };
             SaveSystem.SaveMon(saveData);
         }
-        
+
         SaveSystem.SaveMonIDs(savedMonIDs);
         SaveSystem.Flush();
     }
@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
         GameObject monster = CreateMonster(monsterData);
         
         var controller = monster.GetComponent<MonsterController>();
-        
+
         if (!string.IsNullOrEmpty(existingID))
         {
             controller.monsterID = existingID;
@@ -158,19 +158,19 @@ public class GameManager : MonoBehaviour
             var data = controller.MonsterData;
             controller.monsterID = $"{data.id}_Lv{controller.evolutionLevel}_{System.Guid.NewGuid().ToString("N")[..8]}";
         }
-        
+
         controller.LoadMonData();
-        
+
         var finalData = controller.MonsterData;
         monster.name = $"{finalData.monsterName}_{controller.monsterID}";
-        
+
         if (string.IsNullOrEmpty(existingID))
             RegisterMonster(controller);
         else
             RegisterActiveMonster(controller);
     }
 
-    public void BuyMons(int cost = 10) 
+    public void BuyMons(int cost = 10)
     {
         if (SpentCoin(cost)) SpawnMonster();
     }
@@ -209,12 +209,12 @@ public class GameManager : MonoBehaviour
     {
         var monster = Instantiate(monsterPrefab, gameArea);
         var bounds = gameArea.rect;
-        
+
         monster.transform.localPosition = new Vector2(
             UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
             bounds.min.y + 20f
         );
-        
+
         var monsterController = monster.GetComponent<MonsterController>();
         if (monsterController != null)
         {
@@ -240,7 +240,7 @@ public class GameManager : MonoBehaviour
         {
             monster.name = "Monster_Temp";
         }
-        
+
         return monster;
     }
 
@@ -292,7 +292,7 @@ public class GameManager : MonoBehaviour
     private Vector2 ScreenToGameAreaPosition()
     {
         var cam = mainCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCanvas.worldCamera;
-        
+
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             gameArea, Input.mousePosition, cam, out Vector2 localPoint);
         
@@ -384,15 +384,15 @@ public class GameManager : MonoBehaviour
     {
         var rt = obj.GetComponent<RectTransform>();
         rt.SetParent(parent, false);
-        
+
         rt.localScale = Vector3.one;
         rt.localRotation = Quaternion.identity;
-        
+
         var indicatorRT = foodPlacementIndicator.GetComponent<RectTransform>();
         rt.anchorMin = indicatorRT.anchorMin;
         rt.anchorMax = indicatorRT.anchorMax;
         rt.pivot = indicatorRT.pivot;
-        
+
         rt.anchoredPosition = position;
         obj.SetActive(true);
     }
@@ -421,7 +421,7 @@ public class GameManager : MonoBehaviour
     public bool SpentCoin(int amount)
     {
         if (coinCollected < amount) return false;
-        
+
         coinCollected -= amount;
         SaveSystem.SaveCoin(coinCollected);
         OnCoinChanged?.Invoke(coinCollected); // Use event instead of direct UI call
@@ -444,12 +444,12 @@ public class GameManager : MonoBehaviour
 
     void OnDestroy() => ServiceLocator.Unregister<GameManager>();
 
-    void OnDrawGizmosSelected() 
+    void OnDrawGizmosSelected()
     {
         if (gameArea != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(gameArea.anchoredPosition, 
+            Gizmos.DrawWireCube(gameArea.anchoredPosition,
                 new Vector3(gameArea.rect.width, gameArea.rect.height, 0));
         }
     }
