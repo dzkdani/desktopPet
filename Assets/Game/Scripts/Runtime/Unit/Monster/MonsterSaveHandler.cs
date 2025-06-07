@@ -96,10 +96,10 @@ public class MonsterSaveHandler
         var monsterData = _controller.MonsterData;
         if (monsterData == null) return;
 
-        _controller.stats.moveSpeed = monsterData.moveSpd;
-        _controller.stats.hungerDepletionRate = monsterData.hungerDepleteRate;
-        _controller.stats.poopInterval = monsterData.poopRate;
-        _controller.stats.pokeHappinessIncrease = monsterData.pokeHappinessValue;
-        _controller.stats.areaHappinessRate = monsterData.areaHappinessRate;
+        _controller.MonsterData.moveSpd = monsterData.moveSpd;
+        _controller.MonsterData.hungerDepleteRate = monsterData.hungerDepleteRate;
+        _controller.MonsterData.poopRate = monsterData.poopRate;
+        _controller.MonsterData.pokeHappinessValue = monsterData.pokeHappinessValue;
+        _controller.MonsterData.areaHappinessRate = monsterData.areaHappinessRate;
     }
 }

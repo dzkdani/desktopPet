@@ -54,8 +54,10 @@ public class MonsterDataSOEditor : Editor
         if (showHappinessSystem)
         {
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("pokeHappinessValue"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("areaHappinessRate"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("pokeHappinessValue"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("hungerHappinessThreshold"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("hungerHappinessDrainRate"));
             EditorGUI.indentLevel--;
         }
 

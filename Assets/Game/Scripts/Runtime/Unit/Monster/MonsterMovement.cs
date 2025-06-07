@@ -17,10 +17,10 @@ public class MonsterMovement
         _spineGraphic = spineGraphic;
     }
     
-    public void UpdateMovement(ref Vector2 targetPosition, MonsterData data)
+    public void UpdateMovement(ref Vector2 targetPosition, MonsterDataSO data)
     {
         Vector2 pos = _transform.anchoredPosition;
-        float currentSpeed = GetCurrentMoveSpeed(data.moveSpeed);
+        float currentSpeed = GetCurrentMoveSpeed(data.moveSpd);
         
         _transform.anchoredPosition = Vector2.MoveTowards(pos, targetPosition, currentSpeed * Time.deltaTime);
         HandleStateSpecificBehavior(pos, targetPosition);

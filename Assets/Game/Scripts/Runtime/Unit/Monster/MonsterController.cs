@@ -7,7 +7,7 @@ using Spine.Unity;
 public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [Header("Monster Configuration")]
-    public MonsterData stats = new MonsterData();
+    // public MonsterData stats = new MonsterData();
     public MonsterUIHandler ui = new MonsterUIHandler();
     public string monsterID;
     private MonsterDataSO monsterData;
@@ -142,7 +142,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
             _isLoaded = true;
 
         _foodHandler = new MonsterFoodHandler(this, _gameManager, _rectTransform);
-        _foodHandler.Initialize(stats);
+        _foodHandler.Initialize(monsterData);
         
         _movementBounds = new MonsterMovementBounds(_rectTransform, _gameManager);
         _movementHandler = new MonsterMovement(_rectTransform, _stateMachine, _gameManager, _monsterSpineGraphic);
@@ -204,8 +204,28 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         if (_silverCoinCoroutine != null) StopCoroutine(_silverCoinCoroutine);
     }
 
+    private void UpdateHappinessBasedOnArea()
+    {
+        if (monsterData == null) return; // Add this check
+    
+        var gameManager = ServiceLocator.Get<GameManager>();
+        if (gameManager?.gameArea == null) return;
+
+        float gameAreaHeight = gameManager.gameArea.sizeDelta.y;
+        float screenHeight = Screen.currentResolution.height;
+        float heightRatio = gameAreaHeight / screenHeight;
+
+        if (heightRatio >= 0.5f)
+            SetHappiness(Mathf.Clamp(currentHappiness + monsterData.areaHappinessRate, 0f, 100f));
+        else
+            SetHappiness(Mathf.Clamp(currentHappiness - monsterData.areaHappinessRate, 0f, 100f));
+    }
+
     private void HandleMovement()
     {
+        // Add null check at the beginning
+        if (monsterData == null) return;
+        
         if (_stateMachine?.CurrentState == MonsterState.Eating)
         {
             return;
@@ -236,8 +256,8 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
 
         Vector2 oldPosition = _rectTransform.anchoredPosition;
-        _movementHandler.UpdateMovement(ref _targetPosition, stats);
-
+        _movementHandler.UpdateMovement(ref _targetPosition, monsterData);
+        
         // Check if monster moved significantly and request immediate depth sort
         Vector2 newPosition = _rectTransform.anchoredPosition;
         if (Vector2.Distance(newPosition, _lastSortPosition) >= _depthSortThreshold)
@@ -306,21 +326,6 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void IncreaseHappiness(float amount)
     {
         SetHappiness(Mathf.Clamp(currentHappiness + amount, 0f, 100f));
-    }
-
-    private void UpdateHappinessBasedOnArea()
-    {
-        var gameManager = ServiceLocator.Get<GameManager>();
-        if (gameManager?.gameArea == null) return;
-
-        float gameAreaHeight = gameManager.gameArea.sizeDelta.y;
-        float screenHeight = Screen.currentResolution.height;
-        float heightRatio = gameAreaHeight / screenHeight;
-
-        if (heightRatio >= 0.5f)
-            SetHappiness(Mathf.Clamp(currentHappiness + stats.areaHappinessRate, 0f, 100f));
-        else
-            SetHappiness(Mathf.Clamp(currentHappiness - stats.areaHappinessRate, 0f, 100f));
     }
 
     private void Poop() => ServiceLocator.Get<GameManager>().SpawnPoopAt(_rectTransform.anchoredPosition);
@@ -437,23 +442,27 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         while (true)
         {
-            SetHunger(Mathf.Clamp(currentHunger - stats.hungerDepletionRate, 0f, 100f));
-            
-            // Track low hunger time for sickness
-            if (currentHunger <= SICK_HUNGER_THRESHOLD && !_isSick)
+            // Add null check for monsterData
+            if (monsterData != null)
             {
-                _lowHungerTime += interval;
+                SetHunger(Mathf.Clamp(currentHunger - monsterData.hungerDepleteRate, 0f, 100f));
                 
-                // Check if monster should become sick
-                if (_lowHungerTime >= SICK_THRESHOLD_TIME)
+                // Track low hunger time for sickness
+                if (currentHunger <= SICK_HUNGER_THRESHOLD && !_isSick)
                 {
-                    SetSick(true);
+                    _lowHungerTime += interval;
+                    
+                    // Check if monster should become sick
+                    if (_lowHungerTime >= SICK_THRESHOLD_TIME)
+                    {
+                        SetSick(true);
+                    }
                 }
-            }
-            else if (currentHunger > SICK_HUNGER_THRESHOLD)
-            {
-                // Reset timer if hunger goes above threshold
-                _lowHungerTime = 0f;
+                else if (currentHunger > SICK_HUNGER_THRESHOLD)
+                {
+                    // Reset timer if hunger goes above threshold
+                    _lowHungerTime = 0f;
+                }
             }
             
             yield return new WaitForSeconds(interval);
@@ -465,7 +474,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         while (true)
         {
             // Skip normal happiness updates if sick
-            if (!_isSick)
+            if (!_isSick && monsterData != null)
             {
                 UpdateHappinessBasedOnArea();
                 
@@ -475,10 +484,10 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
                     SetHappiness(Mathf.Clamp(currentHappiness - monsterData.hungerHappinessDrainRate, 0f, 100f));
                 }
             }
-            else
+            else if (_isSick)
             {
                 // Sick monsters lose happiness faster
-                SetHappiness(Mathf.Clamp(currentHappiness - 1f, 0f, 100f)); // Drain 1 happiness per second when sick
+                SetHappiness(Mathf.Clamp(currentHappiness - 2f, 0f, 100f)); // Drain 1 happiness per second when sick
             }
             
             yield return new WaitForSeconds(interval);

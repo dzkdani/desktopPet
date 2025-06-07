@@ -27,8 +27,8 @@ public class MonsterInteractionHandler
     {
         if (_pokeCooldownTimer > 0f) return;
 
-        _pokeCooldownTimer = _controller.stats.pokeCooldownDuration;
-        _controller.IncreaseHappiness(_controller.stats.pokeHappinessIncrease);
+        _pokeCooldownTimer = _controller.MonsterData.pokeCooldownDuration;
+        _controller.IncreaseHappiness(_controller.MonsterData.pokeHappinessValue);
         
         // Mark that we should drop a silver coin after animation
         _pendingSilverCoinDrop = true;

@@ -1,5 +1,4 @@
 using UnityEngine;
-using Spine;
 using Spine.Unity;
 
 [CreateAssetMenu(fileName = "NewMonsterData", menuName = "Monster/Monster Data")]
@@ -19,11 +18,15 @@ public class MonsterDataSO : ScriptableObject
     public float poopRate = 20f;     // Default: 20 minutes
     public float baseHunger = 50f;     // Add base hunger
     public float baseHappiness = 0f;   // Add base happiness
+    public float foodDetectionRange = 200f;
+    public float eatDistance = 5f;      // Distance to eat food
+    
 
     [Header("Happiness Settings")]
+    public float pokeCooldownDuration = 10f;
     public float areaHappinessRate = 0.2f;
     public float pokeHappinessValue = 2f;
-    public float hungerHappinessThreshold = 50f; // New field - threshold below which hunger affects happiness
+    public float hungerHappinessThreshold = 30f; // New field - threshold below which hunger affects happiness
     public float hungerHappinessDrainRate = 2f; // New field - how much happiness drains when hungry
 
     [Header("Poop Behavior")]

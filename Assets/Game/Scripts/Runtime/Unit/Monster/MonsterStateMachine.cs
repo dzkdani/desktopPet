@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Spine.Unity;
-using UnityEditorInternal;
 
 public class MonsterStateMachine : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class MonsterStateMachine : MonoBehaviour
     private MonsterState _previousState = MonsterState.Idle;
     private float _stateTimer;
     private float _currentStateDuration;
-    private const float _defaultEatingStateDuration = 10f;
+    private const float _defaultEatingStateDuration = 2f;
     private MonsterController _controller;
     private SkeletonGraphic _skeletonGraphic;
     private List<StateTransition> _transitions = new List<StateTransition>();

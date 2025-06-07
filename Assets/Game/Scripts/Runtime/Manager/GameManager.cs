@@ -412,11 +412,13 @@ public class GameManager : MonoBehaviour
         }
         else if (obj.TryGetComponent<CoinController>(out _))
             _coinPool.Enqueue(obj);
-        else if (obj.name.Contains("Poop")) // Keep this if no PoopController exists
+        else if (obj.name.Contains("Poop"))
+        {
             _poopPool.Enqueue(obj);
+            CollectPoop();
+        } 
     }
 
-    // Add events for better decoupling
     public System.Action<int> OnCoinChanged;
     public System.Action<int> OnPoopChanged;
     
@@ -426,8 +428,15 @@ public class GameManager : MonoBehaviour
 
         coinCollected -= amount;
         SaveSystem.SaveCoin(coinCollected);
-        OnCoinChanged?.Invoke(coinCollected); // Use event instead of direct UI call
+        OnCoinChanged?.Invoke(coinCollected); 
         return true;
+    }
+
+    public void CollectPoop(int amount = 1)
+    {
+        poopCollected += amount;
+        SaveSystem.SavePoop(poopCollected);
+        OnPoopChanged?.Invoke(poopCollected);
     }
 
     public bool IsPositionInGameArea(Vector2 localPosition)

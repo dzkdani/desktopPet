@@ -21,16 +21,26 @@ MonoBehaviour:
   poopRate: 20
   baseHunger: 50
   baseHappiness: 0
-  pokeHappinessValue: 2
   areaHappinessRate: 0.2
+  pokeHappinessValue: 2
+  hungerHappinessThreshold: 30
+  hungerHappinessDrainRate: 2
   clickToCollectPoop: 1
   canEvolve: 1
   isEvolved: 0
   isFinalEvol: 0
   evolutionLevel: 0
+  startingEvolutionLevel: 1
   evolutionRequirements: {fileID: 11400000, guid: d3e14830d29dbef47bab7b4a75a30888, type: 2}
   monsterSpine:
   - {fileID: 11400000, guid: a71d729d6ee21fe4cba328438715435a, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   monsImgs: []
+  idleSounds: []
+  happySound: {fileID: 0}
+  eatSound: {fileID: 0}
+  hurtSound: {fileID: 0}
+  evolveSound: {fileID: 0}
+  deathSound: {fileID: 0}
+  interactionSound: {fileID: 0}

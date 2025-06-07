@@ -23,7 +23,7 @@ public class MonsterFoodHandler
         _rectTransform = rectTransform;
     }
     
-    public void Initialize(MonsterData data)
+    public void Initialize(MonsterDataSO data)
     {
         _foodDetectionRangeSqr = data.foodDetectionRange * data.foodDetectionRange;
         _eatDistanceSqr = data.eatDistance * data.eatDistance;

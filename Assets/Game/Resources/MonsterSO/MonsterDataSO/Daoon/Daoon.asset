@@ -21,8 +21,10 @@ MonoBehaviour:
   poopRate: 20
   baseHunger: 50
   baseHappiness: 0
-  pokeHappinessValue: 2
   areaHappinessRate: 0.2
+  pokeHappinessValue: 2
+  hungerHappinessThreshold: 30
+  hungerHappinessDrainRate: 2
   clickToCollectPoop: 1
   canEvolve: 0
   isEvolved: 0
