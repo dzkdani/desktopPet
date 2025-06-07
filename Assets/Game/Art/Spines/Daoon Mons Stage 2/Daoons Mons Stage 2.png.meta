@@ -1,0 +1,676 @@
+fileFormatVersion: 2
+guid: b0c805bbd37412a43adb2ca6fdf37c9a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2784419573064164510
+    second: Daoons Mons Stage 2_0
+  - first:
+      213: -8235597563276038216
+    second: Daoons Mons Stage 2_1
+  - first:
+      213: -2366785134802167683
+    second: Daoons Mons Stage 2_2
+  - first:
+      213: 4826071265966251182
+    second: Daoons Mons Stage 2_3
+  - first:
+      213: 7891365329166507006
+    second: Daoons Mons Stage 2_4
+  - first:
+      213: 6402545550381313890
+    second: Daoons Mons Stage 2_5
+  - first:
+      213: -1150652348835669954
+    second: Daoons Mons Stage 2_6
+  - first:
+      213: -3571713129290266974
+    second: Daoons Mons Stage 2_7
+  - first:
+      213: -2423064291061094177
+    second: Daoons Mons Stage 2_8
+  - first:
+      213: 2229268230624787243
+    second: Daoons Mons Stage 2_9
+  - first:
+      213: 7993583802488853683
+    second: Daoons Mons Stage 2_10
+  - first:
+      213: -3681364485785134583
+    second: Daoons Mons Stage 2_11
+  - first:
+      213: -269543373384430224
+    second: Daoons Mons Stage 2_12
+  - first:
+      213: 6193834517698549770
+    second: Daoons Mons Stage 2_13
+  - first:
+      213: 3999411879023872011
+    second: Daoons Mons Stage 2_14
+  - first:
+      213: 5968058811235230369
+    second: Daoons Mons Stage 2_15
+  - first:
+      213: -3919582337732536339
+    second: Daoons Mons Stage 2_16
+  - first:
+      213: -7742971524222784108
+    second: Daoons Mons Stage 2_17
+  - first:
+      213: -3740077465971785777
+    second: Daoons Mons Stage 2_18
+  - first:
+      213: 7453772854779975637
+    second: Daoons Mons Stage 2_19
+  - first:
+      213: 6095837779692977442
+    second: Daoons Mons Stage 2_20
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    sRGBTexture: 0
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 2
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 0
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 0
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 432
+        width: 207
+        height: 157
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e94622669de34a620800000000000000
+      internalID: 2784419573064164510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_1
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 392
+        width: 242
+        height: 170
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bfebd776a745bd80800000000000000
+      internalID: -8235597563276038216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_2
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 441
+        width: 256
+        height: 152
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d78117ca57d772fd0800000000000000
+      internalID: -2366785134802167683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_3
+      rect:
+        serializedVersion: 2
+        x: 703
+        y: 170
+        width: 467
+        height: 413
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eac53ac2f36a9f240800000000000000
+      internalID: 4826071265966251182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_4
+      rect:
+        serializedVersion: 2
+        x: 1172
+        y: 383
+        width: 157
+        height: 223
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efb9dc5e4f2c38d60800000000000000
+      internalID: 7891365329166507006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_5
+      rect:
+        serializedVersion: 2
+        x: 1388
+        y: 369
+        width: 275
+        height: 242
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26f6cb481496ad850800000000000000
+      internalID: 6402545550381313890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_6
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 269
+        width: 237
+        height: 282
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e385eaff8cf0800f0800000000000000
+      internalID: -1150652348835669954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_7
+      rect:
+        serializedVersion: 2
+        x: 1896
+        y: 519
+        width: 151
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a60e0925d9be6ec0800000000000000
+      internalID: -3571713129290266974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_8
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 176
+        width: 354
+        height: 255
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd8ae5f7ddb8f5ed0800000000000000
+      internalID: -2423064291061094177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_9
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 176
+        width: 304
+        height: 265
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2b347305a3ffee10800000000000000
+      internalID: 2229268230624787243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_10
+      rect:
+        serializedVersion: 2
+        x: 1141
+        y: 2
+        width: 560
+        height: 380
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b41aa5dd1aeeee60800000000000000
+      internalID: 7993583802488853683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_11
+      rect:
+        serializedVersion: 2
+        x: 1698
+        y: 2
+        width: 294
+        height: 343
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90ad900418a29ecc0800000000000000
+      internalID: -3681364485785134583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_12
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 1
+        width: 868
+        height: 174
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07d4cd1eab3624cf0800000000000000
+      internalID: -269543373384430224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_13
+      rect:
+        serializedVersion: 2
+        x: 870
+        y: 81
+        width: 50
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0899f07dabe4f550800000000000000
+      internalID: 6193834517698549770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_14
+      rect:
+        serializedVersion: 2
+        x: 922
+        y: 81
+        width: 45
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0802b70ae3c08730800000000000000
+      internalID: 3999411879023872011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_15
+      rect:
+        serializedVersion: 2
+        x: 1951
+        y: 71
+        width: 85
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a2e0526eddc2d250800000000000000
+      internalID: 5968058811235230369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_16
+      rect:
+        serializedVersion: 2
+        x: 869
+        y: 8
+        width: 79
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de79e8371a8da99c0800000000000000
+      internalID: -3919582337732536339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_17
+      rect:
+        serializedVersion: 2
+        x: 1133
+        y: 1
+        width: 98
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49d6cb83c607b8490800000000000000
+      internalID: -7742971524222784108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_18
+      rect:
+        serializedVersion: 2
+        x: 1231
+        y: 1
+        width: 57
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcffe484c53981cc0800000000000000
+      internalID: -3740077465971785777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_19
+      rect:
+        serializedVersion: 2
+        x: 1619
+        y: 1
+        width: 50
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d71c9d6bee117760800000000000000
+      internalID: 7453772854779975637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Daoons Mons Stage 2_20
+      rect:
+        serializedVersion: 2
+        x: 1922
+        y: 2
+        width: 85
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22d710bd924c89450800000000000000
+      internalID: 6095837779692977442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Daoons Mons Stage 2_0: 2784419573064164510
+      Daoons Mons Stage 2_1: -8235597563276038216
+      Daoons Mons Stage 2_10: 7993583802488853683
+      Daoons Mons Stage 2_11: -3681364485785134583
+      Daoons Mons Stage 2_12: -269543373384430224
+      Daoons Mons Stage 2_13: 6193834517698549770
+      Daoons Mons Stage 2_14: 3999411879023872011
+      Daoons Mons Stage 2_15: 5968058811235230369
+      Daoons Mons Stage 2_16: -3919582337732536339
+      Daoons Mons Stage 2_17: -7742971524222784108
+      Daoons Mons Stage 2_18: -3740077465971785777
+      Daoons Mons Stage 2_19: 7453772854779975637
+      Daoons Mons Stage 2_2: -2366785134802167683
+      Daoons Mons Stage 2_20: 6095837779692977442
+      Daoons Mons Stage 2_3: 4826071265966251182
+      Daoons Mons Stage 2_4: 7891365329166507006
+      Daoons Mons Stage 2_5: 6402545550381313890
+      Daoons Mons Stage 2_6: -1150652348835669954
+      Daoons Mons Stage 2_7: -3571713129290266974
+      Daoons Mons Stage 2_8: -2423064291061094177
+      Daoons Mons Stage 2_9: 2229268230624787243
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

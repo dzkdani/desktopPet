@@ -28,9 +28,17 @@ MonoBehaviour:
   isEvolved: 0
   isFinalEvol: 0
   evolutionLevel: 0
+  startingEvolutionLevel: 1
   evolutionRequirements: {fileID: 11400000, guid: d3e14830d29dbef47bab7b4a75a30888, type: 2}
   monsterSpine:
   - {fileID: 11400000, guid: 2849b090bc78ec149b91dec4e919ce91, type: 2}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 9b1d37462fd210f468969d0747f6b097, type: 2}
   - {fileID: 0}
   monsImgs: []
+  idleSounds: []
+  happySound: {fileID: 0}
+  eatSound: {fileID: 0}
+  hurtSound: {fileID: 0}
+  evolveSound: {fileID: 0}
+  deathSound: {fileID: 0}
+  interactionSound: {fileID: 0}

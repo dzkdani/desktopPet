@@ -1,0 +1,57 @@
+Daoons Mons Stage 2.png
+size:2048,2048
+filter:Linear,Linear
+Blush
+bounds:870,1969,360,77
+offsets:6,6,372,89
+Body
+bounds:1141,1666,564,380
+offsets:19,0,583,380
+rotate:180
+Bulu
+bounds:2,1617,354,255
+rotate:180
+Cape
+bounds:358,1607,304,265
+Ear L
+bounds:213,1486,170,242
+rotate:90
+Ear R
+bounds:478,1455,152,256
+rotate:90
+Eyes closed L
+bounds:1232,2025,55,21
+offsets:1,1,57,23
+Eyes closed R
+bounds:1620,2028,48,18
+offsets:1,2,50,21
+Eyes open L
+bounds:870,1895,50,72
+Eyes open R
+bounds:922,1896,45,71
+Flower Big
+bounds:1897,1372,149,156
+offsets:1,1,151,158
+Foor Front L
+bounds:2,1459,157,207
+rotate:90
+Foor Front R
+bounds:1664,1497,237,282
+Foot Back R
+bounds:1389,1438,240,273
+rotate:270
+Foot Front R
+bounds:1172,1442,157,223
+Head
+bounds:703,1465,467,413
+rotate:180
+Mouth Open
+bounds:1922,1978,85,68
+Mouth closed
+bounds:1952,1924,83,52
+offsets:1,1,85,54
+Shadow
+bounds:2,1874,866,172
+offsets:12,8,891,190
+Tail
+bounds:1698,1703,294,343

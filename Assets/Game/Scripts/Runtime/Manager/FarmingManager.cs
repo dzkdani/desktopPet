@@ -71,6 +71,7 @@ public class FarmingManager : MonoBehaviour
         };
         SavePlant(newPlant);
     }
+
     void OnDestroy()
     {
         ServiceLocator.Unregister<FarmingManager>();
