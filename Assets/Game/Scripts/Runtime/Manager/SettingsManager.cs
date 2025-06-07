@@ -48,7 +48,7 @@ public class SettingsManager : MonoBehaviour
         SystemLanguage.Spanish
     };
 
-    private const float MIN_SIZE = 100f;
+    private const float MIN_SIZE = 200f;
     private const float DEFAULT_MONSTER_SCALE = 1f;
     private const string DECIMAL_FORMAT = "F0";
     private const string SCALE_FORMAT = "F2";
@@ -348,6 +348,9 @@ public class SettingsManager : MonoBehaviour
         size.x = value;
         gameArea.sizeDelta = size;
 
+        // Add this line
+        RepositionMonstersAfterScaling();
+
         UpdateValueText(widthValueText, value, DECIMAL_FORMAT);
         if (widthInputField != null) widthInputField.text = value.ToString(DECIMAL_FORMAT);
     }
@@ -357,9 +360,22 @@ public class SettingsManager : MonoBehaviour
         if (gameArea == null) return;
 
         value = Mathf.Clamp(value, MIN_SIZE, initialGameAreaHeight);
+        
+        // Store current bottom position before scaling
+        float currentBottom = gameArea.anchoredPosition.y - (gameArea.sizeDelta.y * gameArea.pivot.y);
+        
+        // Update size
         Vector2 size = gameArea.sizeDelta;
         size.y = value;
         gameArea.sizeDelta = size;
+        
+        // Maintain bottom position by adjusting anchoredPosition
+        Vector2 pos = gameArea.anchoredPosition;
+        pos.y = currentBottom + (value * gameArea.pivot.y);
+        gameArea.anchoredPosition = pos;
+
+        // Add this line
+        RepositionMonstersAfterScaling();
 
         UpdateValueText(heightValueText, value, DECIMAL_FORMAT);
         if (heightInputField != null) heightInputField.text = value.ToString(DECIMAL_FORMAT);
@@ -451,4 +467,40 @@ public class SettingsManager : MonoBehaviour
             textComponent.text = value.ToString(format);
     }
     #endregion
+
+    private void RepositionMonstersAfterScaling()
+    {
+        if (gameManager?.activeMonsters == null) return;
+
+        foreach (var monster in gameManager.activeMonsters)
+        {
+            if (monster == null) continue;
+            
+            var rectTransform = monster.GetComponent<RectTransform>();
+            Vector2 currentPos = rectTransform.anchoredPosition;
+            
+            // Get new game area bounds
+            var bounds = gameArea.rect;
+            
+            // Check if monster is outside new bounds
+            bool isOutside = currentPos.x < bounds.xMin + 25f || 
+                            currentPos.x > bounds.xMax - 25f ||
+                            currentPos.y < bounds.yMin + 25f || 
+                            currentPos.y > bounds.yMax - 25f;
+            
+            if (isOutside)
+            {
+                // Clamp to new bounds with padding
+                Vector2 newPos = new Vector2(
+                    Mathf.Clamp(currentPos.x, bounds.xMin + 25f, bounds.xMax - 25f),
+                    Mathf.Clamp(currentPos.y, bounds.yMin + 25f, bounds.yMax - 25f)
+                );
+                
+                rectTransform.anchoredPosition = newPos;
+                
+                // Give monster new random target within new bounds
+                monster.SetRandomTarget();
+            }
+        }
+    }
 }
