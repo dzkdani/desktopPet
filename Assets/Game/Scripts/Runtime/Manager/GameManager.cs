@@ -208,14 +208,16 @@ public class GameManager : MonoBehaviour
     private GameObject CreateMonster(MonsterDataSO monsterData = null)
     {
         var monster = Instantiate(monsterPrefab, gameArea);
-        var bounds = gameArea.rect;
-
-        monster.transform.localPosition = new Vector2(
-            UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
-            bounds.min.y + 20f
-        );
-
+        
+        // Get proper movement bounds that account for monster size
         var monsterController = monster.GetComponent<MonsterController>();
+        var rectTransform = monster.GetComponent<RectTransform>();
+        var movementBounds = new MonsterMovementBounds(rectTransform, this);
+        
+        // Use the same bounds calculation as movement
+        Vector2 spawnPosition = movementBounds.GetRandomTarget();
+        monster.transform.localPosition = spawnPosition;
+
         if (monsterController != null)
         {
             MonsterDataSO dataToUse = monsterData;

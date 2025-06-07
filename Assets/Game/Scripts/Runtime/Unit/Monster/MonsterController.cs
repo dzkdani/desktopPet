@@ -22,6 +22,8 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public bool isHovered => _isHovered;
     public bool IsLoaded => _isLoaded;
     public FoodController nearestFood => _foodHandler?.NearestFood;    public event Action<float> OnHungerChanged;
+    public bool IsSick => _isSick;
+    public event Action<bool> OnSickChanged;
     public event Action<float> OnHappinessChanged;
     public event Action<bool> OnHoverChanged;
 
@@ -49,8 +51,14 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private bool _isLoaded = false;
     private float _currentHunger = 100f;
     private float _currentHappiness = 100f;
-    private bool _isHovered;    private Vector2 _lastSortPosition;
+    private bool _isHovered;
+    private Vector2 _lastSortPosition;
     private float _depthSortThreshold = 20f;
+    private bool _isSick = false;
+    private float _lowHungerTime = 0f;
+    private const float SICK_HUNGER_THRESHOLD = 15f;
+    private const float SICK_THRESHOLD_TIME = 600f; // 10 minute of low hunger to get sick
+
 
     private void Awake()
     {
@@ -93,7 +101,8 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     }
 
     private void InitializeModules()
-    {        _saveHandler = new MonsterSaveHandler(this);
+    {
+        _saveHandler = new MonsterSaveHandler(this);
         _visualHandler = new MonsterVisualHandler(this, _monsterSpineGraphic);
         _interactionHandler = new MonsterInteractionHandler(this, _stateMachine);
         _separationBehavior = new MonsterSeparationBehavior(this, _gameManager, _rectTransform);
@@ -146,6 +155,12 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         OnHungerChanged += (hunger) => ui.UpdateHungerDisplay(hunger, _isHovered);
         OnHappinessChanged += (happiness) => ui.UpdateHappinessDisplay(happiness, _isHovered);
         
+        // Add sick status event if you have UI for it
+        OnSickChanged += (isSick) => {
+            // Handle sick status UI updates here if needed
+            Debug.Log($"Monster sick status changed: {isSick}");
+        };
+        
         // Control visibility on hover
         OnHoverChanged += (hovered) => {
             ui.UpdateHungerDisplay(currentHunger, hovered);
@@ -155,9 +170,11 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void UnsubscribeFromEvents()
     {
-        // Update to match the new subscribe events
         OnHungerChanged -= (hunger) => ui.UpdateHungerDisplay(hunger, _isHovered);
         OnHappinessChanged -= (happiness) => ui.UpdateHappinessDisplay(happiness, _isHovered);
+        OnSickChanged -= (isSick) => {
+            Debug.Log($"Monster sick status changed: {isSick}");
+        };
         OnHoverChanged -= (hovered) => {
             ui.UpdateHungerDisplay(currentHunger, hovered);
             ui.UpdateHappinessDisplay(currentHappiness, hovered);
@@ -273,9 +290,17 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void Feed(float amount)
     {
-        SetHunger(Mathf.Clamp(currentHunger + amount, 0f, 100f));
-        IncreaseHappiness(amount);
-        _evolutionHandler?.OnFoodConsumed();
+        // Sick monsters can't gain hunger from regular food
+        if (!_isSick)
+        {
+            SetHunger(Mathf.Clamp(currentHunger + amount, 0f, 100f));
+            IncreaseHappiness(amount);
+            _evolutionHandler?.OnFoodConsumed();
+        }
+        else
+        {
+            Debug.Log($"{gameObject.name} is too sick to eat regular food!");
+        }
     }
 
     public void IncreaseHappiness(float amount)
@@ -300,6 +325,45 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void Poop() => ServiceLocator.Get<GameManager>().SpawnPoopAt(_rectTransform.anchoredPosition);
     private void DropCoin(CoinType type) => ServiceLocator.Get<GameManager>().SpawnCoinAt(_rectTransform.anchoredPosition, type);
+
+    public void SetSick(bool value)
+    {
+        if (_isSick == value) return;
+        _isSick = value;
+        OnSickChanged?.Invoke(_isSick);
+        
+        if (_isSick)
+        {
+            Debug.Log($"{gameObject.name} became sick!");
+            // Could trigger visual changes, different animations, etc.
+        }
+        else
+        {
+            Debug.Log($"{gameObject.name} recovered from sickness!");
+        }
+    }
+
+    public void TreatSickness()
+    {
+        if (!_isSick) return;
+        
+        // Reset to healthy state
+        SetSick(false);
+        SetHunger(50f); // Override to 50% hunger
+        SetHappiness(10f); // Override to 10% happiness
+        _lowHungerTime = 0f; // Reset low hunger timer
+        
+        Debug.Log($"{gameObject.name} has been treated and is now healthy!");
+    }
+
+    public void GiveMedicine()
+    {
+        if (_isSick)
+        {
+            TreatSickness();
+            // Could consume medicine item, cost coins, etc.
+        }
+    }
 
     public void OnPointerEnter(PointerEventData e) => _interactionHandler?.OnPointerEnter(e);
     public void OnPointerExit(PointerEventData e) => _interactionHandler?.OnPointerExit(e);
@@ -374,6 +438,24 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         while (true)
         {
             SetHunger(Mathf.Clamp(currentHunger - stats.hungerDepletionRate, 0f, 100f));
+            
+            // Track low hunger time for sickness
+            if (currentHunger <= SICK_HUNGER_THRESHOLD && !_isSick)
+            {
+                _lowHungerTime += interval;
+                
+                // Check if monster should become sick
+                if (_lowHungerTime >= SICK_THRESHOLD_TIME)
+                {
+                    SetSick(true);
+                }
+            }
+            else if (currentHunger > SICK_HUNGER_THRESHOLD)
+            {
+                // Reset timer if hunger goes above threshold
+                _lowHungerTime = 0f;
+            }
+            
             yield return new WaitForSeconds(interval);
         }
     }
@@ -382,7 +464,23 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         while (true)
         {
-            UpdateHappinessBasedOnArea();
+            // Skip normal happiness updates if sick
+            if (!_isSick)
+            {
+                UpdateHappinessBasedOnArea();
+                
+                // Drain happiness if hunger is below threshold
+                if (currentHunger < monsterData.hungerHappinessThreshold)
+                {
+                    SetHappiness(Mathf.Clamp(currentHappiness - monsterData.hungerHappinessDrainRate, 0f, 100f));
+                }
+            }
+            else
+            {
+                // Sick monsters lose happiness faster
+                SetHappiness(Mathf.Clamp(currentHappiness - 1f, 0f, 100f)); // Drain 1 happiness per second when sick
+            }
+            
             yield return new WaitForSeconds(interval);
         }
     }
@@ -407,5 +505,7 @@ public class MonsterController : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
+    public float GetLowHungerTime() => _lowHungerTime;
 
+    public void SetLowHungerTime(float value) => _lowHungerTime = value;
 }

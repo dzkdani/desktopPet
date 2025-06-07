@@ -20,9 +20,11 @@ public class MonsterDataSO : ScriptableObject
     public float baseHunger = 50f;     // Add base hunger
     public float baseHappiness = 0f;   // Add base happiness
 
-    [Header("Happiness System")]
-    public float pokeHappinessValue = 2f; // Customizable poke happiness increase - changed from 15f to 2f
-    public float areaHappinessRate = 0.2f; // Rate of happiness change based on area - changed from 0.1f to 0.2f
+    [Header("Happiness Settings")]
+    public float areaHappinessRate = 0.2f;
+    public float pokeHappinessValue = 2f;
+    public float hungerHappinessThreshold = 50f; // New field - threshold below which hunger affects happiness
+    public float hungerHappinessDrainRate = 2f; // New field - how much happiness drains when hungry
 
     [Header("Poop Behavior")]
     public bool clickToCollectPoop = true;
