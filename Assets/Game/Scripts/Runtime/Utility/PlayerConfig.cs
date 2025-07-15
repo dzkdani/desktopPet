@@ -22,7 +22,6 @@ public class PlayerConfig
     public List<NPCSaveData> ownedNPCMonsters = new(); // For monsters that are owned but not in the world
     public List<OwnedItemData> ownedItems = new();
     public List<string> ownedBiomes = new();
-    public List<OwnedFacilityData> ownedFacilities = new();
     public string activeBiomeID = "default_biome";
     public bool isSkyEnabled = false;
     public bool isCloudEnabled = false;
@@ -221,28 +220,6 @@ public class PlayerConfig
     {
         ownedMonsters.RemoveAll(m => m.gameAreaId == gameAreaIndex);
     }
-    // Facility Logic
-    public bool HasFacility(string id) =>
-       ownedFacilities.Any(f => f.facilityID == id);
-
-    public bool CanUseFacility(string id)
-    {
-        var facility = ownedFacilities.Find(f => f.facilityID == id);
-        return facility == null || Time.time >= facility.nextUsableTime;
-    }
-
-    public void SetFacilityCooldown(string id, float cooldown)
-    {
-        var facility = ownedFacilities.Find(f => f.facilityID == id);
-        if (facility != null)
-            facility.nextUsableTime = Time.time + cooldown;
-    }
-
-    public void AddFacility(string id, float cooldown = 0f)
-    {
-        if (!HasFacility(id))
-            ownedFacilities.Add(new OwnedFacilityData(id, Time.time + cooldown));
-    }
 }
 
 [Serializable]
@@ -277,18 +254,6 @@ public class MonsterCollectionData
     public string monsterName;
     public string monsterCount;
     public int evolutionStage;
-}
-[Serializable]
-public class OwnedFacilityData
-{
-    public string facilityID;
-    public float nextUsableTime; // Unix timestamp or game time
-
-    public OwnedFacilityData(string id, float cooldownTime)
-    {
-        facilityID = id;
-        nextUsableTime = cooldownTime;
-    }
 }
 
 

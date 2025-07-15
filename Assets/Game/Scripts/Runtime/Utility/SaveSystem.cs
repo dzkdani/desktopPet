@@ -32,7 +32,7 @@ public static class SaveSystem
         // Check for time cheating
         CheckTimeDiscrepancy();
     }
-
+    
     // Save all data when application pauses/quits
     public static void SaveAll()
     {
@@ -80,47 +80,6 @@ public static class SaveSystem
     {
         return _playerConfig.GetAllMonsterIDs();
     }
-    public static void SaveNPCMon(NPCSaveData data)
-    {
-        if (data == null || string.IsNullOrEmpty(data.instanceId))
-        {
-            Debug.LogWarning("Tried to save null or invalid NPC monster data.");
-            return;
-        }
-        _playerConfig.SaveNPCMonsterData(data);
-        SaveAll(); // Save after update
-    }
-
-    public static bool LoadNPCMon(string instanceId, out NPCSaveData data)
-    {
-        if (string.IsNullOrEmpty(instanceId))
-        {
-            data = null;
-            return false;
-        }
-
-        return _playerConfig.LoadNPCMonsterData(instanceId, out data);
-    }
-
-    public static void DeleteNPCMon(string instanceId)
-    {
-        if (string.IsNullOrEmpty(instanceId)) return;
-
-        _playerConfig.DeleteNPCMonster(instanceId);
-        SaveAll(); // Save after deletion
-    }
-
-    public static void SaveNPCMonIDs(List<string> ids)
-    {
-        _playerConfig.SetAllNPCMonsterIDs(ids);
-        SavePlayerConfig();
-    }
-
-    public static List<string> LoadNPCMonIDs()
-    {
-        return _playerConfig.GetAllNPCMonsterIDs();
-    }
-
 
     public static void Flush() => PlayerPrefs.Save();
 
@@ -289,7 +248,7 @@ public static class SaveSystem
         SaveAll();
     }
     #endregion
-
+    
     #region Item Data Operation
     public static bool TryBuyItem(ItemDataSO itemData)
     {
@@ -434,32 +393,6 @@ public static class SaveSystem
     public static bool IsAmbientEnabled()
     {
         return _playerConfig.isAmbientEnabled;
-    }
-    #endregion
-    #region  Facility Operations
-    public static bool TryPurchaseFacility(FacilityDataSO facilityData)
-    {
-        if (_playerConfig == null || facilityData == null)
-        {
-            Debug.LogWarning("PlayerConfig or FacilityData is null.");
-            return false;
-        }
-
-        int playerCoins = _playerConfig.coins;
-        int price = facilityData.price;
-
-        if (playerCoins < price)
-        {
-            Debug.Log($"Not enough coins to buy {facilityData.facilityName}. Needed: {price}, Owned: {playerCoins}");
-            return false;
-        }
-
-        _playerConfig.coins -= price;
-        _playerConfig.AddFacility(facilityData.facilityID);
-        SaveAll();
-
-        Debug.Log($"Purchased facility {facilityData.facilityName} for {price} coins. Remaining: {_playerConfig.coins}");
-        return true;
     }
     #endregion
 

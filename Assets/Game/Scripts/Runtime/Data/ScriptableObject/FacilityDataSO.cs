@@ -1,15 +1,17 @@
-using UnityEngine;
+using UnityEngine; 
 
-[CreateAssetMenu(fileName = "FacilityData", menuName = "Facility/FacilityData")]
-public class FacilityDataSO : ScriptableObject
+[CreateAssetMenu(fileName = "NewFacilityData", menuName = "Facility/Facility Data")]
+public class FacilityDataSO : ScriptableObject  
 {
-    [Header("Facility Info")]
-    public string facilityID;
-    public string facilityName;
-    [TextArea] public string description;
-    public Sprite icon;
+    [Header("Basic Info")]    
+    public string facilityName; 
 
-    [Header("Usage Settings")]
-    public int price;                         // Player must pay to use
-    public float cooldownSeconds;             // Time before it can be used again
+    [Header("Stats")]
+    public int constructionCost;
+    public float buildTime;
+    public Sprite facilityImage;
+    public Vector2 facilitySize; // Width x Height in grid units                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+ 
+            
+
 }

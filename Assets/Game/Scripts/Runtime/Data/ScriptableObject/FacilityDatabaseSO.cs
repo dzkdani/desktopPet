@@ -1,13 +1,16 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-[CreateAssetMenu(fileName = "FacilityDatabase", menuName = "Facility/FacilityDatabase")]
+[CreateAssetMenu(fileName = "NewFacilityData", menuName = "Facility/Facility Data")]
 public class FacilityDatabaseSO : ScriptableObject
 {
     public List<FacilityDataSO> allFacilities;
 
-    public FacilityDataSO GetFacility(string id)
+    public FacilityDataSO GetFacilityByName(string name)
     {
-        return allFacilities.Find(facility => facility.facilityID == id);
+        return allFacilities.Find(facility => facility.facilityName == name);
     }
 }
+
+
+

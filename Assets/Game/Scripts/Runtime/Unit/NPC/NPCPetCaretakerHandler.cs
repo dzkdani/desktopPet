@@ -25,7 +25,7 @@ public class NPCPetCaretakerHandler
     private bool OnFeedingPet = false;
     private float minDistanceFromTarget = 100f;
 
-    private enum ActionType { CoinCollection, PoopCollection, PetInteraction, PetFeeding, Idling }
+    private enum ActionType { CoinCollection, PoopCollection, PetInteraction, PetFeeding , Idling}
     private ActionType _currentAction = ActionType.Idling;
     private bool _isPerformingAction = false;
 
@@ -89,10 +89,10 @@ public class NPCPetCaretakerHandler
             case ActionType.Idling:
                 Debug.Log("NPC is idling.");
                 break;
-            default:
+            default: 
                 Debug.LogWarning($"NPCPetCaretakerHandler: Action {_currentAction} is not enabled or not implemented.");
                 _isPerformingAction = false;
-                yield break;
+                yield break; 
         }
         _isPerformingAction = false;
         _currentAction = GetAction();
@@ -184,7 +184,7 @@ public class NPCPetCaretakerHandler
     {
         // Set the target position in MonsterController - this will use the existing movement system
         _monsterController.SetTargetPosition(target.anchoredPosition);
-
+        
         // Wait until the monster reaches the target position
         while (OnDoingAction())
         {
@@ -202,7 +202,7 @@ public class NPCPetCaretakerHandler
             }
             yield return null;
         }
-        yield return null;
+        yield return null; 
     }
 
     private void OnNearTarget(GameObject target)
@@ -224,46 +224,20 @@ public class NPCPetCaretakerHandler
             if (_currentAction == ActionType.PetFeeding)
             {
                 var itemInventoryUI = ServiceLocator.Get<ItemInventoryUI>();
-                var itemDatabase = itemInventoryUI.ItemDatabase;
-
-                // Get all food items and sort by price
-                var foodItems = itemDatabase.GetItemsByCategory(ItemType.Food);
-                var cheapestFood = foodItems
-                    .Where(i => i != null && i.price > 0)
-                    .OrderBy(i => i.price)
-                    .FirstOrDefault();
-
-                if (cheapestFood == null)
+                var itemID = SaveSystem.PlayerConfig.ownedItems.FirstOrDefault(i => i.type == ItemType.Food)?.itemID; // Get the first food item ID
+                var itemData = itemInventoryUI.ItemDatabase.GetItem(itemID);
+                SaveSystem.TryBuyItem(itemData);
+                if (SaveSystem.PlayerConfig.ownedItems.FirstOrDefault(i => i.itemID == itemID).amount >= 1)
                 {
-                    Debug.LogWarning("No valid food item found in the database.");
-                    return;
-                }
-
-                // Attempt to buy the item
-                bool bought = SaveSystem.TryBuyItem(cheapestFood);
-                if (bought)
-                {
-                    // Reduce from owned items and spawn food
-                    var inventoryFood = SaveSystem.PlayerConfig.ownedItems
-                        .FirstOrDefault(i => i.itemID == cheapestFood.itemID);
-
-                    if (inventoryFood != null && inventoryFood.amount > 0)
-                    {
-                        inventoryFood.amount -= 1;
-                        _monsterManager.SpawnItem(cheapestFood, pet.GetComponent<RectTransform>().anchoredPosition);
-                        Debug.Log($"Feeding pet with {cheapestFood.itemID} (cost: {cheapestFood.price})");
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Food was bought but not found in inventory.");
-                    }
+                    SaveSystem.PlayerConfig.ownedItems.FirstOrDefault(i => i.itemID == itemID).amount -= 1; // Decrease food amount
+                    _monsterManager.SpawnItem(itemData, pet.GetComponent<RectTransform>().anchoredPosition); // Spawn food 
+                    Debug.Log("Feeding pet...");
                 }
                 else
                 {
-                    Debug.LogWarning($"Not enough coins to buy {cheapestFood.itemID} (cost: {cheapestFood.price})");
+                    Debug.LogWarning("Not enough food to feed the pet.");
                 }
             }
-
             return;
         }
     }
@@ -289,7 +263,7 @@ public class NPCPetCaretakerHandler
     }
 
     public IEnumerator DoCoinCollection()
-    {
+    {   
         while (CoinCollectorEnabled) // Add continuous loop
         {
             if (OnDoingAction())
@@ -369,15 +343,15 @@ public class NPCPetCaretakerHandler
         T nearest = null;
         float shortestDistance = float.MaxValue;
         Vector2 npcPos = GetAnchoredPos(_monsterController.transform);
-
+        
         foreach (var t in list)
         {
             if (t == null || !t.IsTargetable) continue;
             float d = Vector2.Distance(npcPos, t.Position);
-            if (d < shortestDistance)
-            {
-                shortestDistance = d;
-                nearest = t;
+            if (d < shortestDistance) 
+            { 
+                shortestDistance = d; 
+                nearest = t; 
             }
         }
         return nearest;
@@ -392,7 +366,7 @@ public class NPCPetCaretakerHandler
         }
         return false;
     }
-
+    
     private Vector2 GetAnchoredPos(Transform target)
     {
         RectTransform rectTransform = target.GetComponent<RectTransform>();

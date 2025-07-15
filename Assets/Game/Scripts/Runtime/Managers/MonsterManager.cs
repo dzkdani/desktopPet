@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
-using UnityEngine.UI;
 
 public class MonsterManager : MonoBehaviour
 {
@@ -19,7 +18,7 @@ public class MonsterManager : MonoBehaviour
 
     [Header("Game Settings")]
     public RectTransform gameAreaRT;
-    public RectTransform groundRT;
+    public RectTransform groundRT; 
     public MonsterDatabaseSO monsterDatabase;
     public MonsterDatabaseSO npcMonsterDatabase;
 
@@ -50,8 +49,6 @@ public class MonsterManager : MonoBehaviour
     public List<FoodController> activeFoods = new List<FoodController>();
     public List<MedicineController> activeMedicines = new List<MedicineController>();
     private List<string> savedMonIDs = new List<string>();
-    [SerializeField] private Button spawnNPC1;
-    [SerializeField] private Button spawnNPC2;
 
     public System.Action<int> OnCoinChanged;
     public System.Action<int> OnPoopChanged;
@@ -63,8 +60,6 @@ public class MonsterManager : MonoBehaviour
         ServiceLocator.Register(this);
         InitializePools();
         SaveSystem.Initialize();
-        spawnNPC1.onClick.AddListener(() => SpawnNPCMonster(npcMonsterDatabase.GetMonsterByID("100")));
-        spawnNPC2.onClick.AddListener(() => SpawnNPCMonster(npcMonsterDatabase.GetMonsterByID("200")));
     }
 
     private void InitializePools()
@@ -75,7 +70,7 @@ public class MonsterManager : MonoBehaviour
             CreatePoolObject(poopPrefab, _poopPool);
             CreatePoolObject(coinPrefab, _coinPool);
         }
-
+        
         // Initialize monster pool
         for (int i = 0; i < initialMonsterPoolSize; i++)
         {
@@ -166,7 +161,7 @@ public class MonsterManager : MonoBehaviour
     {
         var monster = GetPooledObject(_monsterPool, monsterPrefab);
         monster.transform.SetParent(gameAreaRT, false);
-
+        
         var monsterController = monster.GetComponent<MonsterController>();
         var rectTransform = monster.GetComponent<RectTransform>();
         var movementBounds = new MonsterBoundsHandler(this, rectTransform);
@@ -189,7 +184,7 @@ public class MonsterManager : MonoBehaviour
             Debug.LogError("SpawnMonster: MonsterController component not found on the prefab");
             return null;
         }
-
+        
         monster.SetActive(true);
         return monster;
     }
@@ -286,42 +281,6 @@ public class MonsterManager : MonoBehaviour
         }
     }
     #endregion
-    #region  NPC Management
-    public void SaveAllNPCMons()
-    {
-        foreach (var npc in npcMonsters)
-        {
-            var saveData = new NPCSaveData
-            {
-                instanceId = npc.monsterID,
-                monsterId = npc.MonsterData.id
-            };
-            SaveSystem.SaveNPCMon(saveData);
-        }
-
-        SaveSystem.SaveNPCMonIDs(npcMonsters.Select(n => n.monsterID).ToList());
-    }
-    private void LoadNPCMonsters()
-    {
-        var npcIDs = SaveSystem.LoadNPCMonIDs();
-        foreach (var id in npcIDs)
-        {
-            if (SaveSystem.LoadNPCMon(id, out NPCSaveData saveData))
-            {
-                var monsterData = npcMonsterDatabase.monsters.Find(m => m.id == saveData.monsterId);
-                if (monsterData != null)
-                {
-                    SpawnNPCMonster(monsterData, saveData.instanceId);
-                }
-                else
-                {
-                    Debug.LogWarning($"NPC monster data not found for ID: {saveData.monsterId}");
-                }
-            }
-        }
-    }
-    #endregion
-
 
     #region Consumable Management
     public void SpawnItem(ItemDataSO data, Vector2 pos)
@@ -454,7 +413,6 @@ public class MonsterManager : MonoBehaviour
         var poop = GetPooledObject(_poopPool, poopPrefab);
         SetupPooledObject(poop, gameAreaRT, finalPos);
         poop.GetComponent<PoopController>().Initialize(type);
-        activePoops.Add(poop.GetComponent<PoopController>());
         return poop;
     }
 
@@ -580,16 +538,17 @@ public class MonsterManager : MonoBehaviour
     {
         coinCollected = SaveSystem.LoadCoin();
         poopCollected = SaveSystem.LoadPoop();
+        
+        // Load the last active game area
         currentGameAreaIndex = SaveSystem.LoadActiveGameAreaIndex();
+        
+        // Load all saved monster IDs but only spawn monsters for current area
         savedMonIDs = SaveSystem.LoadMonIDs();
-
         LoadMonstersForCurrentArea();
-        LoadNPCMonsters(); // <- ADD THIS LINE
-
+        
         OnCoinChanged?.Invoke(coinCollected);
         OnPoopChanged?.Invoke(poopCollected);
     }
-
 
     private void LoadMonstersForCurrentArea()
     {
@@ -623,7 +582,7 @@ public class MonsterManager : MonoBehaviour
                 currentHappiness = monster.StatsHandler.CurrentHappiness,
                 currentHealth = monster.StatsHandler.CurrentHP,
                 currentEvolutionLevel = monster.evolutionLevel,
-
+                
                 // Evolution data
                 timeCreated = monster.GetEvolveTimeCreated(),
                 totalTimeSinceCreation = monster.GetEvolveTimeSinceCreation(),
@@ -640,10 +599,10 @@ public class MonsterManager : MonoBehaviour
     public void SwitchToGameArea(int areaIndex)
     {
         if (areaIndex == currentGameAreaIndex) return; // Already in this area
-
+        
         // Save current monsters before switching
         SaveAllMons();
-
+        
         // Clear current active monsters (return to pool)
         var monstersToRemove = activeMonsters.ToList();
         foreach (var monster in monstersToRemove)
@@ -651,17 +610,17 @@ public class MonsterManager : MonoBehaviour
             DespawnToPool(monster.gameObject);
         }
         activeMonsters.Clear();
-
+        
         // Clear other active objects too
         ClearActiveObjects();
-
+        
         // Update current area
         currentGameAreaIndex = areaIndex;
         SaveSystem.SaveActiveGameAreaIndex(currentGameAreaIndex);
-
+        
         // Load monsters for the new area
         LoadMonstersForCurrentArea();
-
+        
         Debug.Log($"Switched to game area {areaIndex}");
     }
 
@@ -675,7 +634,7 @@ public class MonsterManager : MonoBehaviour
                 DespawnToPool(coin.gameObject);
         }
         activeCoins.Clear();
-
+        
         // Clear poop
         var poopsToRemove = activePoops.ToList();
         foreach (var poop in poopsToRemove)
@@ -684,7 +643,7 @@ public class MonsterManager : MonoBehaviour
                 DespawnToPool(poop.gameObject);
         }
         activePoops.Clear();
-
+        
         // Clear food
         var foodsToRemove = activeFoods.ToList();
         foreach (var food in foodsToRemove)
@@ -693,7 +652,7 @@ public class MonsterManager : MonoBehaviour
                 DespawnToPool(food.gameObject);
         }
         activeFoods.Clear();
-
+        
         // Clear medicine
         var medicinestoRemove = activeMedicines.ToList();
         foreach (var medicine in medicinestoRemove)
@@ -718,13 +677,13 @@ public class MonsterManager : MonoBehaviour
         {
             // Update the monster's area in save data
             SaveSystem.PlayerConfig.SetMonsterGameArea(monsterID, targetAreaIndex);
-
+            
             // If moving to different area than current, remove from active list
             if (targetAreaIndex != currentGameAreaIndex)
             {
                 DespawnToPool(monster.gameObject);
             }
-
+            
             SaveSystem.SaveAll();
         }
     }
@@ -743,12 +702,10 @@ public class MonsterManager : MonoBehaviour
     private void SaveGameData()
     {
         SaveAllMons();
-        SaveAllNPCMons(); // <- ADD THIS LINE
         SaveSystem.SavePoop(poopCollected);
         SaveSystem.SaveCoin(coinCollected);
         SaveSystem.Flush();
     }
-
     #endregion
 
     #region Utility Methods
@@ -805,7 +762,7 @@ public class MonsterManager : MonoBehaviour
     #endregion
 
     #region NPC Monster Management
-    public void SpawnNPCMonster(MonsterDataSO monsterData, string id = null)
+    public void SpawnNPCMonster(MonsterDataSO monsterData)
     {
         if (monsterData == null)
         {
@@ -813,28 +770,37 @@ public class MonsterManager : MonoBehaviour
             return;
         }
 
+        // Use pooled monster object
         GameObject npcObj = GetPooledObject(_monsterPool, monsterPrefab);
         npcObj.transform.SetParent(gameAreaRT, false);
-
+        
         var controller = npcObj.GetComponent<MonsterController>();
         var movementBounds = new MonsterBoundsHandler(this, npcObj.GetComponent<RectTransform>());
+        
+        // Flag it as an NPC
         controller.isNPC = true;
-
-        string npcID = id ?? $"NPC_{monsterData.id}_{System.Guid.NewGuid().ToString("N").Substring(0, 8)}";
+        
+        // Generate a unique ID for the NPC
+        string npcID = $"NPC_{monsterData.id}_{System.Guid.NewGuid().ToString("N").Substring(0, 8)}";
         controller.monsterID = npcID;
         controller.gameObject.name = $"{monsterData.monsterName}_{npcID}";
+        
+        // Set up the monster with data
         controller.SetMonsterData(monsterData);
-
+        
+        // Position the NPC
         npcObj.GetComponent<RectTransform>().anchoredPosition = movementBounds.GetRandomSpawnTarget();
         npcObj.SetActive(true);
 
-        if (!npcMonsters.Contains(controller))
-            npcMonsters.Add(controller);
+        // Track the NPC
+        npcMonsters.Add(controller);
 
+        // Apply current pet scale
         var settingsManager = ServiceLocator.Get<SettingsManager>();
         if (settingsManager != null)
+        {
             settingsManager.ApplyCurrentPetScaleToMonster(controller);
+        }
     }
-
     #endregion
 }
