@@ -60,6 +60,7 @@ public class PlacementManager : MonoBehaviour
         ResetPlacement();
         gameArea = area;
         currentPreview = prefab;
+        currentPreview.SetActive(true);
         currentPreview.transform.SetParent(area);
         previewRect = currentPreview.GetComponent<RectTransform>();
 
@@ -71,6 +72,7 @@ public class PlacementManager : MonoBehaviour
         // Set preview sprite if provided
         if (previewSprite != null && currentPreview.TryGetComponent<Image>(out var image))
         {
+            Debug.Log($"Setting preview sprite: {previewSprite.name}");
             image.sprite = previewSprite;
         }
     }
