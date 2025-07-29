@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "desktopPet.sln"
+    "dotnet.defaultSolution": "desktopPet.sln",
+    "git.ignoreLimitWarning": true
 }

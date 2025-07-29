@@ -355,7 +355,7 @@ MonoBehaviour:
   itemDescText: {fileID: 0}
   itemFullnessText: {fileID: 0}
   itemInfoIcon: {fileID: 0}
-  itemDatabase: {fileID: 11400000, guid: 07b3049cb58b2d64f8790d50f77db93c, type: 2}
+  itemDatabase: {fileID: 11400000, guid: 79e271fae5dcdbd4c8132afce8b425a3, type: 2}
 --- !u!114 &1647250584560892044
 MonoBehaviour:
   m_ObjectHideFlags: 0
