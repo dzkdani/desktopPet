@@ -35,7 +35,7 @@ public class BiomeShopManager : MonoBehaviour
     {
         biomeParentRect = biomeParent.GetComponent<RectTransform>();
         originalBiomeParentHeight = biomeParentRect.sizeDelta.y;
-        
+
         // Pre-populate pool with initial cards
         InitializeCardPool();
     }
@@ -44,7 +44,7 @@ public class BiomeShopManager : MonoBehaviour
     {
         // Create initial pool size based on expected biome count
         int initialPoolSize = Mathf.Max(10, biomes?.allBiomes?.Count ?? 10);
-        
+
         for (int i = 0; i < initialPoolSize; i++)
         {
             GameObject cardObj = Instantiate(biomeCardPrefab, cardParent);
@@ -120,10 +120,10 @@ public class BiomeShopManager : MonoBehaviour
             card.OnApplyClicked = OnBiomeApply;
             card.OnCancelApplied = OnBiomeCancel;
             card.OnBuyClicked = OnBiomeBuy;
-            
+
             activeCards.Add(card);
         }
-        
+
         AdjustBiomeParentHeight(biomes.allBiomes.Count);
         ClearInfo();
     }
@@ -198,7 +198,7 @@ public class BiomeShopManager : MonoBehaviour
         SaveSystem.SetSkyEnabled(false);
         SaveSystem.SetCloudEnabled(false);
         SaveSystem.SetAmbientEnabled(false);
-        SaveSystem.SetActiveBiome("");
+        SaveSystem.SetActiveBiome("default_biome"); // Reset to default biome
 
         // Persist changes
         SaveSystem.SaveAll();
